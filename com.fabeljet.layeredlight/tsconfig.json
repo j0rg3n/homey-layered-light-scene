@@ -3,6 +3,6 @@
   "compilerOptions": {
     "allowJs": true,
     "outDir": ".homeybuild/",
-    "allowImportingTsExtensions": false
+    "allowImportingTsExtensions": true
   }
 }
