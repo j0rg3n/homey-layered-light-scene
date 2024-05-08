@@ -1,6 +1,7 @@
 // I want to use HomeyAPIV3Local, but there doesn't seem to be any ways of controlling anything with that;
 // the older API seems to be the only way. It's weird.
 import { HomeyAPIV3Local as HomeyAPI } from 'homey-api';
+import Homey from 'homey';
 import _ from 'lodash';
 
 const sceneStackVariableName = 'Tilstand: Aktive Scener'
@@ -66,16 +67,28 @@ function isEqualSetting(a : number[]|boolean|null|undefined, b : number[]|boolea
     return true;
 }
 
+class LightLayersConfig {
+    devices : HomeyAPI.ManagerDevices;
+    logic : HomeyAPI.ManagerLogic;
+    stack : Homey.FlowToken;
 
-
+    constructor(devices : HomeyAPI.ManagerDevices, logic : HomeyAPI.ManagerLogic, stack : Homey.FlowToken) {
+        this.devices = devices;
+        this.logic = logic;
+        this.stack = stack;
+    }
+}
 
 class LightLayers {
     devices : HomeyAPI.ManagerDevices;
     logic : HomeyAPI.ManagerLogic;
+    stackToken : Homey.FlowToken;
+    stack : string = '{}';
 
-    constructor(devices : HomeyAPI.ManagerDevices, logic : HomeyAPI.ManagerLogic) {
-        this.devices = devices;
-        this.logic = logic;
+    constructor(config : LightLayersConfig) {
+        this.devices = config.devices;
+        this.logic = config.logic;
+        this.stackToken = config.stack;
     }
 
     /**
@@ -122,7 +135,12 @@ class LightLayers {
     layerScenes(base : Scene, modifier : Scene) : Scene {
         const result = { ...base };
         for (const lightName in modifier) {
-            result[lightName] = modifier[lightName];
+            const newValue = modifier[lightName];
+            if (newValue === null) {
+                delete result[lightName];
+            } else {
+                result[lightName] = newValue;
+            }
         }
         return result;
     }
@@ -135,9 +153,9 @@ class LightLayers {
     flattenStack(stack : SceneStringStack, priorities : string[]) : Scene {
         let result = {};
         for (const sceneName of priorities) {
-            const sceneString = stack[sceneName];
-            if (sceneString !== undefined) {
-                const scene = this.getSceneFromString(sceneString);
+            const sceneJson = stack[sceneName];
+            if (sceneJson !== undefined) {
+                const scene = this.getSceneFromJson(sceneJson);
                 result = this.layerScenes(result, scene);
             }
         }
@@ -208,6 +226,7 @@ class LightLayers {
                     const color = this.getHueSaturationLightnessFromRgb(rgb as [number,number,number]);
                     scene[lightName] = color;
                 } else {
+                    // Hue/saturation or just lightness
                     scene[lightName] = rgb;
                 } 
             }
@@ -215,6 +234,14 @@ class LightLayers {
             lightName = nextLightName;
         }
         return scene;
+    }
+
+    getSceneFromJson(scene : string) : Scene {
+        return JSON.parse(scene);
+    }
+
+    getJsonFromScene(scene : Scene) : string {
+        return JSON.stringify(scene);
     }
 
     /**
@@ -272,7 +299,7 @@ class LightLayers {
         return [h / 360, s, l];
     }
 
-     // ---------------------
+    // ---------------------
     // HomeyScript specifics
     // ---------------------
 
@@ -300,6 +327,7 @@ class LightLayers {
         return JSON.parse(await this.getVariable(name));
     }
 
+    /* Requires the scope homey.logic, which we don't know how to request.
     async setVariable(name : string, value : any) {
         const controlValue = await this.findVariable(name);
 
@@ -312,6 +340,7 @@ class LightLayers {
             log(`Failed setting variable: ${error}`);
         }
     }
+    */
 
     /**
      * Get scene priorities from global variable.
@@ -324,7 +353,8 @@ class LightLayers {
      * Get scene stack from global variable.
      */
     async getSceneStack() : Promise<SceneStringStack> {
-        return await this.getJsonVariable(sceneStackVariableName);
+        log('Stack =', this.stack);
+        return JSON.parse(this.stack); 
     }
 
     /**
@@ -340,7 +370,15 @@ class LightLayers {
      * @param {object} newStack Scene stack to assign.
      */
     async setSceneStack(newStack : SceneStringStack) {
-        await this.setVariable(sceneStackVariableName, newStack);
+        const newValue = JSON.stringify(newStack)
+        log('Stack :=', newValue);
+        this.stack = newValue;
+
+        try {
+            await this.stackToken.setValue(newValue); 
+        } catch (error) {
+            log(`Failed setting stack token: ${error}`);
+        }
     }
 
     /**
@@ -425,11 +463,13 @@ class LightLayers {
         for (const devicex of Object.values(devices)) {
             var device : any = devicex;
             var settings = await this.devices.getDeviceSettingsObj({ id: device.id });
-            log(`Settings for ${device.name} is `, settings);
+            //log(`Settings for ${device.name} is `, settings);
     
             // If this device is a light (class)
             // Or this is a 'What's plugged in?'-light (virtualClass)
-            if (device.class === 'light' || device.virtualClass === 'light') {
+            if (device.class === 'light' || 
+                device.virtualClass === 'light' || 
+                device.virtualClass === 'other') {
                 lights.push(device);
             }                
         }
@@ -438,9 +478,6 @@ class LightLayers {
     }
 
     async applyNamedSceneString(layerName : string, sceneString : string, spreadMs : number, clear : boolean) {
-        //const namedSceneString = await getArg();
-        //const [name, sceneString] = getNamedSceneFromString(namedSceneString);
-
         log(`Operation: ${layerName} = ${sceneString} (spread ${spreadMs} ms, clear ${clear})`);
 
         const priorities = await this.getScenePriorities();
@@ -451,12 +488,18 @@ class LightLayers {
 
         const before = this.flattenStack(stack, priorities)
 
-        if (clear) {
-            stack = {}
+        const existingScene = stack[layerName];
+        const newScene = this.getJsonFromScene(this.getSceneFromString(sceneString));
+        if (clear || existingScene === undefined) {
+            stack[layerName] = newScene;
+        } else {
+            // Merge with existing scene
+            const existingSceneObj = this.getSceneFromJson(existingScene);
+            const newSceneObj = this.getSceneFromJson(newScene);
+            const mergedSceneObj = this.layerScenes(existingSceneObj, newSceneObj);
+            stack[layerName] = this.getJsonFromScene(mergedSceneObj);
         }
 
-        stack[layerName] = sceneString;
-        
         await this.setSceneStack(stack);
         log('Stack is ', stack);
 
@@ -488,8 +531,14 @@ class LightLayers {
             log(`made ${jobs.length} jobs`);
             await Promise.all(jobs);
         }
+
+        // Now, apply full set of lights for robustness, in case our internal state
+        // is out of sync with the actual lights.
+        log('Reapplying full, flattened scene...');
+        await this.applyScene(lights, after);
     }
 }
 /**/
 
 export default LightLayers;
+export { LightLayersConfig };
