@@ -1,4 +1,4 @@
-const util = require('./apply-light-scene.js');
+const util = require('./apply-light-scene-2.js');
 
 test('rgb string to vector: plain white', () => {
     expect(util.getRgbVectorFromRgbString('ff')).toEqual([1]);
@@ -41,12 +41,14 @@ test('basic, named scene from string', () => {
 });
 
 test('basic scene from string', () => {
-    const scene = util.getSceneFromString('alice:ff0000 bob:ff claire:null dave:00ff');
+    const scene = util.getSceneFromString('alice:ff0000 bob:ff claire:null dave:00ff eddie:on fiona:off');
     expect(scene).toEqual({
         alice: [0, 1, .5],
         bob: [1],
         claire: null,
-        dave: [0, 1]
+        dave: [0, 1],
+        eddie: true,
+        fiona: false
     });
 });
 
@@ -115,4 +117,45 @@ test('flatten missing data for one priority level', () => {
         claire: null,
         dave: [0, 1]
     });
+});
+
+test('order scene lights by arrangement', () => {
+    const scene = util.getSceneFromString('alice:ff0000 bob:ff claire:null dave:00ff');
+    const arrangement = [['bob', 'alice'], ['dave'], ['claire']];
+    const orderedScene = util.getSceneOrdering(scene, arrangement);
+    expect(orderedScene).toEqual([
+        {
+            bob: [1],
+            alice: [0, 1, .5]
+        },
+        {dave: [0, 1]},
+        {claire: null},
+    ]);
+});
+
+test('order scene lights by incomplete arrangement', () => {
+    const scene = util.getSceneFromString('alice:ff0000 bob:ff claire:null dave:00ff');
+    const arrangement = [['bob', 'alice'], ['claire']];
+    const orderedScene = util.getSceneOrdering(scene, arrangement);
+    expect(orderedScene).toEqual([
+        {
+            bob: [1],
+            alice: [0, 1, .5]
+        },
+        {claire: null},
+        {dave: [0, 1]},
+    ]);
+});
+
+test('order incomplete scene lights by arrangement', () => {
+    const scene = util.getSceneFromString('alice:ff0000 bob:ff dave:00ff');
+    const arrangement = [['bob', 'alice'], ['claire']];
+    const orderedScene = util.getSceneOrdering(scene, arrangement);
+    expect(orderedScene).toEqual([
+        {
+            bob: [1],
+            alice: [0, 1, .5]
+        },
+        {dave: [0, 1]},
+    ]);
 });
