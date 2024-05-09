@@ -1,4 +1,40 @@
 /**
+ * Break apart scene into stages according to the given arrangement.
+ * @param {object} scene Scene object with light names as keys and light setup as values.
+ * @param {array} arrangement List of lists of light names in the order to compile them. Lights not in any list are placed last.
+ * @returns {array} List of scenes.
+ */
+function getSceneOrdering(scene, arrangement) {
+    const orderedScene = [];
+
+    const coveredLights = new Set();
+    for (const group of arrangement) {
+        const orderedGroup = {};
+        for (const lightName of group) {
+            if (scene[lightName] !== undefined) {
+                orderedGroup[lightName] = scene[lightName];
+                coveredLights.add(lightName);
+            }
+        }
+        if (Object.keys(orderedGroup).length > 0) {
+            orderedScene.push(orderedGroup);
+        }
+    }
+
+    if (coveredLights.size < Object.keys(scene).length) {
+        const lastGroup = {};
+        for (const lightName in scene) {
+            if (!coveredLights.has(lightName)) {
+                lastGroup[lightName] = scene[lightName];
+            }
+        }
+        orderedScene.push(lastGroup);
+    }
+
+    return orderedScene;
+}
+
+/**
  * Compute aggregate scene by overlaying one scene on top of another.
  * @param {object} base Base scene
  * @param {object} modifier Scene to add on top
@@ -61,6 +97,10 @@ function getSceneFromString(sceneString) {
         //const [colorString, ...nextLightNameSegments] = groups[i].split(' ');
         if (colorString === 'null') {
             scene[lightName] = null;
+        } else if (colorString === 'on') {
+            scene[lightName] = true;
+        } else if (colorString === 'off') {
+            scene[lightName] = false;
         } else {
             const rgb = getRgbVectorFromRgbString(colorString);
             if (rgb.length === 3) {
@@ -133,8 +173,16 @@ function getHueSaturationLightnessFromRgb(rgb) {
 // Node.js specifics
 // -----------------
 
-/**
-module.exports = { getRgbVectorFromRgbString, getHueSaturationLightnessFromRgb, getSceneFromString, layerScenes, flattenStack, getNamedSceneFromString };
+/**/
+module.exports = { 
+    getRgbVectorFromRgbString, 
+    getHueSaturationLightnessFromRgb,
+    getSceneFromString, 
+    layerScenes, 
+    flattenStack, 
+    getNamedSceneFromString,
+    getSceneOrdering
+};
 /**/
 
 // ---------------------
@@ -143,26 +191,30 @@ module.exports = { getRgbVectorFromRgbString, getHueSaturationLightnessFromRgb, 
 
 const sceneStackVariableName = 'Tilstand: Aktive Scener'
 const scenePriorityVariableName = 'Grenser: Sceneprioritet'
+const sceneArrangementVariableName = 'Grenser: Lysrekkefølge'
 
 async function findVariable(name) {
     const vars = await Homey.logic.getVariables(); 
     const controlValue = _.find(vars, (o) => o.name === name);
-    if (controlValue === null) {
+    if (controlValue === undefined) {
       throw new Error(`Control variable ${name} missing.`)
     }
 
     if (controlValue.type !== 'string') {
-      throw new Error(`Control variable ${name} (${controlValue.type}) is not a boolean.`)
+      throw new Error(`Control variable ${name} (${controlValue.type}) is not a string.`)
     }
 
     return controlValue;
 }
 
-async function getJsonVariable(name) {
+async function getVariable(name) {
     const controlValue = await findVariable(name);
     log('Variable ', name, '=', controlValue.value);
+    return controlValue.value
+}
 
-    return JSON.parse(controlValue.value);
+async function getJsonVariable(name) {
+    return JSON.parse(await getVariable(name));
 }
 
 async function setVariable(name, value) {
@@ -189,6 +241,13 @@ async function getSceneStack() {
 }
 
 /**
+ * Get scene arrangement from global variable.
+ */
+async function getSceneArrangement() {
+  return getJsonVariable(sceneArrangementVariableName);
+}
+
+/**
  * Assign scene stack to global variable.
  * 
  * @param {object} newStack Scene stack to assign.
@@ -200,14 +259,14 @@ async function setSceneStack(newStack) {
 /**
  * Get script argument.
  */
-function getArg() {
-    if (true) {
+async function getArg() {
+    if (args.length == 1) {
         if (typeof args[0] !== 'string') {
             throw new Error('This script must be run from a Flow!');
         }
         return args[0]
     } else {
-        return 'døgn: Skrivebord Stue:null'
+        return 'døgn: ' + await getVariable('Scene: StuKj_Arbeid');
     }
 }
 
@@ -262,7 +321,7 @@ async function applySetting(device, setting) {
  * Apply light settings to each light in the scene.
  * @param {object} scene Light settings
  */
-async function applyScene(scene) {    
+async function applyScene(scene) {
     return Homey.devices.getDevices()
         .then(devices => {
             const jobs = [];
@@ -287,19 +346,8 @@ async function applyScene(scene) {
 }
 
 /**
-const sceneString = getArg();
 
-const stack = await getSceneStack();
-stack['døgn'] = sceneString;
-log('Stack is ', stack);
-
-const priorities = await getScenePriorities();
-log('Priorities is ', priorities);
-
-log('Flattened scene stack is ', flattenStack(stack, priorities));
-
-//await applyScene(flattenStack(stack, priorities));
-/**/
+// TEST
 
 const stack = {}
 stack['døgn'] = 'Taklys Stue:ff00'
@@ -317,7 +365,9 @@ await applyScene(final);
 
 /**
 
-const namedSceneString = getArg();
+// Actual
+
+const namedSceneString = await getArg();
 
 const stack = await getSceneStack();
 log('Stack was ', stack);
@@ -333,5 +383,15 @@ log('Priorities is ', priorities);
 const final = flattenStack(stack, priorities)
 log('Flattened scene stack is ', final);
 
-await applyScene(final);
+const arrangement = await getSceneArrangement();
+const stages = getSceneOrdering(final, arrangement);
+// Apply stages with a small delay after, except the last one.
+const jobs = [];
+stageTime = 0
+for (const stage of stages) {    
+    jobs.push(wait(stageTime)
+        .then(async () => await applyScene(stage)));
+    stageTime += 200;
+}
+await Promise.all(jobs);
 /**/
