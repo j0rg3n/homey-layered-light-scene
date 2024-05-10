@@ -266,7 +266,7 @@ async function getArg() {
         }
         return args[0]
     } else {
-        return 'døgn: ' + await getVariable(true ? 'Scene: Dag' : 'Scene: StuKj_Levedlys');
+        return 'døgn: ' + await getVariable(true ? 'Scene: Stue_natt' : 'Scene: StuKj_Levedlys');
     }
 }
 
@@ -304,23 +304,22 @@ async function applySetting(device, setting) {
     if (setting === null) {
         await setOnOff(device, false)
     } else if (setting === true || setting === false) {
-        await setOnOff(setting);
+        await setOnOff(device, setting);
     } else if (setting.length == 3) {
         const [h, s, l] = setting;
-        await setOnOff(device, l > 0.01);
-        await setCapabilityFloat(device, 'dim', l);
-        await setCapabilityFloat(device, 'light_hue', h);
-        await setCapabilityFloat(device, 'light_saturation', s);
-        //log(`capabilities: ${device.capabilities}`)
+        await Promise.all([setOnOff(device, l > 0.01),
+            setCapabilityFloat(device, 'dim', l),
+            setCapabilityFloat(device, 'light_hue', h),
+            setCapabilityFloat(device, 'light_saturation', s)]);
     } else if (setting.length == 2) {
         const [l, t] = setting;
-        await setOnOff(device, l > 0.01);
-        await setCapabilityFloat(device, 'dim', l);
-        await setCapabilityFloat(device, 'light_temperature', t);
+        await Promise.all([setOnOff(device, l > 0.01),
+            setCapabilityFloat(device, 'dim', l),
+            setCapabilityFloat(device, 'light_temperature', t)]);
     } else if (setting.length == 1) {
         const [l] = setting;
-        await setOnOff(device, l > 0.01);
-        await setCapabilityFloat(device, 'dim', l);
+        await Promise.all([setOnOff(device, l > 0.01),
+            setCapabilityFloat(device, 'dim', l)]);
     }
 }
 
@@ -406,22 +405,24 @@ const sleep = (durationMs) => {
 }
 
 const lights = await getLights();
-if (false) {
+const spreadMs = 100
+if (spreadMs == 0) {
     await applyScene(lights, final);
 } else {
     const arrangement = await getSceneArrangement();
     const stages = getSceneOrdering(final, arrangement);
     // Apply stages with a small delay after, except the last one.
     const jobs = [];
-    stageTime = 0
+    stageIndex = 0
     for (const stage of stages) { 
+        const stageTime = stageIndex * spreadMs;
         const applyStage = async () => {
             await wait(stageTime);
             log(`Stage at ${stageTime} ms`, stage);
             await applyScene(lights, stage);
         }
         jobs.push(applyStage());
-        stageTime += 200;
+        ++stageIndex;
     }
     log(`made ${jobs.length} jobs`);
     await Promise.all(jobs);
