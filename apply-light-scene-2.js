@@ -173,7 +173,7 @@ function getHueSaturationLightnessFromRgb(rgb) {
 // Node.js specifics
 // -----------------
 
-/**/
+/**
 module.exports = { 
     getRgbVectorFromRgbString, 
     getHueSaturationLightnessFromRgb,
@@ -266,7 +266,7 @@ async function getArg() {
         }
         return args[0]
     } else {
-        return 'døgn: ' + await getVariable('Scene: StuKj_Arbeid');
+        return 'døgn: ' + await getVariable(true ? 'Scene: Dag' : 'Scene: StuKj_Levedlys');
     }
 }
 
@@ -278,71 +278,87 @@ async function setCapabilityFloat(device, capabilityName, value) {
     const scaledValue = value * (capability.max - capability.min) + capability.min;
     const description = `${device.name} ${capability.id} to ${value} (=${scaledValue}${capability.unit ?? ''}; range [${capability.min}, ${capability.max}])`
 
-    await device.setCapabilityValue(capabilityName, scaledValue)
-        .then(() => log(`OK: ${description}`))
-        .catch(error => log(`Error: ${description}: ${error}`))
+    try {
+        await device.setCapabilityValue(capabilityName, scaledValue);
+        log(`OK: ${description}`);
+    } catch (error) {
+        log(`Error: ${description}: ${error}`);
+    }
+}
+
+/**
+ * Set on/off
+ */
+async function setOnOff(device, on) {
+    try {
+        await device.setCapabilityValue('onoff', on);
+        log(`OK: ${device.name} ${on ? 'on' : 'off'}`);
+    } catch (error) {
+        log(`Error: ${device.name} ${on ? 'on' : 'off'}: ${error}`);
+    }
 }
 
 async function applySetting(device, setting) {
-    return new Promise((resolve, _) => {
-            log(`Applying ${setting} to ${device.name}...`);
+    log(`Applying ${setting} to ${device.name}...`);
 
-            const jobs = [];
-            if (setting === null) {
-                jobs.push(device.setCapabilityValue('onoff', false)
-                  .then(() => log(`OK: ${device.name} off`))
-                  .catch(error => log(`Error: ${device.name} off: ${error}`)));
-                //log(`capabilities: ${device.capabilities}`)
-            } else if (setting === true || setting === false) {
-                jobs.push(device.setCapabilityValue('onoff', setting)
-                  .then(() => log(`OK: ${device.name} ${setting ? 'on' : 'off'}`))
-                  .catch(error => log(`Error: ${device.name} ${setting ? 'on' : 'off'}: ${error}`)));
-                //log(`capabilities: ${device.capabilities}`)
-            } else if (setting.length == 3) {
-                const [h, s, l] = setting;
-                jobs.push(setCapabilityFloat(device, 'light_hue', h));
-                jobs.push(setCapabilityFloat(device, 'light_saturation', s));
-                jobs.push(setCapabilityFloat(device, 'dim', l));
-                //log(`capabilities: ${device.capabilities}`)
-            } else if (setting.length == 2) {
-                const [l, t] = setting;
-                jobs.push(setCapabilityFloat(device, 'light_temperature', t));
-                jobs.push(setCapabilityFloat(device, 'dim', l));
-            } else if (setting.length == 1) {
-                const [l] = setting;
-                jobs.push(setCapabilityFloat(device, 'dim', l));
-            }
-
-            resolve(Promise.all(jobs));
-        });
+    if (setting === null) {
+        await setOnOff(device, false)
+    } else if (setting === true || setting === false) {
+        await setOnOff(setting);
+    } else if (setting.length == 3) {
+        const [h, s, l] = setting;
+        await setOnOff(device, l > 0.01);
+        await setCapabilityFloat(device, 'dim', l);
+        await setCapabilityFloat(device, 'light_hue', h);
+        await setCapabilityFloat(device, 'light_saturation', s);
+        //log(`capabilities: ${device.capabilities}`)
+    } else if (setting.length == 2) {
+        const [l, t] = setting;
+        await setOnOff(device, l > 0.01);
+        await setCapabilityFloat(device, 'dim', l);
+        await setCapabilityFloat(device, 'light_temperature', t);
+    } else if (setting.length == 1) {
+        const [l] = setting;
+        await setOnOff(device, l > 0.01);
+        await setCapabilityFloat(device, 'dim', l);
+    }
 }
 
 /**
  * Apply light settings to each light in the scene.
+ * @param {lights} array of lights
  * @param {object} scene Light settings
  */
-async function applyScene(scene) {
-    return Homey.devices.getDevices()
-        .then(devices => {
-            const jobs = [];
+async function applyScene(lights, scene) {
+    const jobs = [];
 
-            for (const device of Object.values(devices)) {
-                // If this device is a light (class)
-                // Or this is a 'What's plugged in?'-light (virtualClass)
-                if (device.class === 'light' || device.virtualClass === 'light') {
-                    const setting = scene[device.name]
-                    if (setting === undefined) {
-                        continue;
-                    }
-                
-                    jobs.push(applySetting(device, setting));
-                }
-            }
+    for (const device of lights) {
+        const setting = scene[device.name]
+        if (setting === undefined) {
+            continue;
+        }
+    
+        jobs.push(applySetting(device, setting));
+    }
 
-            log('Waiting for jobs...');
-            return Promise.all(jobs);        
-        })
-        .then(() => log('Done!'));
+    await Promise.all(jobs);
+
+    log('Done!');
+}
+
+async function getLights() {
+    const devices = await Homey.devices.getDevices();
+    const lights = [];
+
+    for (const device of Object.values(devices)) {
+        // If this device is a light (class)
+        // Or this is a 'What's plugged in?'-light (virtualClass)
+        if (device.class === 'light' || device.virtualClass === 'light') {
+            lights.push(device);
+        }                
+    }
+
+    return lights;
 }
 
 /**
@@ -363,7 +379,7 @@ log('Flattened scene stack is ', final);
 
 await applyScene(final);
 
-/**
+/**/
 
 // Actual
 
@@ -383,15 +399,31 @@ log('Priorities is ', priorities);
 const final = flattenStack(stack, priorities)
 log('Flattened scene stack is ', final);
 
-const arrangement = await getSceneArrangement();
-const stages = getSceneOrdering(final, arrangement);
-// Apply stages with a small delay after, except the last one.
-const jobs = [];
-stageTime = 0
-for (const stage of stages) {    
-    jobs.push(wait(stageTime)
-        .then(async () => await applyScene(stage)));
-    stageTime += 200;
+const sleep = (durationMs) => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), durationMs);
+  });
 }
-await Promise.all(jobs);
+
+const lights = await getLights();
+if (false) {
+    await applyScene(lights, final);
+} else {
+    const arrangement = await getSceneArrangement();
+    const stages = getSceneOrdering(final, arrangement);
+    // Apply stages with a small delay after, except the last one.
+    const jobs = [];
+    stageTime = 0
+    for (const stage of stages) { 
+        const applyStage = async () => {
+            await wait(stageTime);
+            log(`Stage at ${stageTime} ms`, stage);
+            await applyScene(lights, stage);
+        }
+        jobs.push(applyStage());
+        stageTime += 200;
+    }
+    log(`made ${jobs.length} jobs`);
+    await Promise.all(jobs);
+}
 /**/
