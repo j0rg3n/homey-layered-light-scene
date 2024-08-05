@@ -12,6 +12,10 @@ test('rgb string to vector: red', () => {
     expect(util.getRgbVectorFromRgbString('ff0000')).toEqual([1, 0, 0]);
 });
 
+test('rgb string to vector: blue', () => {
+    expect(util.getRgbVectorFromRgbString('0000ff')).toEqual([0, 0, 1]);
+});
+
 test('rgb string to vector: purple', () => {
     expect(util.getRgbVectorFromRgbString('FF0033')).toEqual([1, 0, .2]);
 });
@@ -28,6 +32,10 @@ test('red to hsl', () => {
     expect(util.getHueSaturationLightnessFromRgb([1, 0, 0])).toEqual([0, 1, .5]);
 });
 
+test('blue to hsl', () => {
+    expect(util.getHueSaturationLightnessFromRgb([0, 0, 1])).toEqual([.66, 1, .5]);
+});
+
 test('basic, named scene from string', () => {
     const [name, sceneString] = util.getNamedSceneFromString('døgn: alice:ff0000 bob:ff claire:null dave:00ff');
     const scene = util.getSceneFromString(sceneString);
@@ -38,6 +46,34 @@ test('basic, named scene from string', () => {
         claire: null,
         dave: [0, 1]
     });
+});
+
+test('basic, named scene from string, w/o spaces', () => {
+    const [name, sceneString] = util.getNamedSceneFromString('effekt:alice:ff0000 bob:ff claire:null dave:00ff');
+    const scene = util.getSceneFromString(sceneString);
+    expect(name).toBe('effekt');
+    expect(scene).toEqual({
+        alice: [0, 1, .5],
+        bob: [1],
+        claire: null,
+        dave: [0, 1]
+    });
+});
+
+test('single-entry, named scene from string, w/o spaces', () => {
+    const [name, sceneString] = util.getNamedSceneFromString('effekt:Luftballong:0000ff');
+    const scene = util.getSceneFromString(sceneString);
+    expect(name).toBe('effekt');
+    expect(scene).toEqual({
+        Luftballong: [0, 0, 1]
+    });
+});
+
+test('empty, named scene from string, w/o spaces', () => {
+    const [name, sceneString] = util.getNamedSceneFromString('effekt:');
+    const scene = util.getSceneFromString(sceneString);
+    expect(name).toBe('effekt');
+    expect(scene).toEqual({});
 });
 
 test('basic scene from string', () => {

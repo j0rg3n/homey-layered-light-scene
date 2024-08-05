@@ -69,7 +69,7 @@ function flattenStack(stack, priorities) {
  * @returns {array} Scene name, then the scene string.
  */
 function getNamedSceneFromString(namedSceneString) {
-    const matches = namedSceneString.match(/\s*(\S+)\s*:(.+)/);
+    const matches = namedSceneString.match(/\s*(\S+?)\s*:(.*)/);
     const name = matches[1];
     const sceneString = matches[2];
     return [name, sceneString];
@@ -166,7 +166,8 @@ function getHueSaturationLightnessFromRgb(rgb) {
         s = d / (1 - Math.abs(2 * l - 1));
     }
 
-    return [h, s, l];
+    // normalize hue to [0, 1]
+    return [h / 360, s, l];
 }
 
 // -----------------
@@ -365,9 +366,9 @@ async function getLights() {
 // TEST
 
 const stack = {}
-stack['døgn'] = 'Taklys Stue:ff00'
+//stack['døgn'] = 'Taklys Stue:ff00'
 //stack['døgn'] = 'Skrivebord Stue:null'
-//stack['effect'] = 'Skrivebord Stue:88'
+stack['effekt'] = 'Luftballong:0000ff'
 log('Stack is ', stack);
 
 const priorities = await getScenePriorities();
@@ -376,7 +377,8 @@ log('Priorities is ', priorities);
 const final = flattenStack(stack, priorities)
 log('Flattened scene stack is ', final);
 
-await applyScene(final);
+const lights = await getLights();
+await applyScene(lights, final);
 
 /**/
 
