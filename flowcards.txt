@@ -1,0 +1,9507 @@
+===========
+And-cards:
+===========
+[[flow]] er !{{aktivert|deaktivert}}
+{
+  "id": "homey:manager:flow:is_enabled",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "flow",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Bekreft [[text]] med [[user]]
+{
+  "id": "homey:manager:mobile:push_confirm",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": "Bruker",
+      "placeholder": "Velg en bruker ..."
+    },
+    {
+      "type": "text",
+      "name": "text",
+      "title": "Spørsmål",
+      "placeholder": "Må Flowen fortsette?"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+[[droptoken]] er !{{|ikke}} nøyaktig [[comparator]]
+{
+  "id": "homey:manager:logic:equal",
+  "args": [
+    {
+      "type": "text",
+      "name": "comparator",
+      "title": "Verdi",
+      "placeholder": null
+    }
+  ],
+  "droptoken": [
+    "string",
+    "number"
+  ]
+}
+-----------
+[[droptoken]] er lik !{{`ja`|`nei`}}
+{
+  "id": "homey:manager:logic:equal_boolean",
+  "args": null,
+  "droptoken": [
+    "boolean"
+  ]
+}
+-----------
+Alarmen [[alarm]] er !{{aktivert|deaktivert}}
+{
+  "id": "homey:manager:alarms:is_enabled",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "alarm",
+      "title": "Alarm",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Klokken er !{{|ikke}} mellom [[time1]] og [[time2]]
+{
+  "id": "homey:manager:cron:time_between",
+  "args": [
+    {
+      "type": "time",
+      "placeholder": null,
+      "name": "time1",
+      "title": null
+    },
+    {
+      "type": "time",
+      "placeholder": null,
+      "name": "time2",
+      "title": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+[[droptoken]] !{{inneholder|inneholder ikke}} [[comparator]]
+{
+  "id": "homey:manager:logic:contains",
+  "args": [
+    {
+      "type": "text",
+      "name": "comparator",
+      "title": "Verdi",
+      "placeholder": null
+    }
+  ],
+  "droptoken": [
+    "string"
+  ]
+}
+-----------
+I dag er !{{|ikke}} [[date]]
+{
+  "id": "homey:manager:cron:date_equals",
+  "args": [
+    {
+      "type": "date",
+      "placeholder": null,
+      "name": "date",
+      "title": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+[[droptoken]] er !{{|ikke}} mindre enn [[comparator]]
+{
+  "id": "homey:manager:logic:lt",
+  "args": [
+    {
+      "type": "number",
+      "name": "comparator",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": [
+    "number"
+  ]
+}
+-----------
+Datoen er !{{|ikke}} mellom [[date1]] og [[date2]]
+{
+  "id": "homey:manager:cron:date_between",
+  "args": [
+    {
+      "type": "date",
+      "placeholder": null,
+      "name": "date1",
+      "title": null
+    },
+    {
+      "type": "date",
+      "placeholder": null,
+      "name": "date2",
+      "title": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+[[droptoken]] er !{{|ikke}} større enn [[comparator]]
+{
+  "id": "homey:manager:logic:gt",
+  "args": [
+    {
+      "type": "number",
+      "name": "comparator",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": [
+    "number"
+  ]
+}
+-----------
+Dagen og måneden er !{{|ikke}}[[day]] [[month]]
+{
+  "id": "homey:manager:cron:day_month_equals",
+  "args": [
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "1"
+        },
+        {
+          "id": "2",
+          "title": "2"
+        },
+        {
+          "id": "3",
+          "title": "3"
+        },
+        {
+          "id": "4",
+          "title": "4"
+        },
+        {
+          "id": "5",
+          "title": "5"
+        },
+        {
+          "id": "6",
+          "title": "6"
+        },
+        {
+          "id": "7",
+          "title": "7"
+        },
+        {
+          "id": "8",
+          "title": "8"
+        },
+        {
+          "id": "9",
+          "title": "9"
+        },
+        {
+          "id": "10",
+          "title": "10"
+        },
+        {
+          "id": "11",
+          "title": "11"
+        },
+        {
+          "id": "12",
+          "title": "12"
+        },
+        {
+          "id": "13",
+          "title": "13"
+        },
+        {
+          "id": "14",
+          "title": "14"
+        },
+        {
+          "id": "15",
+          "title": "15"
+        },
+        {
+          "id": "16",
+          "title": "16"
+        },
+        {
+          "id": "17",
+          "title": "17"
+        },
+        {
+          "id": "18",
+          "title": "18"
+        },
+        {
+          "id": "19",
+          "title": "19"
+        },
+        {
+          "id": "20",
+          "title": "20"
+        },
+        {
+          "id": "21",
+          "title": "21"
+        },
+        {
+          "id": "22",
+          "title": "22"
+        },
+        {
+          "id": "23",
+          "title": "23"
+        },
+        {
+          "id": "24",
+          "title": "24"
+        },
+        {
+          "id": "25",
+          "title": "25"
+        },
+        {
+          "id": "26",
+          "title": "26"
+        },
+        {
+          "id": "27",
+          "title": "27"
+        },
+        {
+          "id": "28",
+          "title": "28"
+        },
+        {
+          "id": "29",
+          "title": "29"
+        },
+        {
+          "id": "30",
+          "title": "30"
+        },
+        {
+          "id": "31",
+          "title": "31"
+        }
+      ],
+      "name": "day",
+      "title": null,
+      "placeholder": null
+    },
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "Januar"
+        },
+        {
+          "id": "2",
+          "title": "Februar"
+        },
+        {
+          "id": "3",
+          "title": "Mars"
+        },
+        {
+          "id": "4",
+          "title": "April"
+        },
+        {
+          "id": "5",
+          "title": "Mai"
+        },
+        {
+          "id": "6",
+          "title": "Juni"
+        },
+        {
+          "id": "7",
+          "title": "Juli"
+        },
+        {
+          "id": "8",
+          "title": "August"
+        },
+        {
+          "id": "9",
+          "title": "September"
+        },
+        {
+          "id": "10",
+          "title": "Oktober"
+        },
+        {
+          "id": "11",
+          "title": "November"
+        },
+        {
+          "id": "12",
+          "title": "Desember"
+        }
+      ],
+      "name": "month",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Fortsett med en sannsynlighet på [[chance]] %
+{
+  "id": "homey:manager:logic:random",
+  "args": [
+    {
+      "type": "number",
+      "min": 0,
+      "max": 100,
+      "name": "chance",
+      "title": "Sannsynlighet",
+      "placeholder": "50 % sannsynlighet for å fortsette"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+I dag er !{{|ikke}} en [[day]]
+{
+  "id": "homey:manager:cron:day_equals",
+  "args": [
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "0",
+          "title": "Søndag"
+        },
+        {
+          "id": "1",
+          "title": "Mandag"
+        },
+        {
+          "id": "2",
+          "title": "Tirsdag"
+        },
+        {
+          "id": "3",
+          "title": "Onsdag"
+        },
+        {
+          "id": "4",
+          "title": "Torsdag"
+        },
+        {
+          "id": "5",
+          "title": "Fredag"
+        },
+        {
+          "id": "6",
+          "title": "Lørdag"
+        },
+        {
+          "id": "weekday",
+          "title": "Ukedag"
+        },
+        {
+          "id": "weekend",
+          "title": "Helgedag"
+        }
+      ],
+      "name": "day",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+[[value1]] [[operator]] [[value2]] er !{{sann|usann}}
+{
+  "id": "homey:manager:logic:equation",
+  "args": [
+    {
+      "type": "text",
+      "name": "value1",
+      "title": null,
+      "placeholder": "Verdi 1"
+    },
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "eq",
+          "title": "er lik"
+        },
+        {
+          "id": "neq",
+          "title": "er ikke"
+        },
+        {
+          "id": "lt",
+          "title": "er mindre enn"
+        },
+        {
+          "id": "gt",
+          "title": "er større enn"
+        },
+        {
+          "id": "lte",
+          "title": "er mindre eller lik"
+        },
+        {
+          "id": "gte",
+          "title": "er større eller lik"
+        }
+      ],
+      "name": "operator",
+      "title": "Operator",
+      "placeholder": null
+    },
+    {
+      "type": "text",
+      "name": "value2",
+      "title": null,
+      "placeholder": "Verdi 2"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Dagen er !{{|ikke}} mellom [[value1]] og [[value2]]
+{
+  "id": "homey:manager:cron:day_between",
+  "args": [
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "Mandag"
+        },
+        {
+          "id": "2",
+          "title": "Tirsdag"
+        },
+        {
+          "id": "3",
+          "title": "Onsdag"
+        },
+        {
+          "id": "4",
+          "title": "Torsdag"
+        },
+        {
+          "id": "5",
+          "title": "Fredag"
+        },
+        {
+          "id": "6",
+          "title": "Lørdag"
+        },
+        {
+          "id": "7",
+          "title": "Søndag"
+        }
+      ],
+      "name": "value1",
+      "title": null,
+      "placeholder": null
+    },
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "Mandag"
+        },
+        {
+          "id": "2",
+          "title": "Tirsdag"
+        },
+        {
+          "id": "3",
+          "title": "Onsdag"
+        },
+        {
+          "id": "4",
+          "title": "Torsdag"
+        },
+        {
+          "id": "5",
+          "title": "Fredag"
+        },
+        {
+          "id": "6",
+          "title": "Lørdag"
+        },
+        {
+          "id": "7",
+          "title": "Søndag"
+        }
+      ],
+      "name": "value2",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Statuskoden for en HTTP [[method]]-forespørsel til [[url]] med overskrifter [[headers]] og brødtekst [[body]] er !{{lik|ikke lik}} [[status]]
+{
+  "id": "homey:manager:logic:http_status_code_equals",
+  "args": [
+    {
+      "type": "dropdown",
+      "title": "Metode",
+      "values": [
+        {
+          "id": "get",
+          "title": "GET"
+        },
+        {
+          "id": "post",
+          "title": "POST"
+        },
+        {
+          "id": "put",
+          "title": "PUT"
+        },
+        {
+          "id": "delete",
+          "title": "DELETE"
+        }
+      ],
+      "name": "method",
+      "placeholder": null
+    },
+    {
+      "type": "text",
+      "title": "URL",
+      "name": "url",
+      "placeholder": null
+    },
+    {
+      "type": "text",
+      "title": "Overskrifter",
+      "placeholder": null,
+      "required": false,
+      "name": "headers"
+    },
+    {
+      "type": "text",
+      "title": "Brødtekst",
+      "required": false,
+      "placeholder": null,
+      "name": "body"
+    },
+    {
+      "type": "number",
+      "min": 100,
+      "max": 599,
+      "placeholder": null,
+      "name": "status",
+      "title": "Status"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Klokken er !{{|ikke}} tidligere enn [[time]]
+{
+  "id": "homey:manager:cron:time_lt",
+  "args": [
+    {
+      "type": "time",
+      "placeholder": null,
+      "name": "time",
+      "title": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Klokken er !{{|ikke}} senere enn [[time]]
+{
+  "id": "homey:manager:cron:time_gt",
+  "args": [
+    {
+      "type": "time",
+      "placeholder": null,
+      "name": "time",
+      "title": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Dagen i måneden er !{{|ikke}} [[day]]
+{
+  "id": "homey:manager:cron:day_number",
+  "args": [
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "1"
+        },
+        {
+          "id": "2",
+          "title": "2"
+        },
+        {
+          "id": "3",
+          "title": "3"
+        },
+        {
+          "id": "4",
+          "title": "4"
+        },
+        {
+          "id": "5",
+          "title": "5"
+        },
+        {
+          "id": "6",
+          "title": "6"
+        },
+        {
+          "id": "7",
+          "title": "7"
+        },
+        {
+          "id": "8",
+          "title": "8"
+        },
+        {
+          "id": "9",
+          "title": "9"
+        },
+        {
+          "id": "10",
+          "title": "10"
+        },
+        {
+          "id": "11",
+          "title": "11"
+        },
+        {
+          "id": "12",
+          "title": "12"
+        },
+        {
+          "id": "13",
+          "title": "13"
+        },
+        {
+          "id": "14",
+          "title": "14"
+        },
+        {
+          "id": "15",
+          "title": "15"
+        },
+        {
+          "id": "16",
+          "title": "16"
+        },
+        {
+          "id": "17",
+          "title": "17"
+        },
+        {
+          "id": "18",
+          "title": "18"
+        },
+        {
+          "id": "19",
+          "title": "19"
+        },
+        {
+          "id": "20",
+          "title": "20"
+        },
+        {
+          "id": "21",
+          "title": "21"
+        },
+        {
+          "id": "22",
+          "title": "22"
+        },
+        {
+          "id": "23",
+          "title": "23"
+        },
+        {
+          "id": "24",
+          "title": "24"
+        },
+        {
+          "id": "25",
+          "title": "25"
+        },
+        {
+          "id": "26",
+          "title": "26"
+        },
+        {
+          "id": "27",
+          "title": "27"
+        },
+        {
+          "id": "28",
+          "title": "28"
+        },
+        {
+          "id": "29",
+          "title": "29"
+        },
+        {
+          "id": "30",
+          "title": "30"
+        },
+        {
+          "id": "31",
+          "title": "31"
+        }
+      ],
+      "name": "day",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+[[user]] er !{{|ikke}} hjemme
+{
+  "id": "homey:manager:presence:user_athome",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Dagsnummeret er !{{|ikke}} mellom [[value1]] og [[value2]]
+{
+  "id": "homey:manager:cron:day_number_between",
+  "args": [
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "1"
+        },
+        {
+          "id": "2",
+          "title": "2"
+        },
+        {
+          "id": "3",
+          "title": "3"
+        },
+        {
+          "id": "4",
+          "title": "4"
+        },
+        {
+          "id": "5",
+          "title": "5"
+        },
+        {
+          "id": "6",
+          "title": "6"
+        },
+        {
+          "id": "7",
+          "title": "7"
+        },
+        {
+          "id": "8",
+          "title": "8"
+        },
+        {
+          "id": "9",
+          "title": "9"
+        },
+        {
+          "id": "10",
+          "title": "10"
+        },
+        {
+          "id": "11",
+          "title": "11"
+        },
+        {
+          "id": "12",
+          "title": "12"
+        },
+        {
+          "id": "13",
+          "title": "13"
+        },
+        {
+          "id": "14",
+          "title": "14"
+        },
+        {
+          "id": "15",
+          "title": "15"
+        },
+        {
+          "id": "16",
+          "title": "16"
+        },
+        {
+          "id": "17",
+          "title": "17"
+        },
+        {
+          "id": "18",
+          "title": "18"
+        },
+        {
+          "id": "19",
+          "title": "19"
+        },
+        {
+          "id": "20",
+          "title": "20"
+        },
+        {
+          "id": "21",
+          "title": "21"
+        },
+        {
+          "id": "22",
+          "title": "22"
+        },
+        {
+          "id": "23",
+          "title": "23"
+        },
+        {
+          "id": "24",
+          "title": "24"
+        },
+        {
+          "id": "25",
+          "title": "25"
+        },
+        {
+          "id": "26",
+          "title": "26"
+        },
+        {
+          "id": "27",
+          "title": "27"
+        },
+        {
+          "id": "28",
+          "title": "28"
+        },
+        {
+          "id": "29",
+          "title": "29"
+        },
+        {
+          "id": "30",
+          "title": "30"
+        },
+        {
+          "id": "31",
+          "title": "31"
+        }
+      ],
+      "name": "value1",
+      "title": null,
+      "placeholder": null
+    },
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "1"
+        },
+        {
+          "id": "2",
+          "title": "2"
+        },
+        {
+          "id": "3",
+          "title": "3"
+        },
+        {
+          "id": "4",
+          "title": "4"
+        },
+        {
+          "id": "5",
+          "title": "5"
+        },
+        {
+          "id": "6",
+          "title": "6"
+        },
+        {
+          "id": "7",
+          "title": "7"
+        },
+        {
+          "id": "8",
+          "title": "8"
+        },
+        {
+          "id": "9",
+          "title": "9"
+        },
+        {
+          "id": "10",
+          "title": "10"
+        },
+        {
+          "id": "11",
+          "title": "11"
+        },
+        {
+          "id": "12",
+          "title": "12"
+        },
+        {
+          "id": "13",
+          "title": "13"
+        },
+        {
+          "id": "14",
+          "title": "14"
+        },
+        {
+          "id": "15",
+          "title": "15"
+        },
+        {
+          "id": "16",
+          "title": "16"
+        },
+        {
+          "id": "17",
+          "title": "17"
+        },
+        {
+          "id": "18",
+          "title": "18"
+        },
+        {
+          "id": "19",
+          "title": "19"
+        },
+        {
+          "id": "20",
+          "title": "20"
+        },
+        {
+          "id": "21",
+          "title": "21"
+        },
+        {
+          "id": "22",
+          "title": "22"
+        },
+        {
+          "id": "23",
+          "title": "23"
+        },
+        {
+          "id": "24",
+          "title": "24"
+        },
+        {
+          "id": "25",
+          "title": "25"
+        },
+        {
+          "id": "26",
+          "title": "26"
+        },
+        {
+          "id": "27",
+          "title": "27"
+        },
+        {
+          "id": "28",
+          "title": "28"
+        },
+        {
+          "id": "29",
+          "title": "29"
+        },
+        {
+          "id": "30",
+          "title": "30"
+        },
+        {
+          "id": "31",
+          "title": "31"
+        }
+      ],
+      "name": "value2",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Ingen|Noen}} er hjemme
+{
+  "id": "homey:manager:presence:noone_athome",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Månedsslutt er !{{|ikke}} [[offset]]
+{
+  "id": "homey:manager:cron:until_month_end",
+  "args": [
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        },
+        {
+          "id": "2",
+          "title": "i overmorgen"
+        },
+        {
+          "id": "3",
+          "title": "om 3 dager"
+        },
+        {
+          "id": "4",
+          "title": "om 4 dager"
+        },
+        {
+          "id": "5",
+          "title": "om 5 dager"
+        },
+        {
+          "id": "6",
+          "title": "om 6 dager"
+        },
+        {
+          "id": "7",
+          "title": "om 7 dager"
+        },
+        {
+          "id": "8",
+          "title": "om 8 dager"
+        },
+        {
+          "id": "9",
+          "title": "om 9 dager"
+        },
+        {
+          "id": "10",
+          "title": "om 10 dager"
+        },
+        {
+          "id": "11",
+          "title": "om 11 dager"
+        },
+        {
+          "id": "12",
+          "title": "om 12 dager"
+        },
+        {
+          "id": "13",
+          "title": "om 13 dager"
+        },
+        {
+          "id": "14",
+          "title": "om 14 dager"
+        },
+        {
+          "id": "15",
+          "title": "om 15 dager"
+        },
+        {
+          "id": "16",
+          "title": "om 16 dager"
+        },
+        {
+          "id": "17",
+          "title": "om 17 dager"
+        },
+        {
+          "id": "18",
+          "title": "om 18 dager"
+        },
+        {
+          "id": "19",
+          "title": "om 19 dager"
+        },
+        {
+          "id": "20",
+          "title": "om 20 dager"
+        },
+        {
+          "id": "21",
+          "title": "om 21 dager"
+        },
+        {
+          "id": "22",
+          "title": "om 22 dager"
+        },
+        {
+          "id": "23",
+          "title": "om 23 dager"
+        },
+        {
+          "id": "24",
+          "title": "om 24 dager"
+        },
+        {
+          "id": "25",
+          "title": "om 25 dager"
+        },
+        {
+          "id": "26",
+          "title": "om 26 dager"
+        },
+        {
+          "id": "27",
+          "title": "om 27 dager"
+        },
+        {
+          "id": "28",
+          "title": "om 28 dager"
+        }
+      ],
+      "name": "offset",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+[[user]] sover !{{|ikke}}
+{
+  "id": "homey:manager:presence:user_asleep",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Ukenummeret er !{{|ikke}} [[week]]
+{
+  "id": "homey:manager:cron:week_number",
+  "args": [
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "1"
+        },
+        {
+          "id": "2",
+          "title": "2"
+        },
+        {
+          "id": "3",
+          "title": "3"
+        },
+        {
+          "id": "4",
+          "title": "4"
+        },
+        {
+          "id": "5",
+          "title": "5"
+        },
+        {
+          "id": "6",
+          "title": "6"
+        },
+        {
+          "id": "7",
+          "title": "7"
+        },
+        {
+          "id": "8",
+          "title": "8"
+        },
+        {
+          "id": "9",
+          "title": "9"
+        },
+        {
+          "id": "10",
+          "title": "10"
+        },
+        {
+          "id": "11",
+          "title": "11"
+        },
+        {
+          "id": "12",
+          "title": "12"
+        },
+        {
+          "id": "13",
+          "title": "13"
+        },
+        {
+          "id": "14",
+          "title": "14"
+        },
+        {
+          "id": "15",
+          "title": "15"
+        },
+        {
+          "id": "16",
+          "title": "16"
+        },
+        {
+          "id": "17",
+          "title": "17"
+        },
+        {
+          "id": "18",
+          "title": "18"
+        },
+        {
+          "id": "19",
+          "title": "19"
+        },
+        {
+          "id": "20",
+          "title": "20"
+        },
+        {
+          "id": "21",
+          "title": "21"
+        },
+        {
+          "id": "22",
+          "title": "22"
+        },
+        {
+          "id": "23",
+          "title": "23"
+        },
+        {
+          "id": "24",
+          "title": "24"
+        },
+        {
+          "id": "25",
+          "title": "25"
+        },
+        {
+          "id": "26",
+          "title": "26"
+        },
+        {
+          "id": "27",
+          "title": "27"
+        },
+        {
+          "id": "28",
+          "title": "28"
+        },
+        {
+          "id": "29",
+          "title": "29"
+        },
+        {
+          "id": "30",
+          "title": "30"
+        },
+        {
+          "id": "31",
+          "title": "31"
+        },
+        {
+          "id": "32",
+          "title": "32"
+        },
+        {
+          "id": "33",
+          "title": "33"
+        },
+        {
+          "id": "34",
+          "title": "34"
+        },
+        {
+          "id": "35",
+          "title": "35"
+        },
+        {
+          "id": "36",
+          "title": "36"
+        },
+        {
+          "id": "37",
+          "title": "37"
+        },
+        {
+          "id": "38",
+          "title": "38"
+        },
+        {
+          "id": "39",
+          "title": "39"
+        },
+        {
+          "id": "40",
+          "title": "40"
+        },
+        {
+          "id": "41",
+          "title": "41"
+        },
+        {
+          "id": "42",
+          "title": "42"
+        },
+        {
+          "id": "43",
+          "title": "43"
+        },
+        {
+          "id": "44",
+          "title": "44"
+        },
+        {
+          "id": "45",
+          "title": "45"
+        },
+        {
+          "id": "46",
+          "title": "46"
+        },
+        {
+          "id": "47",
+          "title": "47"
+        },
+        {
+          "id": "48",
+          "title": "48"
+        },
+        {
+          "id": "49",
+          "title": "49"
+        },
+        {
+          "id": "50",
+          "title": "50"
+        },
+        {
+          "id": "51",
+          "title": "51"
+        },
+        {
+          "id": "52",
+          "title": "52"
+        },
+        {
+          "id": "53",
+          "title": "53"
+        }
+      ],
+      "name": "week",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Ingen|Noen}} sover
+{
+  "id": "homey:manager:presence:noone_asleep",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Ukenummeret er !{{|ikke}} mellom [[value1]] og [[value2]]
+{
+  "id": "homey:manager:cron:week_number_between",
+  "args": [
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "1"
+        },
+        {
+          "id": "2",
+          "title": "2"
+        },
+        {
+          "id": "3",
+          "title": "3"
+        },
+        {
+          "id": "4",
+          "title": "4"
+        },
+        {
+          "id": "5",
+          "title": "5"
+        },
+        {
+          "id": "6",
+          "title": "6"
+        },
+        {
+          "id": "7",
+          "title": "7"
+        },
+        {
+          "id": "8",
+          "title": "8"
+        },
+        {
+          "id": "9",
+          "title": "9"
+        },
+        {
+          "id": "10",
+          "title": "10"
+        },
+        {
+          "id": "11",
+          "title": "11"
+        },
+        {
+          "id": "12",
+          "title": "12"
+        },
+        {
+          "id": "13",
+          "title": "13"
+        },
+        {
+          "id": "14",
+          "title": "14"
+        },
+        {
+          "id": "15",
+          "title": "15"
+        },
+        {
+          "id": "16",
+          "title": "16"
+        },
+        {
+          "id": "17",
+          "title": "17"
+        },
+        {
+          "id": "18",
+          "title": "18"
+        },
+        {
+          "id": "19",
+          "title": "19"
+        },
+        {
+          "id": "20",
+          "title": "20"
+        },
+        {
+          "id": "21",
+          "title": "21"
+        },
+        {
+          "id": "22",
+          "title": "22"
+        },
+        {
+          "id": "23",
+          "title": "23"
+        },
+        {
+          "id": "24",
+          "title": "24"
+        },
+        {
+          "id": "25",
+          "title": "25"
+        },
+        {
+          "id": "26",
+          "title": "26"
+        },
+        {
+          "id": "27",
+          "title": "27"
+        },
+        {
+          "id": "28",
+          "title": "28"
+        },
+        {
+          "id": "29",
+          "title": "29"
+        },
+        {
+          "id": "30",
+          "title": "30"
+        },
+        {
+          "id": "31",
+          "title": "31"
+        },
+        {
+          "id": "32",
+          "title": "32"
+        },
+        {
+          "id": "33",
+          "title": "33"
+        },
+        {
+          "id": "34",
+          "title": "34"
+        },
+        {
+          "id": "35",
+          "title": "35"
+        },
+        {
+          "id": "36",
+          "title": "36"
+        },
+        {
+          "id": "37",
+          "title": "37"
+        },
+        {
+          "id": "38",
+          "title": "38"
+        },
+        {
+          "id": "39",
+          "title": "39"
+        },
+        {
+          "id": "40",
+          "title": "40"
+        },
+        {
+          "id": "41",
+          "title": "41"
+        },
+        {
+          "id": "42",
+          "title": "42"
+        },
+        {
+          "id": "43",
+          "title": "43"
+        },
+        {
+          "id": "44",
+          "title": "44"
+        },
+        {
+          "id": "45",
+          "title": "45"
+        },
+        {
+          "id": "46",
+          "title": "46"
+        },
+        {
+          "id": "47",
+          "title": "47"
+        },
+        {
+          "id": "48",
+          "title": "48"
+        },
+        {
+          "id": "49",
+          "title": "49"
+        },
+        {
+          "id": "50",
+          "title": "50"
+        },
+        {
+          "id": "51",
+          "title": "51"
+        },
+        {
+          "id": "52",
+          "title": "52"
+        },
+        {
+          "id": "53",
+          "title": "53"
+        }
+      ],
+      "name": "value1",
+      "title": null,
+      "placeholder": null
+    },
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "1"
+        },
+        {
+          "id": "2",
+          "title": "2"
+        },
+        {
+          "id": "3",
+          "title": "3"
+        },
+        {
+          "id": "4",
+          "title": "4"
+        },
+        {
+          "id": "5",
+          "title": "5"
+        },
+        {
+          "id": "6",
+          "title": "6"
+        },
+        {
+          "id": "7",
+          "title": "7"
+        },
+        {
+          "id": "8",
+          "title": "8"
+        },
+        {
+          "id": "9",
+          "title": "9"
+        },
+        {
+          "id": "10",
+          "title": "10"
+        },
+        {
+          "id": "11",
+          "title": "11"
+        },
+        {
+          "id": "12",
+          "title": "12"
+        },
+        {
+          "id": "13",
+          "title": "13"
+        },
+        {
+          "id": "14",
+          "title": "14"
+        },
+        {
+          "id": "15",
+          "title": "15"
+        },
+        {
+          "id": "16",
+          "title": "16"
+        },
+        {
+          "id": "17",
+          "title": "17"
+        },
+        {
+          "id": "18",
+          "title": "18"
+        },
+        {
+          "id": "19",
+          "title": "19"
+        },
+        {
+          "id": "20",
+          "title": "20"
+        },
+        {
+          "id": "21",
+          "title": "21"
+        },
+        {
+          "id": "22",
+          "title": "22"
+        },
+        {
+          "id": "23",
+          "title": "23"
+        },
+        {
+          "id": "24",
+          "title": "24"
+        },
+        {
+          "id": "25",
+          "title": "25"
+        },
+        {
+          "id": "26",
+          "title": "26"
+        },
+        {
+          "id": "27",
+          "title": "27"
+        },
+        {
+          "id": "28",
+          "title": "28"
+        },
+        {
+          "id": "29",
+          "title": "29"
+        },
+        {
+          "id": "30",
+          "title": "30"
+        },
+        {
+          "id": "31",
+          "title": "31"
+        },
+        {
+          "id": "32",
+          "title": "32"
+        },
+        {
+          "id": "33",
+          "title": "33"
+        },
+        {
+          "id": "34",
+          "title": "34"
+        },
+        {
+          "id": "35",
+          "title": "35"
+        },
+        {
+          "id": "36",
+          "title": "36"
+        },
+        {
+          "id": "37",
+          "title": "37"
+        },
+        {
+          "id": "38",
+          "title": "38"
+        },
+        {
+          "id": "39",
+          "title": "39"
+        },
+        {
+          "id": "40",
+          "title": "40"
+        },
+        {
+          "id": "41",
+          "title": "41"
+        },
+        {
+          "id": "42",
+          "title": "42"
+        },
+        {
+          "id": "43",
+          "title": "43"
+        },
+        {
+          "id": "44",
+          "title": "44"
+        },
+        {
+          "id": "45",
+          "title": "45"
+        },
+        {
+          "id": "46",
+          "title": "46"
+        },
+        {
+          "id": "47",
+          "title": "47"
+        },
+        {
+          "id": "48",
+          "title": "48"
+        },
+        {
+          "id": "49",
+          "title": "49"
+        },
+        {
+          "id": "50",
+          "title": "50"
+        },
+        {
+          "id": "51",
+          "title": "51"
+        },
+        {
+          "id": "52",
+          "title": "52"
+        },
+        {
+          "id": "53",
+          "title": "53"
+        }
+      ],
+      "name": "value2",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Ukenummeret er et !{{oddetall|partall}}
+{
+  "id": "homey:manager:cron:week_number_odd",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Måneden er !{{|ikke}} [[month]]
+{
+  "id": "homey:manager:cron:month_number",
+  "args": [
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "Januar"
+        },
+        {
+          "id": "2",
+          "title": "Februar"
+        },
+        {
+          "id": "3",
+          "title": "Mars"
+        },
+        {
+          "id": "4",
+          "title": "April"
+        },
+        {
+          "id": "5",
+          "title": "Mai"
+        },
+        {
+          "id": "6",
+          "title": "Juni"
+        },
+        {
+          "id": "7",
+          "title": "Juli"
+        },
+        {
+          "id": "8",
+          "title": "August"
+        },
+        {
+          "id": "9",
+          "title": "September"
+        },
+        {
+          "id": "10",
+          "title": "Oktober"
+        },
+        {
+          "id": "11",
+          "title": "November"
+        },
+        {
+          "id": "12",
+          "title": "Desember"
+        }
+      ],
+      "name": "month",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Måneden er !{{|ikke}} mellom [[value1]] og [[value2]]
+{
+  "id": "homey:manager:cron:month_number_between",
+  "args": [
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "Januar"
+        },
+        {
+          "id": "2",
+          "title": "Februar"
+        },
+        {
+          "id": "3",
+          "title": "Mars"
+        },
+        {
+          "id": "4",
+          "title": "April"
+        },
+        {
+          "id": "5",
+          "title": "Mai"
+        },
+        {
+          "id": "6",
+          "title": "Juni"
+        },
+        {
+          "id": "7",
+          "title": "Juli"
+        },
+        {
+          "id": "8",
+          "title": "August"
+        },
+        {
+          "id": "9",
+          "title": "September"
+        },
+        {
+          "id": "10",
+          "title": "Oktober"
+        },
+        {
+          "id": "11",
+          "title": "November"
+        },
+        {
+          "id": "12",
+          "title": "Desember"
+        }
+      ],
+      "name": "value1",
+      "title": null,
+      "placeholder": null
+    },
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "Januar"
+        },
+        {
+          "id": "2",
+          "title": "Februar"
+        },
+        {
+          "id": "3",
+          "title": "Mars"
+        },
+        {
+          "id": "4",
+          "title": "April"
+        },
+        {
+          "id": "5",
+          "title": "Mai"
+        },
+        {
+          "id": "6",
+          "title": "Juni"
+        },
+        {
+          "id": "7",
+          "title": "Juli"
+        },
+        {
+          "id": "8",
+          "title": "August"
+        },
+        {
+          "id": "9",
+          "title": "September"
+        },
+        {
+          "id": "10",
+          "title": "Oktober"
+        },
+        {
+          "id": "11",
+          "title": "November"
+        },
+        {
+          "id": "12",
+          "title": "Desember"
+        }
+      ],
+      "name": "value2",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Året er !{{|ikke}} [[year]]
+{
+  "id": "homey:manager:cron:year_number",
+  "args": [
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "2020",
+          "title": "2020"
+        },
+        {
+          "id": "2021",
+          "title": "2021"
+        },
+        {
+          "id": "2022",
+          "title": "2022"
+        },
+        {
+          "id": "2023",
+          "title": "2023"
+        },
+        {
+          "id": "2024",
+          "title": "2024"
+        },
+        {
+          "id": "2025",
+          "title": "2025"
+        },
+        {
+          "id": "2026",
+          "title": "2026"
+        },
+        {
+          "id": "2027",
+          "title": "2027"
+        },
+        {
+          "id": "2028",
+          "title": "2028"
+        },
+        {
+          "id": "2029",
+          "title": "2029"
+        },
+        {
+          "id": "2030",
+          "title": "2030"
+        },
+        {
+          "id": "2031",
+          "title": "2031"
+        },
+        {
+          "id": "2032",
+          "title": "2032"
+        },
+        {
+          "id": "2033",
+          "title": "2033"
+        },
+        {
+          "id": "2034",
+          "title": "2034"
+        },
+        {
+          "id": "2035",
+          "title": "2035"
+        },
+        {
+          "id": "2036",
+          "title": "2036"
+        },
+        {
+          "id": "2037",
+          "title": "2037"
+        },
+        {
+          "id": "2038",
+          "title": "2038"
+        },
+        {
+          "id": "2039",
+          "title": "2039"
+        }
+      ],
+      "name": "year",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Året er !{{|ikke}} mellom [[value1]] og [[value2]]
+{
+  "id": "homey:manager:cron:year_number_between",
+  "args": [
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "2020",
+          "title": "2020"
+        },
+        {
+          "id": "2021",
+          "title": "2021"
+        },
+        {
+          "id": "2022",
+          "title": "2022"
+        },
+        {
+          "id": "2023",
+          "title": "2023"
+        },
+        {
+          "id": "2024",
+          "title": "2024"
+        },
+        {
+          "id": "2025",
+          "title": "2025"
+        },
+        {
+          "id": "2026",
+          "title": "2026"
+        },
+        {
+          "id": "2027",
+          "title": "2027"
+        },
+        {
+          "id": "2028",
+          "title": "2028"
+        },
+        {
+          "id": "2029",
+          "title": "2029"
+        },
+        {
+          "id": "2030",
+          "title": "2030"
+        },
+        {
+          "id": "2031",
+          "title": "2031"
+        },
+        {
+          "id": "2032",
+          "title": "2032"
+        },
+        {
+          "id": "2033",
+          "title": "2033"
+        },
+        {
+          "id": "2034",
+          "title": "2034"
+        },
+        {
+          "id": "2035",
+          "title": "2035"
+        },
+        {
+          "id": "2036",
+          "title": "2036"
+        },
+        {
+          "id": "2037",
+          "title": "2037"
+        },
+        {
+          "id": "2038",
+          "title": "2038"
+        },
+        {
+          "id": "2039",
+          "title": "2039"
+        }
+      ],
+      "name": "value1",
+      "title": null,
+      "placeholder": null
+    },
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "2020",
+          "title": "2020"
+        },
+        {
+          "id": "2021",
+          "title": "2021"
+        },
+        {
+          "id": "2022",
+          "title": "2022"
+        },
+        {
+          "id": "2023",
+          "title": "2023"
+        },
+        {
+          "id": "2024",
+          "title": "2024"
+        },
+        {
+          "id": "2025",
+          "title": "2025"
+        },
+        {
+          "id": "2026",
+          "title": "2026"
+        },
+        {
+          "id": "2027",
+          "title": "2027"
+        },
+        {
+          "id": "2028",
+          "title": "2028"
+        },
+        {
+          "id": "2029",
+          "title": "2029"
+        },
+        {
+          "id": "2030",
+          "title": "2030"
+        },
+        {
+          "id": "2031",
+          "title": "2031"
+        },
+        {
+          "id": "2032",
+          "title": "2032"
+        },
+        {
+          "id": "2033",
+          "title": "2033"
+        },
+        {
+          "id": "2034",
+          "title": "2034"
+        },
+        {
+          "id": "2035",
+          "title": "2035"
+        },
+        {
+          "id": "2036",
+          "title": "2036"
+        },
+        {
+          "id": "2037",
+          "title": "2037"
+        },
+        {
+          "id": "2038",
+          "title": "2038"
+        },
+        {
+          "id": "2039",
+          "title": "2039"
+        }
+      ],
+      "name": "value2",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Årstiden er !{{|ikke}} [[season]]
+{
+  "id": "homey:manager:cron:season",
+  "args": [
+    {
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "spring",
+          "title": "Vår"
+        },
+        {
+          "id": "summer",
+          "title": "Sommer"
+        },
+        {
+          "id": "fall",
+          "title": "Høst"
+        },
+        {
+          "id": "winter",
+          "title": "Vinter"
+        }
+      ],
+      "name": "season",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Det er !{{etter|før}} solnedgang
+{
+  "id": "homey:manager:cron:after_sunset",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Det er !{{etter|før}} soloppgang
+{
+  "id": "homey:manager:cron:after_sunrise",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Det er !{{dag|natt}}
+{
+  "id": "homey:manager:cron:daytime",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Sonen er !{{aktiv|inaktiv}}
+{
+  "id": "homey:zone:2560ff90-ff21-489e-9fb4-9f7039f4987e:is_active",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Sonen er !{{aktiv|inaktiv}}
+{
+  "id": "homey:zone:4064e39d-6c1e-4540-a980-575ae5d0693a:is_active",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Sonen er !{{aktiv|inaktiv}}
+{
+  "id": "homey:zone:5d768e33-daf8-4929-b956-c85db4fe1dbc:is_active",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Sonen er !{{aktiv|inaktiv}}
+{
+  "id": "homey:zone:6103eec6-868f-4983-ac8a-a7dd94ad2951:is_active",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Sonen er !{{aktiv|inaktiv}}
+{
+  "id": "homey:zone:6559d9a0-36a9-4c72-8c4d-831dbb9e43a7:is_active",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Sonen er !{{aktiv|inaktiv}}
+{
+  "id": "homey:zone:6e723943-92a5-402f-953e-950ed551dd51:is_active",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Sonen er !{{aktiv|inaktiv}}
+{
+  "id": "homey:zone:bedc4348-b471-44f0-8ab0-64493bf263d4:is_active",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Sonen er !{{aktiv|inaktiv}}
+{
+  "id": "homey:zone:edb3b858-9ff5-4bf8-8242-69d0b8b96c95:is_active",
+  "args": null,
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått på
+{
+  "id": "homey:zone:2560ff90-ff21-489e-9fb4-9f7039f4987e:all_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått på
+{
+  "id": "homey:zone:4064e39d-6c1e-4540-a980-575ae5d0693a:all_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått på
+{
+  "id": "homey:zone:5d768e33-daf8-4929-b956-c85db4fe1dbc:all_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått på
+{
+  "id": "homey:zone:6103eec6-868f-4983-ac8a-a7dd94ad2951:all_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått på
+{
+  "id": "homey:zone:6559d9a0-36a9-4c72-8c4d-831dbb9e43a7:all_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått på
+{
+  "id": "homey:zone:6e723943-92a5-402f-953e-950ed551dd51:all_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått på
+{
+  "id": "homey:zone:bedc4348-b471-44f0-8ab0-64493bf263d4:all_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått på
+{
+  "id": "homey:zone:edb3b858-9ff5-4bf8-8242-69d0b8b96c95:all_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått av
+{
+  "id": "homey:zone:2560ff90-ff21-489e-9fb4-9f7039f4987e:all_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått av
+{
+  "id": "homey:zone:4064e39d-6c1e-4540-a980-575ae5d0693a:all_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått av
+{
+  "id": "homey:zone:5d768e33-daf8-4929-b956-c85db4fe1dbc:all_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått av
+{
+  "id": "homey:zone:6103eec6-868f-4983-ac8a-a7dd94ad2951:all_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått av
+{
+  "id": "homey:zone:6559d9a0-36a9-4c72-8c4d-831dbb9e43a7:all_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått av
+{
+  "id": "homey:zone:6e723943-92a5-402f-953e-950ed551dd51:all_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått av
+{
+  "id": "homey:zone:bedc4348-b471-44f0-8ab0-64493bf263d4:all_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[class]]-enheter er slått av
+{
+  "id": "homey:zone:edb3b858-9ff5-4bf8-8242-69d0b8b96c95:all_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "autocomplete",
+      "title": "Type"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått på
+{
+  "id": "homey:zone:2560ff90-ff21-489e-9fb4-9f7039f4987e:alarms_on",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått på
+{
+  "id": "homey:zone:4064e39d-6c1e-4540-a980-575ae5d0693a:alarms_on",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått på
+{
+  "id": "homey:zone:5d768e33-daf8-4929-b956-c85db4fe1dbc:alarms_on",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått på
+{
+  "id": "homey:zone:6103eec6-868f-4983-ac8a-a7dd94ad2951:alarms_on",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått på
+{
+  "id": "homey:zone:6559d9a0-36a9-4c72-8c4d-831dbb9e43a7:alarms_on",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått på
+{
+  "id": "homey:zone:6e723943-92a5-402f-953e-950ed551dd51:alarms_on",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått på
+{
+  "id": "homey:zone:bedc4348-b471-44f0-8ab0-64493bf263d4:alarms_on",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått på
+{
+  "id": "homey:zone:edb3b858-9ff5-4bf8-8242-69d0b8b96c95:alarms_on",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått av
+{
+  "id": "homey:zone:2560ff90-ff21-489e-9fb4-9f7039f4987e:alarms_off",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått av
+{
+  "id": "homey:zone:4064e39d-6c1e-4540-a980-575ae5d0693a:alarms_off",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått av
+{
+  "id": "homey:zone:5d768e33-daf8-4929-b956-c85db4fe1dbc:alarms_off",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått av
+{
+  "id": "homey:zone:6103eec6-868f-4983-ac8a-a7dd94ad2951:alarms_off",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått av
+{
+  "id": "homey:zone:6559d9a0-36a9-4c72-8c4d-831dbb9e43a7:alarms_off",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått av
+{
+  "id": "homey:zone:6e723943-92a5-402f-953e-950ed551dd51:alarms_off",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått av
+{
+  "id": "homey:zone:bedc4348-b471-44f0-8ab0-64493bf263d4:alarms_off",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+!{{Alle|Ikke alle}} [[capability]]-alarmer er slått av
+{
+  "id": "homey:zone:edb3b858-9ff5-4bf8-8242-69d0b8b96c95:alarms_off",
+  "args": [
+    {
+      "name": "capability",
+      "type": "autocomplete",
+      "title": "Alarm"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:8d3e7c35-eb8d-4fbf-b225-ef957dfa493f:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:b098ec19-bfd0-417a-81e6-e932e3ba3a7e:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Run [[script]]
+{
+  "id": "homey:app:com.athom.homeyscript:run",
+  "args": [
+    {
+      "name": "script",
+      "type": "autocomplete",
+      "title": "Script",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Run [[code]]
+{
+  "id": "homey:app:com.athom.homeyscript:runCode",
+  "args": [
+    {
+      "name": "code",
+      "type": "code",
+      "language": "homeyscript",
+      "title": "Code",
+      "value": "// My Code\n\nreturn true;",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Run [[code]] with [[argument]]
+{
+  "id": "homey:app:com.athom.homeyscript:runCodeWithArg",
+  "args": [
+    {
+      "name": "code",
+      "type": "code",
+      "language": "homeyscript",
+      "title": "Code",
+      "value": "// My Code\n\nconsole.log(args[0]);\n\nreturn true;",
+      "placeholder": null
+    },
+    {
+      "name": "argument",
+      "type": "text",
+      "required": false,
+      "title": "Argument",
+      "placeholder": "Argument",
+      "value": "MyArg"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Run [[script]] with argument [[argument]]
+{
+  "id": "homey:app:com.athom.homeyscript:runWithArg",
+  "args": [
+    {
+      "name": "script",
+      "type": "autocomplete",
+      "title": "Script",
+      "placeholder": null
+    },
+    {
+      "name": "argument",
+      "type": "text",
+      "title": "Argument",
+      "placeholder": "Argument"
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Allergen level [[argument_main]]
+{
+  "id": "homey:app:com.athom.philipsair:score_iaql",
+  "args": [
+    {
+      "name": "argument_main",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "good",
+          "title": "good, score below 4"
+        },
+        {
+          "id": "fair",
+          "title": "average, between 4 and 6"
+        },
+        {
+          "id": "poor",
+          "title": "poor, between 7 and 9"
+        },
+        {
+          "id": "verypoor",
+          "title": "very poor, above 9"
+        }
+      ],
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+pm2.5 level [[argument_main]]
+{
+  "id": "homey:app:com.athom.philipsair:score_pm25",
+  "args": [
+    {
+      "name": "argument_main",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "good",
+          "title": "good, score below 13"
+        },
+        {
+          "id": "fair",
+          "title": "average, between 13 and 35"
+        },
+        {
+          "id": "poor",
+          "title": "poor, between 36 and 55"
+        },
+        {
+          "id": "verypoor",
+          "title": "very poor, above 55"
+        }
+      ],
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:e23411f6-168d-4a63-9a77-de2510e6def3:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:0767ec9f-0dbf-4854-beb4-1485d7b3657b:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Avspilles !{{|ikke}}
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:is_playing",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:07f1ead5-2a39-43cd-94f0-7a022d218317:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:1af8c95f-dd1c-4811-9d8e-8e4a64f96782:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:25bb5933-e2a1-4c83-9de0-b16da9252c4c:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:30ca5313-cb75-4dc6-9b6c-73f77d73e7da:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:3427053d-d3b0-4104-82c1-6dd0b812b530:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:481feeb6-6ebc-48e3-a124-da5f80403a5a:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:6c1db787-6e6a-44bc-a9bc-619a86525af2:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:7c528954-2077-433c-8e8a-200ece85755e:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:7db95438-09b5-4126-ba0c-b50aef908e9a:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:85196839-e5ad-4c86-ab96-379e1184ce08:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:a0b7a2cc-a8f4-42ae-80f8-d70b4e0297de:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:af558a2a-320b-4335-84d1-58ef0e256ce7:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:d10d351d-bd93-4a55-894b-dcc2be1d7305:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:d1cc3c9f-417b-42fa-9c3b-96df11ff578c:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:d49387b1-3d21-4cac-9aa3-d76e0d8ab5b3:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:d651fbdc-e926-40cb-9158-c1302cb24d0c:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:db1593ae-35b5-46fe-ba7a-ecd44cd16c3d:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:eb701d49-09d5-40eb-9454-65a96a6a8f36:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:efc40f25-608e-45fa-bb8d-66a3c081ae5d:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:f2e83c8a-959a-4205-9fbe-41e7b0adec89:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:b31a02e3-2610-4956-aac1-95054f096c7d:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:f5a51d90-6ece-4479-a502-2ce58e3c3299:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+A loop with name [[name]] !{{is|isn't}} running
+{
+  "id": "homey:app:nl.mennovanhout.loops:loop-with-name-is-running",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "name",
+      "placeholder": "Choose a name",
+      "title": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:992ffae7-8f99-4a77-b24f-3af3bf0fba15:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Washer error !{{is|is not}} [[error]]
+{
+  "id": "homey:device:992ffae7-8f99-4a77-b24f-3af3bf0fba15:WM-error-is",
+  "args": [
+    {
+      "name": "error",
+      "type": "autocomplete",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Washer operation !{{is|is not}} [[operation]]
+{
+  "id": "homey:device:992ffae7-8f99-4a77-b24f-3af3bf0fba15:WM-operation-is",
+  "args": [
+    {
+      "name": "operation",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "WMOff",
+          "title": "Into Standby"
+        },
+        {
+          "id": "WMWakeup",
+          "title": "Wake Up"
+        },
+        {
+          "id": "WMStop",
+          "title": "Pause"
+        },
+        {
+          "id": "WMStart",
+          "title": "Washing Course running"
+        }
+      ],
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Washer state !{{is|is not}} [[state]]
+{
+  "id": "homey:device:992ffae7-8f99-4a77-b24f-3af3bf0fba15:WM-state-is",
+  "args": [
+    {
+      "name": "state",
+      "type": "autocomplete",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:2229277e-bdd1-4158-bcd6-875ee8959bcd:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:3853deca-fee5-402b-87fb-b4169ad1771c:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:468511f2-e694-4fae-ab13-9444d44e24fd:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:4ea6200a-98c6-40a5-807f-ef77a549cc98:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:7125712d-4a9a-47d0-9808-2ec3215d9dae:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:735da5e4-1285-47dd-9aed-4afe1f84c261:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:748478ca-ff73-474d-b338-948048bcc1d3:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:afaa1650-e7ee-4466-a2a4-1f8105d48a9b:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:ef1588df-bbf7-4a44-bb07-1df62c6c797f:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Er slått !{{på|av}}
+{
+  "id": "homey:device:6e00dc96-a9d9-4800-892a-7d4812df152e:on",
+  "args": null,
+  "droptoken": null
+}
+-----------
+Været er !{{|ikke}} [[code]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:01_is_weather",
+  "args": [
+    {
+      "name": "code",
+      "label": {
+        "en": "Weather",
+        "no": "Vær"
+      },
+      "type": "autocomplete",
+      "placeholder": "Vær...",
+      "title": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er været !{{|ikke}} [[code]] fra [[start]] til [[hours]] timer senere
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:01_weather_next_hours",
+  "args": [
+    {
+      "name": "code",
+      "label": {
+        "en": "Weather",
+        "no": "Vær"
+      },
+      "type": "autocomplete",
+      "placeholder": "Vær...",
+      "title": null
+    },
+    {
+      "name": "start",
+      "title": "Start",
+      "type": "autocomplete",
+      "placeholder": "Start..."
+    },
+    {
+      "type": "number",
+      "name": "hours",
+      "title": "Timer",
+      "placeholder": "2",
+      "min": 1,
+      "max": 24,
+      "step": 1
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er været !{{|ikke}} [[code]] fra [[start]] til [[end]] [[day]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:01_weather_period",
+  "args": [
+    {
+      "name": "code",
+      "label": {
+        "en": "Weather",
+        "no": "Vær"
+      },
+      "type": "autocomplete",
+      "placeholder": "Vær...",
+      "title": null
+    },
+    {
+      "name": "start",
+      "type": "time",
+      "title": "Start",
+      "placeholder": "08:00"
+    },
+    {
+      "name": "end",
+      "type": "time",
+      "title": "Slutt",
+      "placeholder": "14:00"
+    },
+    {
+      "name": "day",
+      "type": "dropdown",
+      "title": "Dag",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er temperatur !{{under|over}} [[value]] °C
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:02_measure_temperature_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er føles som temperatur !{{under|over}} [[value]] °C
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:02_measure_temperature.feels_like_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er maks. temperatur !{{under|over}} [[value]] °C
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:02_measure_temperature.max_next_6_hours_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er min. temperatur !{{under|over}} [[value]] °C
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:02_measure_temperature.min_next_6_hours_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er temperaturen !{{|ikke}} over [[value]] °C fra [[start]] til [[hours]] timer senere
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:02_temperature_next_hours_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Temperatur",
+      "placeholder": "Temperatur...",
+      "min": -100,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "title": "Start",
+      "type": "autocomplete",
+      "placeholder": "Start..."
+    },
+    {
+      "type": "number",
+      "name": "hours",
+      "title": "Timer",
+      "placeholder": "2",
+      "min": 1,
+      "max": 24,
+      "step": 1
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er temperaturen !{{|ikke}} under [[value]] °C fra [[start]] til [[hours]] timer senere
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:02_temperature_next_hours_below",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Temperatur",
+      "placeholder": "Temperatur...",
+      "min": -100,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "title": "Start",
+      "type": "autocomplete",
+      "placeholder": "Start..."
+    },
+    {
+      "type": "number",
+      "name": "hours",
+      "title": "Timer",
+      "placeholder": "2",
+      "min": 1,
+      "max": 24,
+      "step": 1
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er temperaturen !{{|ikke}} over [[value]] °C fra [[start]] til [[end]] [[day]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:02_temperature_period_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Temperatur",
+      "placeholder": "Temperatur...",
+      "min": -100,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "type": "time",
+      "title": "Start",
+      "placeholder": "08:00"
+    },
+    {
+      "name": "end",
+      "type": "time",
+      "title": "Slutt",
+      "placeholder": "14:00"
+    },
+    {
+      "name": "day",
+      "type": "dropdown",
+      "title": "Dag",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er temperaturen !{{|ikke}} under [[value]] °C fra [[start]] til [[end]] [[day]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:02_temperature_period_below",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Temperatur",
+      "placeholder": "Temperatur...",
+      "min": -100,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "type": "time",
+      "title": "Start",
+      "placeholder": "08:00"
+    },
+    {
+      "name": "end",
+      "type": "time",
+      "title": "Slutt",
+      "placeholder": "14:00"
+    },
+    {
+      "name": "day",
+      "type": "dropdown",
+      "title": "Dag",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er sannsynligheten for regn neste time !{{under|over}} [[value]] %
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:03_measure_rain_next_1_hour_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er sannsynligheten for regn neste 6 timer !{{under|over}} [[value]] %
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:03_measure_rain_next_6_hours_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er regn neste time !{{under|over}} [[value]] mm
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:03_measure_rain.next_1_hour_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er regn neste 6 timer !{{under|over}} [[value]] mm
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:03_measure_rain.next_6_hours_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er regn !{{|ikke}} over [[value]] mm/t fra [[start]] til [[hours]] timer senere
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:03_rain_mm_next_hours_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Regn",
+      "placeholder": "Regn...",
+      "min": 0,
+      "max": 100,
+      "step": 0.1
+    },
+    {
+      "name": "start",
+      "title": "Start",
+      "type": "autocomplete",
+      "placeholder": "Start..."
+    },
+    {
+      "type": "number",
+      "name": "hours",
+      "title": "Timer",
+      "placeholder": "2",
+      "min": 1,
+      "max": 24,
+      "step": 1
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er regn !{{|ikke}} under [[value]] mm/t fra [[start]] til [[hours]] timer senere
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:03_rain_mm_next_hours_below",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Regn",
+      "placeholder": "Regn...",
+      "min": 0,
+      "max": 100,
+      "step": 0.1
+    },
+    {
+      "name": "start",
+      "title": "Start",
+      "type": "autocomplete",
+      "placeholder": "Start..."
+    },
+    {
+      "type": "number",
+      "name": "hours",
+      "title": "Timer",
+      "placeholder": "2",
+      "min": 1,
+      "max": 24,
+      "step": 1
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er regn !{{|ikke}} over [[value]] mm/t fra [[start]] til [[end]] [[day]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:03_rain_mm_period_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Regn",
+      "placeholder": "Regn...",
+      "min": 0,
+      "max": 100,
+      "step": 0.1
+    },
+    {
+      "name": "start",
+      "type": "time",
+      "title": "Start",
+      "placeholder": "08:00"
+    },
+    {
+      "name": "end",
+      "type": "time",
+      "title": "Slutt",
+      "placeholder": "14:00"
+    },
+    {
+      "name": "day",
+      "type": "dropdown",
+      "title": "Dag",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er regn !{{|ikke}} under [[value]] mm/t fra [[start]] til [[end]] [[day]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:03_rain_mm_period_below",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Regn",
+      "placeholder": "Regn...",
+      "min": 0,
+      "max": 100,
+      "step": 0.1
+    },
+    {
+      "name": "start",
+      "type": "time",
+      "title": "Start",
+      "placeholder": "08:00"
+    },
+    {
+      "name": "end",
+      "type": "time",
+      "title": "Slutt",
+      "placeholder": "14:00"
+    },
+    {
+      "name": "day",
+      "type": "dropdown",
+      "title": "Dag",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er sannsynligheten for regn !{{|ikke}} over [[value]] % fra [[start]] til [[hours]] timer senere
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:03_rain_probability_next_hours_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Sannsynlighet",
+      "placeholder": "Sannsynlighet...",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "title": "Start",
+      "type": "autocomplete",
+      "placeholder": "Start..."
+    },
+    {
+      "type": "number",
+      "name": "hours",
+      "title": "Timer",
+      "placeholder": "2",
+      "min": 1,
+      "max": 24,
+      "step": 1
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er sannsynligheten for regn !{{|ikke}} over [[value]] % fra [[start]] til [[end]] [[day]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:03_rain_probability_period_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Sannsynlighet",
+      "placeholder": "Sannsynlighet...",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "type": "time",
+      "title": "Start",
+      "placeholder": "08:00"
+    },
+    {
+      "name": "end",
+      "type": "time",
+      "title": "Slutt",
+      "placeholder": "14:00"
+    },
+    {
+      "name": "day",
+      "type": "dropdown",
+      "title": "Dag",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er sum av regn !{{|ikke}} over [[value]] mm fra [[start]] til [[hours]] timer senere
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:03_rain_sum_next_hours_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Sum av regn (mm)",
+      "placeholder": "Sum av regn (mm)...",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "title": "Start",
+      "type": "autocomplete",
+      "placeholder": "Start..."
+    },
+    {
+      "type": "number",
+      "name": "hours",
+      "title": "Timer",
+      "placeholder": "2",
+      "min": 1,
+      "max": 24,
+      "step": 1
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er sum av regn !{{|ikke}} over [[value]] mm fra [[start]] til [[end]] [[day]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:03_rain_sum_period_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Sum av regn (mm)",
+      "placeholder": "Sum av regn (mm)...",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "type": "time",
+      "title": "Start",
+      "placeholder": "08:00"
+    },
+    {
+      "name": "end",
+      "type": "time",
+      "title": "Slutt",
+      "placeholder": "14:00"
+    },
+    {
+      "name": "day",
+      "type": "dropdown",
+      "title": "Dag",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er vindstyrke !{{under|over}} [[value]] m/s
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:10_measure_wind_strength_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er vindstyrke !{{|ikke}} over [[value]] m/s fra [[start]] til [[hours]] timer senere
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:10_wind_strength_next_hours_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Vindstyrke",
+      "placeholder": "Vindstyrke...",
+      "min": 0,
+      "max": 100,
+      "step": 0.1
+    },
+    {
+      "name": "start",
+      "title": "Start",
+      "type": "autocomplete",
+      "placeholder": "Start..."
+    },
+    {
+      "type": "number",
+      "name": "hours",
+      "title": "Timer",
+      "placeholder": "2",
+      "min": 1,
+      "max": 24,
+      "step": 1
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er vindstyrke !{{|ikke}} over [[value]] m/s fra [[start]] til [[end]] [[day]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:10_wind_strength_period_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Vindstyrke",
+      "placeholder": "Vindstyrke...",
+      "min": 0,
+      "max": 100,
+      "step": 0.1
+    },
+    {
+      "name": "start",
+      "type": "time",
+      "title": "Start",
+      "placeholder": "08:00"
+    },
+    {
+      "name": "end",
+      "type": "time",
+      "title": "Slutt",
+      "placeholder": "14:00"
+    },
+    {
+      "name": "day",
+      "type": "dropdown",
+      "title": "Dag",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er vindvinkel !{{under|over}} [[value]] °
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:11_measure_wind_angle_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er vindkast !{{under|over}} [[value]] m/s
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:15_measure_gust_strength_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er luftfuktighet !{{under|over}} [[value]] %
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:20_measure_humidity_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er lufttrykk !{{under|over}} [[value]] hPa
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:30_measure_pressure_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er skydekke !{{under|over}} [[value]] %
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:40_measure_cloud_area_fraction_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er skydekke !{{|ikke}} over [[value]] % fra [[start]] til [[hours]] timer senere
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:41_cloud_next_hours_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Skydekke",
+      "placeholder": "Skydekke...",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "title": "Start",
+      "type": "autocomplete",
+      "placeholder": "Start..."
+    },
+    {
+      "type": "number",
+      "name": "hours",
+      "title": "Timer",
+      "placeholder": "2",
+      "min": 1,
+      "max": 24,
+      "step": 1
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er skydekke !{{|ikke}} over [[value]] % fra [[start]] til [[end]] [[day]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:41_cloud_period_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Skydekke",
+      "placeholder": "Skydekke...",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "type": "time",
+      "title": "Start",
+      "placeholder": "08:00"
+    },
+    {
+      "name": "end",
+      "type": "time",
+      "title": "Slutt",
+      "placeholder": "14:00"
+    },
+    {
+      "name": "day",
+      "type": "dropdown",
+      "title": "Dag",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er tåke !{{under|over}} [[value]] %
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:50_measure_fog_area_fraction_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er tåke !{{|ikke}} over [[value]] % fra [[start]] til [[hours]] timer senere
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:51_fog_next_hours_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Tåke",
+      "placeholder": "Tåke...",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "title": "Start",
+      "type": "autocomplete",
+      "placeholder": "Start..."
+    },
+    {
+      "type": "number",
+      "name": "hours",
+      "title": "Timer",
+      "placeholder": "2",
+      "min": 1,
+      "max": 24,
+      "step": 1
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er tåke !{{|ikke}} over [[value]] % fra [[start]] til [[end]] [[day]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:51_fog_period_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Tåke",
+      "placeholder": "Tåke...",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "type": "time",
+      "title": "Start",
+      "placeholder": "08:00"
+    },
+    {
+      "name": "end",
+      "type": "time",
+      "title": "Slutt",
+      "placeholder": "14:00"
+    },
+    {
+      "name": "day",
+      "type": "dropdown",
+      "title": "Dag",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er sannsynligheten for torden neste time !{{under|over}} [[value]] %
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:60_measure_thunder_next_1_hour_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er sannsynligheten for torden !{{|ikke}} over [[value]] % fra [[start]] til [[hours]] timer senere
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:60_thunder_next_hours_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Sannsynlighet",
+      "placeholder": "Sannsynlighet...",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "title": "Start",
+      "type": "autocomplete",
+      "placeholder": "Start..."
+    },
+    {
+      "type": "number",
+      "name": "hours",
+      "title": "Timer",
+      "placeholder": "2",
+      "min": 1,
+      "max": 24,
+      "step": 1
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er sannsynligheten for torden !{{|ikke}} over [[value]] % fra [[start]] til [[end]] [[day]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:60_thunder_period_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Sannsynlighet",
+      "placeholder": "Sannsynlighet...",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "start",
+      "type": "time",
+      "title": "Start",
+      "placeholder": "08:00"
+    },
+    {
+      "name": "end",
+      "type": "time",
+      "title": "Slutt",
+      "placeholder": "14:00"
+    },
+    {
+      "name": "day",
+      "type": "dropdown",
+      "title": "Dag",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er ultrafiolett !{{under|over}} [[value]] UVI
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:70_measure_ultraviolet_below",
+  "args": [
+    {
+      "name": "value",
+      "type": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er ultrafiolett !{{|ikke}} over [[value]] UVI fra [[start]] til [[hours]] timer senere
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:71_ultraviolet_next_hours_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Ultrafiolett",
+      "placeholder": "Ultrafiolett...",
+      "min": 0,
+      "max": 100,
+      "step": 0.01
+    },
+    {
+      "name": "start",
+      "title": "Start",
+      "type": "autocomplete",
+      "placeholder": "Start..."
+    },
+    {
+      "type": "number",
+      "name": "hours",
+      "title": "Timer",
+      "placeholder": "2",
+      "min": 1,
+      "max": 24,
+      "step": 1
+    }
+  ],
+  "droptoken": null
+}
+-----------
+Er ultrafiolett !{{|ikke}} over [[value]] UVI fra [[start]] til [[end]] [[day]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:71_ultraviolet_period_above",
+  "args": [
+    {
+      "type": "number",
+      "name": "value",
+      "title": "Ultrafiolett",
+      "placeholder": "Ultrafiolett...",
+      "min": 0,
+      "max": 100,
+      "step": 0.01
+    },
+    {
+      "name": "start",
+      "type": "time",
+      "title": "Start",
+      "placeholder": "08:00"
+    },
+    {
+      "name": "end",
+      "type": "time",
+      "title": "Slutt",
+      "placeholder": "14:00"
+    },
+    {
+      "name": "day",
+      "type": "dropdown",
+      "title": "Dag",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null
+}
+-----------
+CO2-alarmen er !{{på|av}}
+{
+  "id": "homey:device:e82ed43d-a42a-4afd-8afb-4eeb9b0dff45:alarm_co2",
+  "args": null,
+  "droptoken": null
+}
+-----------
+The humidity alarm is !{{on|off}}
+{
+  "id": "homey:device:e82ed43d-a42a-4afd-8afb-4eeb9b0dff45:alarm_humidity",
+  "args": [],
+  "droptoken": null
+}
+-----------
+The radon alarm (Bq/m³) is !{{on|off}}
+{
+  "id": "homey:device:e82ed43d-a42a-4afd-8afb-4eeb9b0dff45:alarm_radon",
+  "args": [],
+  "droptoken": null
+}
+-----------
+The radon alarm (pCi/L) is !{{on|off}}
+{
+  "id": "homey:device:e82ed43d-a42a-4afd-8afb-4eeb9b0dff45:alarm_radon_us",
+  "args": [],
+  "droptoken": null
+}
+-----------
+The temperature alarm is !{{on|off}}
+{
+  "id": "homey:device:e82ed43d-a42a-4afd-8afb-4eeb9b0dff45:alarm_temperature",
+  "args": [],
+  "droptoken": null
+}
+-----------
+The VOC alarm is !{{on|off}}
+{
+  "id": "homey:device:e82ed43d-a42a-4afd-8afb-4eeb9b0dff45:alarm_voc",
+  "args": [],
+  "droptoken": null
+}
+-----------
+===========
+Then-cards:
+===========
+Start [[flow]]
+{
+  "id": "homey:manager:flow:programmatic_trigger",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "flow",
+      "title": "Flow",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Start [[flow]] med [[string]]
+{
+  "id": "homey:manager:flow:programmatic_trigger_string_tag",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "flow",
+      "title": "Flow",
+      "placeholder": null
+    },
+    {
+      "type": "text",
+      "name": "string",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Start [[flow]] med [[number]]
+{
+  "id": "homey:manager:flow:programmatic_trigger_number_tag",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "flow",
+      "title": "Flow",
+      "placeholder": null
+    },
+    {
+      "type": "number",
+      "name": "number",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Start [[flow]] med [[boolean]]
+{
+  "id": "homey:manager:flow:programmatic_trigger_boolean_tag",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "flow",
+      "title": "Flow",
+      "placeholder": null
+    },
+    {
+      "type": "checkbox",
+      "name": "boolean",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Start [[flow]] med [[droptoken]]
+{
+  "id": "homey:manager:flow:programmatic_trigger_image_tag",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "flow",
+      "title": "Flow",
+      "placeholder": null
+    }
+  ],
+  "droptoken": [
+    "image"
+  ],
+  "duration": false
+}
+-----------
+Aktiver [[flow]]
+{
+  "id": "homey:manager:flow:enable_flow",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "flow",
+      "title": "Flow",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Deaktiver [[flow]]
+{
+  "id": "homey:manager:flow:disable_flow",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "flow",
+      "title": "Flow",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Aktiver gjesten [[user]]
+{
+  "id": "homey:manager:users:enable_guest_user",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Deaktiver gjesten [[user]]
+{
+  "id": "homey:manager:users:disable_guest_user",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Send [[text]] til [[user]]
+{
+  "id": "homey:manager:mobile:push_text",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": "Bruker",
+      "placeholder": "Velg en bruker ..."
+    },
+    {
+      "type": "text",
+      "name": "text",
+      "title": "Melding",
+      "placeholder": "Meldingen din ..."
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Send bilde [[droptoken]] med meldingen [[text]] til [[user]]
+{
+  "id": "homey:manager:mobile:push_image",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": "Bruker",
+      "placeholder": "Velg en bruker ..."
+    },
+    {
+      "type": "text",
+      "required": false,
+      "name": "text",
+      "title": "Melding",
+      "placeholder": "Meldingen din ..."
+    }
+  ],
+  "droptoken": [
+    "image"
+  ],
+  "duration": false
+}
+-----------
+Send [[text]] som morsesignal til [[user]]
+{
+  "id": "homey:manager:mobile:push_morse",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": "Bruker",
+      "placeholder": "Velg en bruker ..."
+    },
+    {
+      "type": "text",
+      "name": "text",
+      "title": "Melding",
+      "placeholder": "f.eks. SOS"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Aktiver alarmen [[alarm]]
+{
+  "id": "homey:manager:alarms:enable",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "alarm",
+      "title": "Alarm",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Deaktiver alarmen [[alarm]]
+{
+  "id": "homey:manager:alarms:disable",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "alarm",
+      "title": "Alarm",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Aktiver neste alarm
+{
+  "id": "homey:manager:alarms:enable_next",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Deaktiver neste alarm
+{
+  "id": "homey:manager:alarms:disable_next",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Sett [[variable]] til [[value]]
+{
+  "id": "homey:manager:logic:variable_set_string",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "variable",
+      "title": "Tekstvariabel",
+      "placeholder": null
+    },
+    {
+      "type": "text",
+      "name": "value",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Sett [[variable]] til [[value]]
+{
+  "id": "homey:manager:logic:variable_set_number",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "variable",
+      "title": "Tallvariabel",
+      "placeholder": null
+    },
+    {
+      "type": "number",
+      "name": "value",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Beregn [[variable]] som [[value]]
+{
+  "id": "homey:manager:logic:variable_set_number_math",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "variable",
+      "title": "Tallvariabel",
+      "placeholder": null
+    },
+    {
+      "type": "text",
+      "name": "value",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Sett [[variable]] til [[value]]
+{
+  "id": "homey:manager:logic:variable_set_boolean",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "variable",
+      "title": "Ja/Nei-variabel",
+      "placeholder": null
+    },
+    {
+      "type": "checkbox",
+      "name": "value",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Inverter [[variable]]
+{
+  "id": "homey:manager:logic:variable_toggle_boolean",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "variable",
+      "title": "Ja/Nei-variabel",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Gjør en [[method]]-forespørsel til [[url]] med overskrifter [[headers]] og brødtekst [[body]]
+{
+  "id": "homey:manager:logic:http",
+  "args": [
+    {
+      "type": "dropdown",
+      "title": "Metode",
+      "values": [
+        {
+          "id": "get",
+          "title": "GET"
+        },
+        {
+          "id": "post",
+          "title": "POST"
+        },
+        {
+          "id": "put",
+          "title": "PUT"
+        },
+        {
+          "id": "delete",
+          "title": "DELETE"
+        }
+      ],
+      "name": "method",
+      "placeholder": null
+    },
+    {
+      "type": "text",
+      "title": "URL",
+      "name": "url",
+      "placeholder": null
+    },
+    {
+      "type": "text",
+      "title": "Headers",
+      "placeholder": null,
+      "required": false,
+      "name": "headers"
+    },
+    {
+      "type": "text",
+      "title": "Body",
+      "required": false,
+      "placeholder": null,
+      "name": "body"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Marker [[user]] som hjemme
+{
+  "id": "homey:manager:presence:set_home",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Gjør en HTTP [[method]]-forespørsel til [[url]] med overskrifter [[headers]] og brødtekst [[body]]
+{
+  "id": "homey:manager:logic:http_advanced",
+  "args": [
+    {
+      "type": "dropdown",
+      "title": "Metode",
+      "values": [
+        {
+          "id": "get",
+          "title": "GET"
+        },
+        {
+          "id": "post",
+          "title": "POST"
+        },
+        {
+          "id": "put",
+          "title": "PUT"
+        },
+        {
+          "id": "delete",
+          "title": "DELETE"
+        }
+      ],
+      "name": "method",
+      "placeholder": null
+    },
+    {
+      "type": "text",
+      "title": "URL",
+      "name": "url",
+      "placeholder": null
+    },
+    {
+      "type": "text",
+      "title": "Overskrifter",
+      "placeholder": null,
+      "required": false,
+      "name": "headers"
+    },
+    {
+      "type": "text",
+      "title": "Brødtekst",
+      "required": false,
+      "placeholder": null,
+      "name": "body"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Marker [[user]] som borte
+{
+  "id": "homey:manager:presence:set_away",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Konverter [[droptoken]] til Tall-Tag
+{
+  "id": "homey:manager:logic:convert_tag_to_number",
+  "args": null,
+  "droptoken": [
+    "string",
+    "boolean"
+  ],
+  "duration": false
+}
+-----------
+Alterner [[user]] mellom hjemme/borte
+{
+  "id": "homey:manager:presence:toggle",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Konverter [[droptoken]] til Tekst-Tag
+{
+  "id": "homey:manager:logic:convert_tag_to_string",
+  "args": null,
+  "droptoken": [
+    "number",
+    "boolean"
+  ],
+  "duration": false
+}
+-----------
+Marker [[user]] som sovende
+{
+  "id": "homey:manager:presence:set_asleep",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Konverter [[droptoken]] til Ja/nei-Tag
+{
+  "id": "homey:manager:logic:convert_tag_to_boolean",
+  "args": null,
+  "droptoken": [
+    "string",
+    "number"
+  ],
+  "duration": false
+}
+-----------
+Marker [[user]] som våken
+{
+  "id": "homey:manager:presence:set_awake",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Opprett [[text]] som Tekst-Tag
+{
+  "id": "homey:manager:logic:create_string_tag_from_text",
+  "args": [
+    {
+      "type": "text",
+      "name": "text",
+      "title": "Tekst",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Alterner [[user]] mellom sovende/våken
+{
+  "id": "homey:manager:presence:toggle_asleep",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "user",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Analyser [[droptoken]] som JSON og velg bane [[path]] som Tall-Tag
+{
+  "id": "homey:manager:logic:get_number_from_json",
+  "args": [
+    {
+      "type": "text",
+      "name": "path",
+      "title": "Bane",
+      "placeholder": "store.book[0].amount"
+    }
+  ],
+  "droptoken": [
+    "string"
+  ],
+  "duration": false
+}
+-----------
+Analyser [[droptoken]] som JSON og velg bane [[path]] som Tekst-Tag
+{
+  "id": "homey:manager:logic:get_string_from_json",
+  "args": [
+    {
+      "type": "text",
+      "name": "path",
+      "title": "Bane",
+      "placeholder": "store.book[0].author"
+    }
+  ],
+  "droptoken": [
+    "string"
+  ],
+  "duration": false
+}
+-----------
+Analyser [[droptoken]] som JSON og velg bane [[path]] som Ja/nei-Tag
+{
+  "id": "homey:manager:logic:get_boolean_from_json",
+  "args": [
+    {
+      "type": "text",
+      "name": "path",
+      "title": "Bane",
+      "placeholder": "store.book[0].inStock"
+    }
+  ],
+  "droptoken": [
+    "string"
+  ],
+  "duration": false
+}
+-----------
+Analyser [[droptoken]] som JSON og sett bane [[path]] til [[value]]
+{
+  "id": "homey:manager:logic:set_number_in_json",
+  "args": [
+    {
+      "type": "text",
+      "name": "path",
+      "title": "Bane",
+      "placeholder": "store.book[0].price"
+    },
+    {
+      "type": "text",
+      "name": "value",
+      "title": "Tall",
+      "placeholder": null
+    }
+  ],
+  "droptoken": [
+    "string"
+  ],
+  "duration": false
+}
+-----------
+Analyser [[droptoken]] som JSON og sett bane [[path]] til [[value]]
+{
+  "id": "homey:manager:logic:set_string_in_json",
+  "args": [
+    {
+      "type": "text",
+      "name": "path",
+      "title": "Bane",
+      "placeholder": "store.book[0].title"
+    },
+    {
+      "type": "text",
+      "name": "value",
+      "title": "Tekst",
+      "placeholder": null
+    }
+  ],
+  "droptoken": [
+    "string"
+  ],
+  "duration": false
+}
+-----------
+Analyser [[droptoken]] som JSON og sett bane [[path]] til [[value]]
+{
+  "id": "homey:manager:logic:set_boolean_in_json",
+  "args": [
+    {
+      "type": "text",
+      "name": "path",
+      "title": "Bane",
+      "placeholder": "store.book[0].inStock"
+    },
+    {
+      "type": "text",
+      "name": "value",
+      "title": "Ja/Nei",
+      "placeholder": null
+    }
+  ],
+  "droptoken": [
+    "string"
+  ],
+  "duration": false
+}
+-----------
+Analyser [[droptoken]] som JSON og sett bane [[path]] til [[value]]
+{
+  "id": "homey:manager:logic:set_json_in_json",
+  "args": [
+    {
+      "type": "text",
+      "name": "path",
+      "title": "Bane",
+      "placeholder": "store.book[0]"
+    },
+    {
+      "type": "text",
+      "name": "value",
+      "title": "JSON",
+      "placeholder": "{ \"tittel: \"Hei verden\" }"
+    }
+  ],
+  "droptoken": [
+    "string"
+  ],
+  "duration": false
+}
+-----------
+Slå [[class]] på
+{
+  "id": "homey:zone:2560ff90-ff21-489e-9fb4-9f7039f4987e:turn_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] av
+{
+  "id": "homey:zone:2560ff90-ff21-489e-9fb4-9f7039f4987e:turn_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] på
+{
+  "id": "homey:zone:4064e39d-6c1e-4540-a980-575ae5d0693a:turn_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] av
+{
+  "id": "homey:zone:4064e39d-6c1e-4540-a980-575ae5d0693a:turn_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] på
+{
+  "id": "homey:zone:5d768e33-daf8-4929-b956-c85db4fe1dbc:turn_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] av
+{
+  "id": "homey:zone:5d768e33-daf8-4929-b956-c85db4fe1dbc:turn_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] på
+{
+  "id": "homey:zone:6103eec6-868f-4983-ac8a-a7dd94ad2951:turn_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] av
+{
+  "id": "homey:zone:6103eec6-868f-4983-ac8a-a7dd94ad2951:turn_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] på
+{
+  "id": "homey:zone:6559d9a0-36a9-4c72-8c4d-831dbb9e43a7:turn_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] av
+{
+  "id": "homey:zone:6559d9a0-36a9-4c72-8c4d-831dbb9e43a7:turn_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] på
+{
+  "id": "homey:zone:6e723943-92a5-402f-953e-950ed551dd51:turn_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] av
+{
+  "id": "homey:zone:6e723943-92a5-402f-953e-950ed551dd51:turn_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] på
+{
+  "id": "homey:zone:bedc4348-b471-44f0-8ab0-64493bf263d4:turn_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] av
+{
+  "id": "homey:zone:bedc4348-b471-44f0-8ab0-64493bf263d4:turn_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] på
+{
+  "id": "homey:zone:edb3b858-9ff5-4bf8-8242-69d0b8b96c95:turn_on",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå [[class]] av
+{
+  "id": "homey:zone:edb3b858-9ff5-4bf8-8242-69d0b8b96c95:turn_off",
+  "args": [
+    {
+      "name": "class",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "all",
+          "title": "Alle enheter"
+        },
+        {
+          "id": "socket",
+          "title": "Alle stikkontakter"
+        },
+        {
+          "id": "light",
+          "title": "Alle lys"
+        },
+        {
+          "id": "fan",
+          "title": "Alle vifter"
+        },
+        {
+          "id": "heater",
+          "title": "Alle varmeovner"
+        },
+        {
+          "id": "coffeemachine",
+          "title": "Alle kaffemaskiner"
+        },
+        {
+          "id": "kettle",
+          "title": "Alle kjeler"
+        },
+        {
+          "id": "tv",
+          "title": "Alle TV-er"
+        }
+      ]
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Vis en pulserende animasjon i [[color]]
+{
+  "id": "homey:manager:ledring:animate_pulse",
+  "args": [
+    {
+      "type": "color",
+      "name": "color",
+      "title": "Farge",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": true
+}
+-----------
+Opprett et varsel med [[text]]
+{
+  "id": "homey:manager:notifications:create_notification",
+  "args": [
+    {
+      "type": "text",
+      "name": "text",
+      "title": null,
+      "placeholder": "Hei verden"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Vis en animasjon i [[color]] under lasting
+{
+  "id": "homey:manager:ledring:animate_loading",
+  "args": [
+    {
+      "type": "color",
+      "name": "color",
+      "title": "Farge",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": true
+}
+-----------
+Innstill skjermspareren til [[screensaver]]
+{
+  "id": "homey:manager:ledring:set_screensaver",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "screensaver",
+      "title": "Skjermsparer",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:8d3e7c35-eb8d-4fbf-b225-ef957dfa493f:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:8d3e7c35-eb8d-4fbf-b225-ef957dfa493f:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:8d3e7c35-eb8d-4fbf-b225-ef957dfa493f:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+En kanal høyere
+{
+  "id": "homey:device:8d3e7c35-eb8d-4fbf-b225-ef957dfa493f:channel_up",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+En kanal lavere
+{
+  "id": "homey:device:8d3e7c35-eb8d-4fbf-b225-ef957dfa493f:channel_down",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Skru opp volumet
+{
+  "id": "homey:device:8d3e7c35-eb8d-4fbf-b225-ef957dfa493f:volume_up",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Senk volumet
+{
+  "id": "homey:device:8d3e7c35-eb8d-4fbf-b225-ef957dfa493f:volume_down",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Send kommandoen [[kommando]]
+{
+  "id": "homey:device:8d3e7c35-eb8d-4fbf-b225-ef957dfa493f:tx",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "command",
+      "title": "Kommando",
+      "placeholder": "Kanal 1"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:b098ec19-bfd0-417a-81e6-e932e3ba3a7e:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:b098ec19-bfd0-417a-81e6-e932e3ba3a7e:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:b098ec19-bfd0-417a-81e6-e932e3ba3a7e:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Senk volumet
+{
+  "id": "homey:device:b098ec19-bfd0-417a-81e6-e932e3ba3a7e:volume_down",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Skru opp volumet
+{
+  "id": "homey:device:b098ec19-bfd0-417a-81e6-e932e3ba3a7e:volume_up",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Send kommandoen [[kommando]]
+{
+  "id": "homey:device:b098ec19-bfd0-417a-81e6-e932e3ba3a7e:tx",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "command",
+      "title": "Kommando",
+      "placeholder": "Kanal 1"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Reconnect
+{
+  "id": "homey:app:com.amazon.alexa:reconnect",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Run [[script]]
+{
+  "id": "homey:app:com.athom.homeyscript:run",
+  "args": [
+    {
+      "name": "script",
+      "type": "autocomplete",
+      "title": "Script",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Run [[code]]
+{
+  "id": "homey:app:com.athom.homeyscript:runCode",
+  "args": [
+    {
+      "name": "code",
+      "type": "code",
+      "language": "homeyscript",
+      "title": "Code",
+      "value": "// My Code",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Run [[code]] and return Yes/No-tag
+{
+  "id": "homey:app:com.athom.homeyscript:runCodeReturnsBoolean",
+  "args": [
+    {
+      "name": "code",
+      "type": "code",
+      "language": "homeyscript",
+      "title": "Code",
+      "value": "// My Code\n\nreturn true;",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Run [[code]] and return Number-tag
+{
+  "id": "homey:app:com.athom.homeyscript:runCodeReturnsNumber",
+  "args": [
+    {
+      "name": "code",
+      "type": "code",
+      "language": "homeyscript",
+      "title": "Code",
+      "value": "// My Code\n\nreturn 1;",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Run [[code]] and return Text-tag
+{
+  "id": "homey:app:com.athom.homeyscript:runCodeReturnsString",
+  "args": [
+    {
+      "name": "code",
+      "type": "code",
+      "language": "homeyscript",
+      "title": "Code",
+      "value": "// My Code\n\nreturn 'Hello World!';",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Run [[code]] with [[argument]]
+{
+  "id": "homey:app:com.athom.homeyscript:runCodeWithArg",
+  "args": [
+    {
+      "name": "code",
+      "type": "code",
+      "language": "homeyscript",
+      "title": "Code",
+      "value": "// My Code\n\nconsole.log(args[0]);",
+      "placeholder": null
+    },
+    {
+      "name": "argument",
+      "type": "text",
+      "required": false,
+      "title": "Argument",
+      "placeholder": "Argument",
+      "value": "MyArg"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Run [[code]] with [[argument]] and return Yes/No-tag
+{
+  "id": "homey:app:com.athom.homeyscript:runCodeWithArgReturnsBoolean",
+  "args": [
+    {
+      "name": "code",
+      "type": "code",
+      "language": "homeyscript",
+      "title": "Code",
+      "value": "// My Code\n\nconsole.log(args[0]);\n\nreturn true;",
+      "placeholder": null
+    },
+    {
+      "name": "argument",
+      "type": "text",
+      "required": false,
+      "title": "Argument",
+      "placeholder": "Argument",
+      "value": "MyArg"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Run [[code]] with [[argument]] and return Number-tag
+{
+  "id": "homey:app:com.athom.homeyscript:runCodeWithArgReturnsNumber",
+  "args": [
+    {
+      "name": "code",
+      "type": "code",
+      "language": "homeyscript",
+      "title": "Code",
+      "value": "// My Code\n\nconsole.log(args[0]);\n\nreturn 1;",
+      "placeholder": null
+    },
+    {
+      "name": "argument",
+      "type": "text",
+      "required": false,
+      "title": "Argument",
+      "placeholder": "Argument",
+      "value": "MyArg"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Run [[code]] with [[argument]] and return Text-tag
+{
+  "id": "homey:app:com.athom.homeyscript:runCodeWithArgReturnsString",
+  "args": [
+    {
+      "name": "code",
+      "type": "code",
+      "language": "homeyscript",
+      "title": "Code",
+      "value": "// My Code\n\nconsole.log(args[0]);\n\nreturn 'Hello World!';",
+      "placeholder": null
+    },
+    {
+      "name": "argument",
+      "type": "text",
+      "required": false,
+      "title": "Argument",
+      "placeholder": "Argument",
+      "value": "MyArg"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Run [[script]] with argument [[argument]]
+{
+  "id": "homey:app:com.athom.homeyscript:runWithArg",
+  "args": [
+    {
+      "name": "script",
+      "type": "autocomplete",
+      "title": "Script",
+      "placeholder": null
+    },
+    {
+      "name": "argument",
+      "type": "text",
+      "title": "Argument",
+      "placeholder": "Argument"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:e23411f6-168d-4a63-9a77-de2510e6def3:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:e23411f6-168d-4a63-9a77-de2510e6def3:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:e23411f6-168d-4a63-9a77-de2510e6def3:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Startup purifier
+{
+  "id": "homey:device:0767ec9f-0dbf-4854-beb4-1485d7b3657b:on",
+  "args": [],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Shutoff purifier
+{
+  "id": "homey:device:0767ec9f-0dbf-4854-beb4-1485d7b3657b:off",
+  "args": [],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:0767ec9f-0dbf-4854-beb4-1485d7b3657b:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Fan [[mode]]
+{
+  "id": "homey:device:0767ec9f-0dbf-4854-beb4-1485d7b3657b:fan_speed",
+  "args": [
+    {
+      "name": "mode",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": "Speed 1"
+        },
+        {
+          "id": "2",
+          "title": "Speed 2"
+        },
+        {
+          "id": "3",
+          "title": "Speed 3, some devices"
+        },
+        {
+          "id": "AUTO",
+          "title": "Auto"
+        },
+        {
+          "id": "s",
+          "title": "Silent, some devices"
+        },
+        {
+          "id": "t",
+          "title": "Turbo, some devices"
+        }
+      ],
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Disable Humidification
+{
+  "id": "homey:device:0767ec9f-0dbf-4854-beb4-1485d7b3657b:func_mode_off",
+  "args": [],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Enable Humidification
+{
+  "id": "homey:device:0767ec9f-0dbf-4854-beb4-1485d7b3657b:func_mode_on",
+  "args": [],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Light level ring [[mode]]
+{
+  "id": "homey:device:0767ec9f-0dbf-4854-beb4-1485d7b3657b:light_intensity",
+  "args": [
+    {
+      "name": "mode",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "0",
+          "title": "0"
+        },
+        {
+          "id": "25",
+          "title": "25"
+        },
+        {
+          "id": "50",
+          "title": "50"
+        },
+        {
+          "id": "75",
+          "title": "75"
+        },
+        {
+          "id": "100",
+          "title": "100"
+        }
+      ],
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+purifier [[mode]]
+{
+  "id": "homey:device:0767ec9f-0dbf-4854-beb4-1485d7b3657b:purifier_mode",
+  "args": [
+    {
+      "name": "mode",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "P",
+          "title": "General mode"
+        },
+        {
+          "id": "A",
+          "title": "Allergen mode"
+        },
+        {
+          "id": "M",
+          "title": "Manual mode"
+        },
+        {
+          "id": "B",
+          "title": "Bacteria & Virus mode"
+        },
+        {
+          "id": "AG",
+          "title": "Auto mode, some devices"
+        },
+        {
+          "id": "GT",
+          "title": "Gentle, some devices"
+        },
+        {
+          "id": "S",
+          "title": "Sleep, some devices"
+        },
+        {
+          "id": "N",
+          "title": "Night, some devices"
+        },
+        {
+          "id": "T",
+          "title": "Turbo, some devices"
+        }
+      ],
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Spill av
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:play",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Pause
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:pause",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom avspilling/pause
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:toggle_playing",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Neste
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:next",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Forrige
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:prev",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp volumet
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:volume_mute",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Opphev demping av volum
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:volume_unmute",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå dempet volum på eller av
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:volume_mute_toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Sett volumet til
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:volume_set",
+  "args": [
+    {
+      "name": "volume_set",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Set relative volume
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:volume_set_relative",
+  "args": [
+    {
+      "name": "volume_set",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Stop casting
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:stop",
+  "args": [],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Cast YouTube video [[youtube_id]]
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:castYouTube",
+  "args": [
+    {
+      "name": "youtube_id",
+      "title": "YouTube video",
+      "type": "text",
+      "placeholder": "Enter a YouTube video URL or video id"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Cast video [[url]]
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:castVideo",
+  "args": [
+    {
+      "name": "url",
+      "title": "Video URL",
+      "type": "text",
+      "placeholder": "https://website.com/video.mp4"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Cast audio URL [[url]]
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:castAudio",
+  "args": [
+    {
+      "name": "url",
+      "title": "Audio URL",
+      "type": "text",
+      "placeholder": "https://website.com/audio.mp3"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Cast TuneIn Station [[station_id]]
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:castRadio",
+  "args": [
+    {
+      "name": "station_id",
+      "title": "TuneIn Station",
+      "type": "autocomplete",
+      "placeholder": "Search a TuneIn Station..."
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Cast internet radio [[station_id]]
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:castWebRadio",
+  "args": [
+    {
+      "name": "station_id",
+      "type": "autocomplete",
+      "title": "Internet radio station",
+      "placeholder": "Search a station..."
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Cast a picture
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:castPicture",
+  "args": [],
+  "droptoken": "image",
+  "duration": false
+}
+-----------
+Cast website [[url]]
+{
+  "id": "homey:device:454dbdc9-578e-4e6e-81dc-184856fdad64:castUrl",
+  "args": [
+    {
+      "name": "url",
+      "type": "text",
+      "title": "Website URL",
+      "placeholder": "https://www.athom.com"
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Sett en scene [[gatewayScene]]
+{
+  "id": "homey:app:com.ikea.tradfri.gateway:setGatewayScene",
+  "args": [
+    {
+      "name": "gatewayScene",
+      "type": "autocomplete",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:07f1ead5-2a39-43cd-94f0-7a022d218317:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:07f1ead5-2a39-43cd-94f0-7a022d218317:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:07f1ead5-2a39-43cd-94f0-7a022d218317:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:07f1ead5-2a39-43cd-94f0-7a022d218317:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:07f1ead5-2a39-43cd-94f0-7a022d218317:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill en temperatur
+{
+  "id": "homey:device:07f1ead5-2a39-43cd-94f0-7a022d218317:temperature",
+  "args": [
+    {
+      "name": "temperature",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:1af8c95f-dd1c-4811-9d8e-8e4a64f96782:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:1af8c95f-dd1c-4811-9d8e-8e4a64f96782:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:1af8c95f-dd1c-4811-9d8e-8e4a64f96782:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:1af8c95f-dd1c-4811-9d8e-8e4a64f96782:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:1af8c95f-dd1c-4811-9d8e-8e4a64f96782:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:25bb5933-e2a1-4c83-9de0-b16da9252c4c:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:25bb5933-e2a1-4c83-9de0-b16da9252c4c:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:25bb5933-e2a1-4c83-9de0-b16da9252c4c:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:25bb5933-e2a1-4c83-9de0-b16da9252c4c:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:25bb5933-e2a1-4c83-9de0-b16da9252c4c:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill en temperatur
+{
+  "id": "homey:device:25bb5933-e2a1-4c83-9de0-b16da9252c4c:temperature",
+  "args": [
+    {
+      "name": "temperature",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:30ca5313-cb75-4dc6-9b6c-73f77d73e7da:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:30ca5313-cb75-4dc6-9b6c-73f77d73e7da:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:30ca5313-cb75-4dc6-9b6c-73f77d73e7da:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:30ca5313-cb75-4dc6-9b6c-73f77d73e7da:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:30ca5313-cb75-4dc6-9b6c-73f77d73e7da:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:3427053d-d3b0-4104-82c1-6dd0b812b530:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:3427053d-d3b0-4104-82c1-6dd0b812b530:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:3427053d-d3b0-4104-82c1-6dd0b812b530:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:3427053d-d3b0-4104-82c1-6dd0b812b530:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:3427053d-d3b0-4104-82c1-6dd0b812b530:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:481feeb6-6ebc-48e3-a124-da5f80403a5a:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:481feeb6-6ebc-48e3-a124-da5f80403a5a:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:481feeb6-6ebc-48e3-a124-da5f80403a5a:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:481feeb6-6ebc-48e3-a124-da5f80403a5a:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:481feeb6-6ebc-48e3-a124-da5f80403a5a:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill en temperatur
+{
+  "id": "homey:device:481feeb6-6ebc-48e3-a124-da5f80403a5a:temperature",
+  "args": [
+    {
+      "name": "temperature",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:6c1db787-6e6a-44bc-a9bc-619a86525af2:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:6c1db787-6e6a-44bc-a9bc-619a86525af2:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:6c1db787-6e6a-44bc-a9bc-619a86525af2:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:6c1db787-6e6a-44bc-a9bc-619a86525af2:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:6c1db787-6e6a-44bc-a9bc-619a86525af2:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:7c528954-2077-433c-8e8a-200ece85755e:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:7c528954-2077-433c-8e8a-200ece85755e:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:7c528954-2077-433c-8e8a-200ece85755e:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:7c528954-2077-433c-8e8a-200ece85755e:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:7c528954-2077-433c-8e8a-200ece85755e:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:7db95438-09b5-4126-ba0c-b50aef908e9a:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:7db95438-09b5-4126-ba0c-b50aef908e9a:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:7db95438-09b5-4126-ba0c-b50aef908e9a:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:7db95438-09b5-4126-ba0c-b50aef908e9a:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:7db95438-09b5-4126-ba0c-b50aef908e9a:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill en temperatur
+{
+  "id": "homey:device:7db95438-09b5-4126-ba0c-b50aef908e9a:temperature",
+  "args": [
+    {
+      "name": "temperature",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:85196839-e5ad-4c86-ab96-379e1184ce08:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:85196839-e5ad-4c86-ab96-379e1184ce08:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:85196839-e5ad-4c86-ab96-379e1184ce08:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:85196839-e5ad-4c86-ab96-379e1184ce08:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:85196839-e5ad-4c86-ab96-379e1184ce08:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill en temperatur
+{
+  "id": "homey:device:85196839-e5ad-4c86-ab96-379e1184ce08:temperature",
+  "args": [
+    {
+      "name": "temperature",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:a0b7a2cc-a8f4-42ae-80f8-d70b4e0297de:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:a0b7a2cc-a8f4-42ae-80f8-d70b4e0297de:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:a0b7a2cc-a8f4-42ae-80f8-d70b4e0297de:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:a0b7a2cc-a8f4-42ae-80f8-d70b4e0297de:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:a0b7a2cc-a8f4-42ae-80f8-d70b4e0297de:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill en temperatur
+{
+  "id": "homey:device:a0b7a2cc-a8f4-42ae-80f8-d70b4e0297de:temperature",
+  "args": [
+    {
+      "name": "temperature",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:af558a2a-320b-4335-84d1-58ef0e256ce7:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:af558a2a-320b-4335-84d1-58ef0e256ce7:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:af558a2a-320b-4335-84d1-58ef0e256ce7:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:af558a2a-320b-4335-84d1-58ef0e256ce7:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:af558a2a-320b-4335-84d1-58ef0e256ce7:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:d10d351d-bd93-4a55-894b-dcc2be1d7305:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:d10d351d-bd93-4a55-894b-dcc2be1d7305:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:d10d351d-bd93-4a55-894b-dcc2be1d7305:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:d10d351d-bd93-4a55-894b-dcc2be1d7305:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:d10d351d-bd93-4a55-894b-dcc2be1d7305:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:d1cc3c9f-417b-42fa-9c3b-96df11ff578c:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:d1cc3c9f-417b-42fa-9c3b-96df11ff578c:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:d1cc3c9f-417b-42fa-9c3b-96df11ff578c:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:d1cc3c9f-417b-42fa-9c3b-96df11ff578c:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:d1cc3c9f-417b-42fa-9c3b-96df11ff578c:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill en temperatur
+{
+  "id": "homey:device:d1cc3c9f-417b-42fa-9c3b-96df11ff578c:temperature",
+  "args": [
+    {
+      "name": "temperature",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:d49387b1-3d21-4cac-9aa3-d76e0d8ab5b3:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:d49387b1-3d21-4cac-9aa3-d76e0d8ab5b3:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:d49387b1-3d21-4cac-9aa3-d76e0d8ab5b3:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:d49387b1-3d21-4cac-9aa3-d76e0d8ab5b3:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:d49387b1-3d21-4cac-9aa3-d76e0d8ab5b3:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:d651fbdc-e926-40cb-9158-c1302cb24d0c:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:d651fbdc-e926-40cb-9158-c1302cb24d0c:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:d651fbdc-e926-40cb-9158-c1302cb24d0c:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:d651fbdc-e926-40cb-9158-c1302cb24d0c:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:d651fbdc-e926-40cb-9158-c1302cb24d0c:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill en temperatur
+{
+  "id": "homey:device:d651fbdc-e926-40cb-9158-c1302cb24d0c:temperature",
+  "args": [
+    {
+      "name": "temperature",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:db1593ae-35b5-46fe-ba7a-ecd44cd16c3d:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:db1593ae-35b5-46fe-ba7a-ecd44cd16c3d:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:db1593ae-35b5-46fe-ba7a-ecd44cd16c3d:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:db1593ae-35b5-46fe-ba7a-ecd44cd16c3d:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:db1593ae-35b5-46fe-ba7a-ecd44cd16c3d:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill en temperatur
+{
+  "id": "homey:device:db1593ae-35b5-46fe-ba7a-ecd44cd16c3d:temperature",
+  "args": [
+    {
+      "name": "temperature",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill fargetone
+{
+  "id": "homey:device:db1593ae-35b5-46fe-ba7a-ecd44cd16c3d:hue",
+  "args": [
+    {
+      "name": "hue",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0,
+      "label": "°",
+      "labelMultiplier": 360,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill fargetone
+{
+  "id": "homey:device:db1593ae-35b5-46fe-ba7a-ecd44cd16c3d:color",
+  "args": [
+    {
+      "name": "color",
+      "type": "color",
+      "min": null,
+      "max": null,
+      "step": null,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill en tilfeldig farge
+{
+  "id": "homey:device:db1593ae-35b5-46fe-ba7a-ecd44cd16c3d:color_random",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill metningen
+{
+  "id": "homey:device:db1593ae-35b5-46fe-ba7a-ecd44cd16c3d:saturation",
+  "args": [
+    {
+      "name": "saturation",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:eb701d49-09d5-40eb-9454-65a96a6a8f36:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:eb701d49-09d5-40eb-9454-65a96a6a8f36:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:eb701d49-09d5-40eb-9454-65a96a6a8f36:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:eb701d49-09d5-40eb-9454-65a96a6a8f36:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:eb701d49-09d5-40eb-9454-65a96a6a8f36:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:efc40f25-608e-45fa-bb8d-66a3c081ae5d:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:efc40f25-608e-45fa-bb8d-66a3c081ae5d:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:efc40f25-608e-45fa-bb8d-66a3c081ae5d:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:efc40f25-608e-45fa-bb8d-66a3c081ae5d:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:efc40f25-608e-45fa-bb8d-66a3c081ae5d:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill en temperatur
+{
+  "id": "homey:device:efc40f25-608e-45fa-bb8d-66a3c081ae5d:temperature",
+  "args": [
+    {
+      "name": "temperature",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:f2e83c8a-959a-4205-9fbe-41e7b0adec89:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:f2e83c8a-959a-4205-9fbe-41e7b0adec89:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:f2e83c8a-959a-4205-9fbe-41e7b0adec89:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:f2e83c8a-959a-4205-9fbe-41e7b0adec89:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:f2e83c8a-959a-4205-9fbe-41e7b0adec89:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:b31a02e3-2610-4956-aac1-95054f096c7d:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:b31a02e3-2610-4956-aac1-95054f096c7d:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:b31a02e3-2610-4956-aac1-95054f096c7d:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:f5a51d90-6ece-4479-a502-2ce58e3c3299:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:f5a51d90-6ece-4479-a502-2ce58e3c3299:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:f5a51d90-6ece-4479-a502-2ce58e3c3299:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Emit an event "[[name]]"
+{
+  "id": "homey:app:name.klep.flow-event-bus:emit_event",
+  "args": [
+    {
+      "name": "name",
+      "type": "text",
+      "placeholder": "Event name",
+      "title": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Emit an event "[[name]]" with value "[[value]]"
+{
+  "id": "homey:app:name.klep.flow-event-bus:emit_event_with_value",
+  "args": [
+    {
+      "name": "name",
+      "type": "text",
+      "placeholder": "Event name",
+      "title": null
+    },
+    {
+      "name": "value",
+      "type": "text",
+      "placeholder": "Value",
+      "title": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Kill loop [[name]], should trigger finished card [[triggerKillCard]]
+{
+  "id": "homey:app:nl.mennovanhout.loops:then-kill-loop-with-name",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "name",
+      "title": "Name",
+      "placeholder": "Pick a name"
+    },
+    {
+      "type": "checkbox",
+      "name": "triggerKillCard",
+      "title": "Trigger kill card",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Start loop [[name]] and run [[times]] times with a delay in between of [[delay]] [[durationInUnits]]
+{
+  "id": "homey:app:nl.mennovanhout.loops:then-start-loop-with-name",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "name",
+      "title": "Name",
+      "placeholder": "Pick a name"
+    },
+    {
+      "type": "number",
+      "name": "times",
+      "title": "Times",
+      "placeholder": "Pick a number",
+      "min": 1,
+      "max": 9999999,
+      "step": 1
+    },
+    {
+      "type": "number",
+      "name": "delay",
+      "title": "Delay",
+      "placeholder": "Pick a number",
+      "min": 1,
+      "max": 9999999,
+      "step": 1
+    },
+    {
+      "type": "dropdown",
+      "name": "durationInUnits",
+      "title": "Duration in units",
+      "values": [
+        {
+          "id": "milliseconds",
+          "title": "milliseconds"
+        },
+        {
+          "id": "seconds",
+          "title": "seconds"
+        },
+        {
+          "id": "minutes",
+          "title": "minutes"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Start loop [[name]] and transition from [[from]] to [[to]] in [[steps]] steps with a delay in between of [[delay]] [[durationInUnits]]
+{
+  "id": "homey:app:nl.mennovanhout.loops:then-start-loop-with-name-until",
+  "args": [
+    {
+      "type": "autocomplete",
+      "name": "name",
+      "title": "Name",
+      "placeholder": "Pick a name"
+    },
+    {
+      "type": "number",
+      "name": "from",
+      "title": "From",
+      "placeholder": "Pick a number"
+    },
+    {
+      "type": "number",
+      "name": "to",
+      "title": "To",
+      "placeholder": "Pick a number"
+    },
+    {
+      "type": "number",
+      "name": "steps",
+      "title": "Steps",
+      "placeholder": "Pick a number"
+    },
+    {
+      "type": "number",
+      "name": "delay",
+      "title": "Delay",
+      "placeholder": "Pick a number",
+      "min": 1,
+      "max": 9999999,
+      "step": 1
+    },
+    {
+      "type": "dropdown",
+      "name": "durationInUnits",
+      "title": "Duration in units",
+      "values": [
+        {
+          "id": "milliseconds",
+          "title": "milliseconds"
+        },
+        {
+          "id": "seconds",
+          "title": "seconds"
+        },
+        {
+          "id": "minutes",
+          "title": "minutes"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:992ffae7-8f99-4a77-b24f-3af3bf0fba15:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:992ffae7-8f99-4a77-b24f-3af3bf0fba15:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:992ffae7-8f99-4a77-b24f-3af3bf0fba15:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Run course [[course]], temperature on [[temp]], rinse [[rinse]], spin at [[spin]]
+{
+  "id": "homey:device:992ffae7-8f99-4a77-b24f-3af3bf0fba15:WM-course-set",
+  "args": [
+    {
+      "name": "course",
+      "type": "autocomplete",
+      "placeholder": "Select",
+      "title": "Course"
+    },
+    {
+      "name": "temp",
+      "type": "autocomplete",
+      "placeholder": "Select course first",
+      "title": "Temperature"
+    },
+    {
+      "name": "rinse",
+      "type": "autocomplete",
+      "placeholder": "Select course first",
+      "title": "Rinse"
+    },
+    {
+      "name": "spin",
+      "type": "autocomplete",
+      "placeholder": "Select course first",
+      "title": "Spin"
+    }
+  ],
+  "droptoken": null,
+  "duration": true
+}
+-----------
+Set washer operation mode to [[powermode]]
+{
+  "id": "homey:device:992ffae7-8f99-4a77-b24f-3af3bf0fba15:WM-operation-set",
+  "args": [
+    {
+      "name": "powermode",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "WMOff",
+          "title": "Into Standby"
+        },
+        {
+          "id": "WMWakeup",
+          "title": "Wake Up"
+        },
+        {
+          "id": "WMStop",
+          "title": "Pause"
+        }
+      ],
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": true
+}
+-----------
+Innstill temperaturen
+{
+  "id": "homey:device:2229277e-bdd1-4158-bcd6-875ee8959bcd:target_temperature_set",
+  "args": [
+    {
+      "name": "target_temperature",
+      "type": "range",
+      "min": 20,
+      "max": 85,
+      "step": 1,
+      "label": "°C",
+      "labelDecimals": 1,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:2229277e-bdd1-4158-bcd6-875ee8959bcd:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:2229277e-bdd1-4158-bcd6-875ee8959bcd:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:2229277e-bdd1-4158-bcd6-875ee8959bcd:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Endre maks effekt til [[max_power]]
+{
+  "id": "homey:device:2229277e-bdd1-4158-bcd6-875ee8959bcd:change-maxpower",
+  "args": [
+    {
+      "type": "dropdown",
+      "title": "Maks effekt",
+      "values": [
+        {
+          "id": "low_power",
+          "title": "700 W"
+        },
+        {
+          "id": "medium_power",
+          "title": "1300 W"
+        },
+        {
+          "id": "high_power",
+          "title": "2000 W"
+        }
+      ],
+      "name": "max_power",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Endre romtemperaturen til [[ambient_temp]]
+{
+  "id": "homey:device:2229277e-bdd1-4158-bcd6-875ee8959bcd:change-ambient-temp",
+  "args": [
+    {
+      "type": "number",
+      "title": "Romtemperatur",
+      "min": 0,
+      "max": 40,
+      "step": 0.1,
+      "name": "ambient_temp",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:3853deca-fee5-402b-87fb-b4169ad1771c:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:3853deca-fee5-402b-87fb-b4169ad1771c:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:3853deca-fee5-402b-87fb-b4169ad1771c:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:468511f2-e694-4fae-ab13-9444d44e24fd:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:468511f2-e694-4fae-ab13-9444d44e24fd:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:468511f2-e694-4fae-ab13-9444d44e24fd:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:4ea6200a-98c6-40a5-807f-ef77a549cc98:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:4ea6200a-98c6-40a5-807f-ef77a549cc98:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:4ea6200a-98c6-40a5-807f-ef77a549cc98:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:7125712d-4a9a-47d0-9808-2ec3215d9dae:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:7125712d-4a9a-47d0-9808-2ec3215d9dae:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:7125712d-4a9a-47d0-9808-2ec3215d9dae:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:735da5e4-1285-47dd-9aed-4afe1f84c261:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:735da5e4-1285-47dd-9aed-4afe1f84c261:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:735da5e4-1285-47dd-9aed-4afe1f84c261:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:748478ca-ff73-474d-b338-948048bcc1d3:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:748478ca-ff73-474d-b338-948048bcc1d3:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:748478ca-ff73-474d-b338-948048bcc1d3:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:afaa1650-e7ee-4466-a2a4-1f8105d48a9b:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:afaa1650-e7ee-4466-a2a4-1f8105d48a9b:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:afaa1650-e7ee-4466-a2a4-1f8105d48a9b:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:ef1588df-bbf7-4a44-bb07-1df62c6c797f:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:ef1588df-bbf7-4a44-bb07-1df62c6c797f:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:ef1588df-bbf7-4a44-bb07-1df62c6c797f:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Send [[functionname]] command with value "false" to device [[tuyaDeviceId]]
+{
+  "id": "homey:app:com.tuya.cloud:sendTuyaFalseCommand",
+  "args": [
+    {
+      "name": "tuyaDeviceId",
+      "type": "text",
+      "title": "Tuya Device id",
+      "placeholder": null
+    },
+    {
+      "name": "functionname",
+      "type": "text",
+      "title": "Functioname",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Send [[functionname]] command with number value [[functionValue]] to device [[tuyaDeviceId]]
+{
+  "id": "homey:app:com.tuya.cloud:sendTuyaNumberCommand",
+  "args": [
+    {
+      "name": "tuyaDeviceId",
+      "type": "text",
+      "title": "Device id",
+      "placeholder": null
+    },
+    {
+      "name": "functionname",
+      "type": "text",
+      "title": "Functioname",
+      "placeholder": null
+    },
+    {
+      "name": "functionValue",
+      "type": "number",
+      "title": "Functionvalue",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Send [[functionname]] command with text value [[functionValue]] to device [[tuyaDeviceId]]
+{
+  "id": "homey:app:com.tuya.cloud:sendTuyaTextCommand",
+  "args": [
+    {
+      "name": "tuyaDeviceId",
+      "type": "text",
+      "title": "Device id",
+      "placeholder": null
+    },
+    {
+      "name": "functionname",
+      "type": "text",
+      "title": "Functioname",
+      "placeholder": null
+    },
+    {
+      "name": "functionValue",
+      "type": "text",
+      "title": "Functionvalue",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Send [[functionname]] command with "true" to device [[tuyaDeviceId]]
+{
+  "id": "homey:app:com.tuya.cloud:sendTuyaTrueCommand",
+  "args": [
+    {
+      "name": "tuyaDeviceId",
+      "type": "text",
+      "title": "Device id",
+      "placeholder": null
+    },
+    {
+      "name": "functionname",
+      "type": "text",
+      "title": "Functioname",
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Start [[scene]] legacy scene
+{
+  "id": "homey:app:com.tuya.cloud:setScene",
+  "args": [
+    {
+      "name": "scene",
+      "type": "autocomplete",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Execute [[scene]] scene
+{
+  "id": "homey:app:com.tuya.cloud:setTuyaScene",
+  "args": [
+    {
+      "name": "scene",
+      "type": "autocomplete",
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå på
+{
+  "id": "homey:device:6e00dc96-a9d9-4800-892a-7d4812df152e:on",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Slå av
+{
+  "id": "homey:device:6e00dc96-a9d9-4800-892a-7d4812df152e:off",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Veksle mellom på og av
+{
+  "id": "homey:device:6e00dc96-a9d9-4800-892a-7d4812df152e:toggle",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Demp til
+{
+  "id": "homey:device:6e00dc96-a9d9-4800-892a-7d4812df152e:dim",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill relativt dempingsnivå
+{
+  "id": "homey:device:6e00dc96-a9d9-4800-892a-7d4812df152e:dim_relative",
+  "args": [
+    {
+      "name": "dim",
+      "type": "range",
+      "min": -1,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill en temperatur
+{
+  "id": "homey:device:6e00dc96-a9d9-4800-892a-7d4812df152e:temperature",
+  "args": [
+    {
+      "name": "temperature",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill fargetone
+{
+  "id": "homey:device:6e00dc96-a9d9-4800-892a-7d4812df152e:hue",
+  "args": [
+    {
+      "name": "hue",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0,
+      "label": "°",
+      "labelMultiplier": 360,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill fargetone
+{
+  "id": "homey:device:6e00dc96-a9d9-4800-892a-7d4812df152e:color",
+  "args": [
+    {
+      "name": "color",
+      "type": "color",
+      "min": null,
+      "max": null,
+      "step": null,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill en tilfeldig farge
+{
+  "id": "homey:device:6e00dc96-a9d9-4800-892a-7d4812df152e:color_random",
+  "args": null,
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Innstill metningen
+{
+  "id": "homey:device:6e00dc96-a9d9-4800-892a-7d4812df152e:saturation",
+  "args": [
+    {
+      "name": "saturation",
+      "type": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "value": 0.5,
+      "label": "%",
+      "labelMultiplier": 100,
+      "labelDecimals": 0,
+      "title": null,
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
+Hent tekstlig værvarsel for [[day]]
+{
+  "id": "homey:device:3c9c00f5-508f-404b-9934-050967382da1:10_textforecast",
+  "args": [
+    {
+      "name": "day",
+      "type": "dropdown",
+      "title": "Dag",
+      "values": [
+        {
+          "id": "0",
+          "title": "i dag"
+        },
+        {
+          "id": "1",
+          "title": "i morgen"
+        },
+        {
+          "id": "2",
+          "title": "i overmorgen"
+        }
+      ],
+      "placeholder": null
+    }
+  ],
+  "droptoken": null,
+  "duration": false
+}
+-----------
