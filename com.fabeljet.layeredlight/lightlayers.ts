@@ -33,6 +33,42 @@ interface CapabilitiesObj {
     [key: string]: HomeyAPI.ManagerDevices.Capability;
 }
 
+function isEqualSetting(a : number[]|boolean|null|undefined, b : number[]|boolean|null|undefined) : boolean {
+    if (a === undefined || b === undefined) {
+        return a === b;
+    }
+
+    if (a === null || b === null) {
+        return a === b;
+    }
+
+    if (a === true || a === false) {
+        return a === b;
+    }
+
+    // a must be an array at this point.
+
+    if (!Array.isArray(b)) {
+        return false;
+    }
+
+    if (a.length !== b.length) {
+        return false;
+    }
+
+    // Check contents
+    for (let i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+
+
 class LightLayers {
     devices : HomeyAPI.ManagerDevices;
     logic : HomeyAPI.ManagerLogic;
@@ -109,13 +145,26 @@ class LightLayers {
     }
 
     /**
+     * Get changes between two scenes.
+     */
+    getChanges(before : Scene, after : Scene) : Scene {
+        let result : Scene = {};
+        for (const lightName in after) {
+            if (!isEqualSetting(before[lightName], after[lightName])) {
+                result[lightName] = after[lightName];
+            }
+        }
+        return result;
+    }
+
+    /**
      * @param {string} namedSceneString Scene name, colon, then a full scene string.
      * @returns {array} Scene name, then the scene string.
      */
-    getNamedSceneFromString(namedSceneString : string) : [string, string]|null {
+    getNamedSceneFromString(namedSceneString : string) : [string, string] {
         const matches : RegExpMatchArray|null = namedSceneString.match(/\s*(\S+?)\s*:(.*)/);
         if (matches === null) {
-            return null;
+            throw new Error(`Invalid named scene string: {namedSceneString}`);
         }
 
         const name = matches[1];
@@ -298,10 +347,7 @@ class LightLayers {
      * Set scalar capability value.
      */
     async setCapabilityFloat(device : HomeyAPI.ManagerDevices.Device, capabilityName : string, value : any) {
-        var settings : any = await this.devices.getDeviceSettingsObj({ id: device.id });
-        log(`Settings for ${device.name} is `, settings);
-
-        const capability : any = (settings.capabilitiesOptions as CapabilitiesObj)[capabilityName];
+        const capability : any = (device as any).capabilitiesObj[capabilityName];
         const scaledValue = value * (capability.max - capability.min) + capability.min;
         const description = `${device.name} ${capability.id} to ${value} (=${scaledValue}${capability.units ?? ''}; range [${capability.min}, ${capability.max}])`
 
@@ -378,7 +424,7 @@ class LightLayers {
 
         for (const devicex of Object.values(devices)) {
             var device : any = devicex;
-            var settings = this.devices.getDeviceSettingsObj({ id: device.id });
+            var settings = await this.devices.getDeviceSettingsObj({ id: device.id });
             log(`Settings for ${device.name} is `, settings);
     
             // If this device is a light (class)
@@ -417,12 +463,15 @@ class LightLayers {
         const after : Scene = this.flattenStack(stack, priorities)
         log('Flattened scene stack is ', after);
 
+        const diff : Scene = this.getChanges(before, after);
+        log('Changes to apply are ', diff);
+
         const lights = await this.getLights();
         if (spreadMs == 0) {
-            await this.applyScene(lights, after);
+            await this.applyScene(lights, diff);
         } else {
             const arrangement = await this.getSceneArrangement();
-            const stages = this.getSceneOrdering(after, arrangement);
+            const stages = this.getSceneOrdering(diff, arrangement);
             // Apply stages with a small delay after, except the last one.
             const jobs : object[] = [];
             var stageIndex : number = 0
