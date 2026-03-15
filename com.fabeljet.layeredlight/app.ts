@@ -2,11 +2,11 @@
 
 import Homey from 'homey';
 import { HomeyAPIV3Local as HomeyAPI } from 'homey-api';
-import { LightEngine, LightEngineConfig } from './light-engine.js';
-import { CardHandler } from './card-handler.js';
+import { LightEngine } from './light-engine';
+import { CardHandler } from './card-handler';
+import { HomeySceneStore, HomeySceneProvider, HomeyDeviceProvider } from './homey-adapter';
 
 class MyApp extends Homey.App {
-
   homeyApi: any;
   lightEngine: LightEngine | null = null;
   cardHandler: CardHandler | null = null;
@@ -22,18 +22,22 @@ class MyApp extends Homey.App {
 
     this.homeyApi = await HomeyAPI.createAppAPI({ homey: this.homey });
 
-    const engineConfig: LightEngineConfig = {
-      devices: this.homeyApi.devices as HomeyAPI.ManagerDevices,
-      logic: this.homeyApi.logic as HomeyAPI.ManagerLogic,
-      stackToken,
-      heartbeatIntervalMs: 30000,
-    };
+    const sceneStore = new HomeySceneStore(stackToken);
+    const sceneProvider = new HomeySceneProvider(this.homeyApi.logic as HomeyAPI.ManagerLogic);
+    const deviceProvider = new HomeyDeviceProvider(this.homeyApi.devices as HomeyAPI.ManagerDevices);
 
-    this.lightEngine = new LightEngine(engineConfig);
+    this.lightEngine = new LightEngine({
+      deps: {
+        sceneStore,
+        sceneProvider,
+        lightControllerDeps: {
+          deviceProvider,
+        },
+      },
+      heartbeatIntervalMs: 30000,
+    });
 
     this.cardHandler = new CardHandler({
-      devices: this.homeyApi.devices as HomeyAPI.ManagerDevices,
-      logic: this.homeyApi.logic as HomeyAPI.ManagerLogic,
       lightEngine: this.lightEngine,
     });
 
@@ -50,7 +54,6 @@ class MyApp extends Homey.App {
       this.log('LightEngine stopped');
     }
   }
-
 }
 
 module.exports = MyApp;
