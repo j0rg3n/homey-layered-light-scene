@@ -2,39 +2,53 @@
 
 import Homey from 'homey';
 import { HomeyAPIV3Local as HomeyAPI } from 'homey-api';
-import LightLayers, { LightLayersConfig } from './lightlayers.js';
+import { LightEngine, LightEngineConfig } from './light-engine.js';
+import { CardHandler } from './card-handler.js';
 
 class MyApp extends Homey.App {
-  homeyApi: any;
-  lightLayers: LightLayers|null = null;
 
-  /**
-   * onInit is called when the app is initialized.
-   */
+  homeyApi: any;
+  lightEngine: LightEngine | null = null;
+  cardHandler: CardHandler | null = null;
+
   async onInit() {
     this.log('MyApp has been initialized');
 
-    const myToken = await this.homey.flow.createToken("my_token", {
-      type: "string",
-      title: "My Token",
-      value: "{}",
+    const stackToken = await this.homey.flow.createToken('layered_light_stack', {
+      type: 'string',
+      title: 'Light Scene Stack',
+      value: '{}',
     });
 
     this.homeyApi = await HomeyAPI.createAppAPI({ homey: this.homey });
-    const config = new LightLayersConfig(this.homeyApi.devices as HomeyAPI.ManagerDevices, 
-      this.homeyApi.logic as HomeyAPI.ManagerLogic,
-      myToken)
 
-    this.lightLayers = new LightLayers(config);
+    const engineConfig: LightEngineConfig = {
+      devices: this.homeyApi.devices as HomeyAPI.ManagerDevices,
+      logic: this.homeyApi.logic as HomeyAPI.ManagerLogic,
+      stackToken,
+      heartbeatIntervalMs: 30000,
+    };
 
-    const applyLayeredSceneAction = this.homey.flow.getActionCard('applylayeredscene');
-    applyLayeredSceneAction.registerRunListener(async (args, state) => {
-      //var layers = new LightLayers()
-      if (this.lightLayers === null) {
-        throw new Error('LightLayers not initialized');
-      }
-      await this.lightLayers.applyNamedSceneString(args.layer_name, args.scene, args.step_interval_ms, args.clear);
+    this.lightEngine = new LightEngine(engineConfig);
+
+    this.cardHandler = new CardHandler({
+      devices: this.homeyApi.devices as HomeyAPI.ManagerDevices,
+      logic: this.homeyApi.logic as HomeyAPI.ManagerLogic,
+      lightEngine: this.lightEngine,
     });
+
+    this.cardHandler.registerFlowCards(this);
+
+    this.lightEngine.start();
+
+    this.log('LightEngine started with 30s heartbeat');
+  }
+
+  async onUninit() {
+    if (this.lightEngine) {
+      this.lightEngine.stop();
+      this.log('LightEngine stopped');
+    }
   }
 
 }
