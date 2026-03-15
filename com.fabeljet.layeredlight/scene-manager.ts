@@ -9,12 +9,45 @@ function log(message : string, ...optionalParams : any[]) {
   console.log(message, ...optionalParams);
 }
 
+export interface Keyframe {
+  value: number[] | boolean | null;
+  transitionMs?: number;
+  holdMs?: number;
+  hard?: boolean;
+  fromCurrent?: boolean;
+}
+
+export interface Animation {
+  keyframes: Keyframe[];
+  loop: boolean;
+}
+
+export type LightValue = number[] | boolean | null | Animation;
+
 export interface Scene {
-    [key: string]: number[]|boolean|null;
+    [key: string]: LightValue;
 }
 
 export interface SceneStringStack {
     [key: string]: string;
+}
+
+function parseDuration(durationStr: string): number {
+  const match = durationStr.match(/^(\d+(?:\.\d+)?)(ms|s|m|h)?$/);
+  if (!match) {
+    throw new Error(`Invalid duration: ${durationStr}`);
+  }
+
+  const value = parseFloat(match[1]);
+  const unit = match[2] || 's';
+
+  switch (unit) {
+    case 'ms': return Math.round(value);
+    case 's': return Math.round(value * 1000);
+    case 'm': return Math.round(value * 60000);
+    case 'h': return Math.round(value * 3600000);
+    default: return Math.round(value * 1000);
+  }
 }
 
 function isEqualSetting(a : number[]|boolean|null|undefined, b : number[]|boolean|null|undefined) : boolean {
@@ -42,6 +75,28 @@ function isEqualSetting(a : number[]|boolean|null|undefined, b : number[]|boolea
     if (a[i] !== b[i]) {
       return false;
     }
+  }
+
+  return true;
+}
+
+function isAnimation(value: any): value is Animation {
+  return value !== null && typeof value === 'object' && 'keyframes' in value && 'loop' in value;
+}
+
+function isEqualAnimation(a: Animation, b: Animation): boolean {
+  if (a.loop !== b.loop || a.keyframes.length !== b.keyframes.length) {
+    return false;
+  }
+
+  for (let i = 0; i < a.keyframes.length; i++) {
+    const ka = a.keyframes[i];
+    const kb = b.keyframes[i];
+
+    if (!isEqualSetting(ka.value, kb.value)) return false;
+    if (ka.transitionMs !== kb.transitionMs) return false;
+    if (ka.holdMs !== kb.holdMs) return false;
+    if (ka.hard !== kb.hard) return false;
   }
 
   return true;
@@ -100,27 +155,107 @@ export class SceneManager {
         throw new Error(`Invalid scene string: ${sceneString}`);
       }
 
-      const colorString = matches[1];
+      const valueString = matches[1];
       const nextLightName = matches[3];
-      if (colorString === 'null') {
-        scene[lightName] = null;
-      } else if (colorString === 'on') {
-        scene[lightName] = true;
-      } else if (colorString === 'off') {
-        scene[lightName] = false;
-      } else {
-        const rgb = this.getRgbVectorFromRgbString(colorString);
-        if (rgb.length === 3) {
-          const color = this.getHueSaturationLightnessFromRgb(rgb as [number, number, number]);
-          scene[lightName] = color;
-        } else {
-          scene[lightName] = rgb;
-        }
-      }
 
+      scene[lightName] = this.parseLightValue(valueString);
       lightName = nextLightName;
     }
     return scene;
+  }
+
+  parseLightValue(valueString: string): LightValue {
+    const hasLeadingSlash = valueString.startsWith('/');
+    const hasTrailingSlash = valueString.endsWith('/');
+    const hasLeadingPipe = valueString.startsWith('|');
+    const hasTrailingPipe = valueString.endsWith('|');
+
+    if (hasLeadingSlash || hasLeadingPipe || hasTrailingSlash || hasTrailingPipe) {
+      const isHard = hasLeadingPipe || hasTrailingPipe;
+      const isLoop = hasTrailingSlash || hasTrailingPipe;
+
+      const innerString = valueString.slice(1, -1);
+      const separator = isHard ? '|' : '/';
+      const parts = innerString.split(separator);
+      const keyframes: Keyframe[] = [];
+
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i].trim();
+        if (!part && i < parts.length - 1) {
+          keyframes.push({
+            value: null,
+            fromCurrent: true,
+          });
+          continue;
+        }
+        if (!part) continue;
+
+        const lastDigitMatch = part.match(/(\d+)((ms|s|m|h)?)$/);
+        let valuePart: string;
+        let durationStr: string | undefined;
+
+        if (lastDigitMatch) {
+          const numPart = lastDigitMatch[1];
+          const unitPart = lastDigitMatch[2];
+          const digitStartIndex = lastDigitMatch.index!;
+
+          if (digitStartIndex > 0) {
+            valuePart = part.slice(0, digitStartIndex);
+            if (unitPart) {
+              durationStr = numPart + unitPart;
+            }
+          } else if (unitPart) {
+            durationStr = numPart + unitPart;
+            valuePart = '';
+          } else {
+            valuePart = part;
+          }
+        } else {
+          valuePart = part;
+        }
+
+        const simpleValue = valuePart ? this.parseSimpleValue(valuePart) : undefined;
+        const isBinary = simpleValue === null || simpleValue === true || simpleValue === false;
+
+        const transitionMs = durationStr && !isHard && !isBinary ? parseDuration(durationStr) : undefined;
+        const holdMs = durationStr && (isHard || isBinary) ? parseDuration(durationStr) : undefined;
+
+        if (i > 0 && !durationStr && !isHard) {
+          keyframes[i - 1].holdMs = 0;
+        }
+
+        keyframes.push({
+          value: simpleValue !== undefined ? simpleValue : null,
+          transitionMs,
+          holdMs,
+          hard: isHard || isBinary,
+          fromCurrent: valuePart === '' && durationStr !== undefined,
+        });
+      }
+
+      if (keyframes.length > 0) {
+        return { keyframes, loop: isLoop };
+      }
+    }
+
+    return this.parseSimpleValue(valueString);
+  }
+
+  parseSimpleValue(valueString: string): number[] | boolean | null {
+    if (valueString === 'null') {
+      return null;
+    } else if (valueString === 'on') {
+      return true;
+    } else if (valueString === 'off') {
+      return false;
+    } else {
+      const rgb = this.getRgbVectorFromRgbString(valueString);
+      if (rgb.length === 3) {
+        return this.getHueSaturationLightnessFromRgb(rgb as [number, number, number]);
+      } else {
+        return rgb;
+      }
+    }
   }
 
   getRgbVectorFromRgbString(rgb : string) : number[] {
@@ -224,8 +359,15 @@ export class SceneManager {
   getChanges(before : Scene, after : Scene) : Scene {
     const result : Scene = {};
     for (const lightName in after) {
-      if (!isEqualSetting(before[lightName], after[lightName])) {
-        result[lightName] = after[lightName];
+      const beforeValue = before[lightName];
+      const afterValue = after[lightName];
+
+      if (isAnimation(beforeValue) || isAnimation(afterValue)) {
+        if (!isAnimation(beforeValue) || !isAnimation(afterValue) || !isEqualAnimation(beforeValue, afterValue)) {
+          result[lightName] = afterValue;
+        }
+      } else if (!isEqualSetting(beforeValue, afterValue)) {
+        result[lightName] = afterValue;
       }
     }
     return result;

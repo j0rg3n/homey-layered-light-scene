@@ -1,12 +1,19 @@
-import { Scene } from './scene-manager';
+import { Scene, Animation, Keyframe } from './scene-manager';
 import { LightDevice, DeviceProvider } from './interfaces';
 
 function log(message : string, ...optionalParams : any[]) {
   console.log(message, ...optionalParams);
 }
 
+function wait(ms: number): Promise<void> {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => resolve(), ms);
+  });
+}
+
 export class LightController {
   private deviceProvider: DeviceProvider;
+  private activeAnimations: Map<string, { cancel: () => void }> = new Map();
 
   constructor(deps: { deviceProvider: DeviceProvider }) {
     this.deviceProvider = deps.deviceProvider;
@@ -39,7 +46,7 @@ export class LightController {
     }
   }
 
-  async applySetting(device: LightDevice, setting: number[]|boolean|null) {
+  async applySimpleSetting(device: LightDevice, setting: number[]|boolean|null) {
     log(`Applying ${setting} to ${device.name}...`);
 
     if (setting === null) {
@@ -70,6 +77,88 @@ export class LightController {
     }
   }
 
+  async applyAnimation(device: LightDevice, animation: Animation): Promise<{ cancel: () => void }> {
+    const animationId = `${device.id}-${Date.now()}`;
+    let cancelled = false;
+
+    const cancel = () => {
+      cancelled = true;
+      this.activeAnimations.delete(animationId);
+    };
+
+    this.activeAnimations.set(animationId, { cancel });
+
+    const runAnimation = async () => {
+      do {
+        for (const keyframe of animation.keyframes) {
+          if (cancelled) return;
+
+          if (keyframe.transitionMs && !keyframe.hard) {
+            await this.applyTransition(device, keyframe.value, keyframe.transitionMs);
+          } else {
+            await this.applySimpleSetting(device, keyframe.value);
+          }
+
+          if (keyframe.holdMs && !cancelled) {
+            await wait(keyframe.holdMs);
+          }
+        }
+      } while (animation.loop && !cancelled);
+
+      this.activeAnimations.delete(animationId);
+    };
+
+    runAnimation();
+
+    return { cancel };
+  }
+
+  async applyTransition(device: LightDevice, targetValue: number[] | boolean | null, durationMs: number) {
+    const steps = Math.max(1, Math.ceil(durationMs / 100));
+    const stepDuration = Math.floor(durationMs / steps);
+
+    if (typeof targetValue === 'boolean' || targetValue === null) {
+      await this.applySimpleSetting(device, targetValue);
+      return;
+    }
+
+    if (targetValue.length === 1) {
+      for (let i = 1; i <= steps; i++) {
+        const progress = i / steps;
+        const value = targetValue[0] * progress;
+        await this.applySimpleSetting(device, [value]);
+        await wait(stepDuration);
+      }
+    } else if (targetValue.length === 2) {
+      for (let i = 1; i <= steps; i++) {
+        const progress = i / steps;
+        const value = targetValue[0] * progress;
+        const temp = targetValue[1];
+        await this.applySimpleSetting(device, [value, temp]);
+        await wait(stepDuration);
+      }
+    } else if (targetValue.length === 3) {
+      for (let i = 1; i <= steps; i++) {
+        const progress = i / steps;
+        const hue = targetValue[0];
+        const sat = targetValue[1];
+        const light = targetValue[2] * progress;
+        await this.applySimpleSetting(device, [hue, sat, light]);
+        await wait(stepDuration);
+      }
+    }
+
+    await this.applySimpleSetting(device, targetValue);
+  }
+
+  async applySetting(device: LightDevice, setting: number[]|boolean|null|Animation) {
+    if (setting !== null && typeof setting === 'object' && 'keyframes' in setting) {
+      await this.applyAnimation(device, setting as Animation);
+    } else {
+      await this.applySimpleSetting(device, setting as number[]|boolean|null);
+    }
+  }
+
   async applyScene(scene: Scene) {
     const lights = await this.deviceProvider.getDevices();
     const jobs = [];
@@ -85,6 +174,13 @@ export class LightController {
 
     await Promise.all(jobs);
     log('Done!');
+  }
+
+  cancelAllAnimations() {
+    for (const [, animation] of this.activeAnimations) {
+      animation.cancel();
+    }
+    this.activeAnimations.clear();
   }
 
   async getLights(): Promise<LightDevice[]> {
