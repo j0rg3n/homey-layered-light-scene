@@ -292,4 +292,26 @@ describe('SceneManager', () => {
       });
     });
   });
+
+  describe('parseLightValue', () => {
+    test('simple value returns as-is', () => {
+      const result = getUtil().parseLightValue('ff0000');
+      expect(result).toEqual([0, 1, 0.5]);
+    });
+
+    test('simple on returns boolean true', () => {
+      const result = getUtil().parseLightValue('on');
+      expect(result).toBe(true);
+    });
+
+    test('simple off returns boolean false', () => {
+      const result = getUtil().parseLightValue('off');
+      expect(result).toBe(false);
+    });
+
+    test('simple null returns null', () => {
+      const result = getUtil().parseLightValue('null');
+      expect(result).toBe(null);
+    });
+  });
 });
