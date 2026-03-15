@@ -165,77 +165,123 @@ export class SceneManager {
   }
 
   parseLightValue(valueString: string): LightValue {
-    const hasLeadingSlash = valueString.startsWith('/');
-    const hasTrailingSlash = valueString.endsWith('/');
-    const hasLeadingPipe = valueString.startsWith('|');
-    const hasTrailingPipe = valueString.endsWith('|');
+    if (!valueString) {
+      return this.parseSimpleValue(valueString);
+    }
 
-    if (hasLeadingSlash || hasLeadingPipe || hasTrailingSlash || hasTrailingPipe) {
-      const isHard = hasLeadingPipe || hasTrailingPipe;
-      const isLoop = hasTrailingSlash || hasTrailingPipe;
+    const hasSeparator = /\/(\d+(?:\.\d+)?(ms|s|m|h)?)|\|(\d+(?:\.\d+)?(ms|s|m|h)?)\|/.test(valueString);
+    
+    if (!hasSeparator) {
+      return this.parseSimpleValue(valueString);
+    }
 
-      const innerString = valueString.slice(1, -1);
-      const separator = isHard ? '|' : '/';
-      const parts = innerString.split(separator);
-      const keyframes: Keyframe[] = [];
+    const isLoop = valueString.endsWith('/') || valueString.endsWith('|');
+    const isHard = valueString.includes('|');
 
-      for (let i = 0; i < parts.length; i++) {
-        const part = parts[i].trim();
-        if (!part && i < parts.length - 1) {
-          keyframes.push({
-            value: null,
-            fromCurrent: true,
-          });
+    const tokens: string[] = [];
+    let i = 0;
+    
+    while (i < valueString.length) {
+      const remaining = valueString.slice(i);
+      
+      const pipeSepMatch = remaining.match(/^(\|)(\d+(?:\.\d+)?)(ms|s|m|h)?(\|)/);
+      
+      if (pipeSepMatch) {
+        tokens.push(pipeSepMatch[0]);
+        i += pipeSepMatch[0].length;
+        continue;
+      }
+      
+      const sepWithDurMatch = remaining.match(/^(\/|)(\d+(?:\.\d+)?)(ms|s|m|h)?(\/|)?/);
+      
+      if (sepWithDurMatch) {
+        tokens.push(sepWithDurMatch[0]);
+        i += sepWithDurMatch[0].length;
+        continue;
+      }
+      
+      if (remaining[0] === '/' || remaining[0] === '|') {
+        tokens.push(remaining[0]);
+        i++;
+        continue;
+      }
+      
+      const valueMatch = remaining.match(/^([0-9a-fA-F]{2}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|on|off|null)/);
+      if (valueMatch) {
+        tokens.push(valueMatch[0]);
+        i += valueMatch[0].length;
+        continue;
+      }
+      
+      i++;
+    }
+
+    const keyframes: Keyframe[] = [];
+    let pendingDuration: { ms: number; hard: boolean; isLeading: boolean } | null = null;
+    
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
+      
+      const pipeMatch = token.match(/^(\|)(\d+(?:\.\d+)?)(ms|s|m|h)?(\|)$/);
+      const sepMatch = token.match(/^(\/|)(\d+(?:\.\d+)?)(ms|s|m|h)?(\/|)?$/);
+      const isPipe = token === '|';
+      const isSep = token === '/';
+      
+      if (pipeMatch || sepMatch || isPipe || isSep) {
+        const isSepHard = token.includes('|') || isPipe;
+        
+        if (isPipe || isSep) {
+          pendingDuration = null;
           continue;
         }
-        if (!part) continue;
-
-        const lastDigitMatch = part.match(/(\d+)((ms|s|m|h)?)$/);
-        let valuePart: string;
-        let durationStr: string | undefined;
-
-        if (lastDigitMatch) {
-          const numPart = lastDigitMatch[1];
-          const unitPart = lastDigitMatch[2];
-          const digitStartIndex = lastDigitMatch.index!;
-
-          if (digitStartIndex > 0) {
-            valuePart = part.slice(0, digitStartIndex);
-            if (unitPart) {
-              durationStr = numPart + unitPart;
+        
+        const durationMatch = token.match(/(\d+(?:\.\d+)?)(ms|s|m|h)?/);
+        const duration = durationMatch ? durationMatch[1] + (durationMatch[2] || '') : '';
+        
+        if (duration) {
+          pendingDuration = { ms: parseDuration(duration), hard: isSepHard, isLeading: false };
+        }
+        
+        const hasTrailing = token.endsWith('/') || token.endsWith('|');
+        
+        if (hasTrailing && i === tokens.length - 1 && keyframes.length > 0) {
+          const lastKf = keyframes[keyframes.length - 1];
+          if (pendingDuration) {
+            if (pendingDuration.hard || lastKf.value === null || typeof lastKf.value === 'boolean') {
+              lastKf.holdMs = pendingDuration.ms;
+              lastKf.hard = true;
+            } else {
+              lastKf.transitionMs = pendingDuration.ms;
             }
-          } else if (unitPart) {
-            durationStr = numPart + unitPart;
-            valuePart = '';
-          } else {
-            valuePart = part;
           }
+        }
+        
+        continue;
+      }
+      
+      const simpleValue = this.parseSimpleValue(token);
+      const isBinary = simpleValue === null || simpleValue === true || simpleValue === false;
+      
+      const keyframe: Keyframe = {
+        value: simpleValue,
+        hard: isHard || isBinary,
+      };
+      
+      if (pendingDuration) {
+        if (pendingDuration.hard || isBinary) {
+          keyframe.holdMs = pendingDuration.ms;
+          keyframe.hard = true;
         } else {
-          valuePart = part;
+          keyframe.transitionMs = pendingDuration.ms;
         }
-
-        const simpleValue = valuePart ? this.parseSimpleValue(valuePart) : undefined;
-        const isBinary = simpleValue === null || simpleValue === true || simpleValue === false;
-
-        const transitionMs = durationStr && !isHard && !isBinary ? parseDuration(durationStr) : undefined;
-        const holdMs = durationStr && (isHard || isBinary) ? parseDuration(durationStr) : undefined;
-
-        if (i > 0 && !durationStr && !isHard) {
-          keyframes[i - 1].holdMs = 0;
-        }
-
-        keyframes.push({
-          value: simpleValue !== undefined ? simpleValue : null,
-          transitionMs,
-          holdMs,
-          hard: isHard || isBinary,
-          fromCurrent: valuePart === '' && durationStr !== undefined,
-        });
+        pendingDuration = null;
       }
+      
+      keyframes.push(keyframe);
+    }
 
-      if (keyframes.length > 0) {
-        return { keyframes, loop: isLoop };
-      }
+    if (keyframes.length > 0) {
+      return { keyframes, loop: isLoop };
     }
 
     return this.parseSimpleValue(valueString);
