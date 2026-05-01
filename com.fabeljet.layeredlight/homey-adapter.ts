@@ -6,8 +6,8 @@ import { HomeyAPIV3Local as HomeyAPI } from 'homey-api';
 import Homey from 'homey';
 import {
   SceneStore, SceneProvider, DeviceProvider, LightDevice,
-} from './interfaces.ts';
-import { SceneStringStack } from './scene-manager.ts';
+} from './interfaces';
+import { SceneStringStack } from './scene-manager';
 
 export class HomeySceneStore implements SceneStore {
 

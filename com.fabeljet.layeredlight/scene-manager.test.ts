@@ -2,7 +2,7 @@
 
 import {
   SceneManager, Scene, SceneStringStack, Animation, interpolateLinear, SegmentInfo,
-} from './scene-manager.ts';
+} from './scene-manager';
 
 function getUtil() : SceneManager {
   return new SceneManager();

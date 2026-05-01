@@ -1,6 +1,6 @@
 'use strict';
 
-import { Scene, SceneStringStack } from './scene-manager.ts';
+import { Scene, SceneStringStack } from './scene-manager';
 
 export type SettingValue = number[] | boolean | null;
 

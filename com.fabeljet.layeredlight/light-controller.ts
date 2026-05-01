@@ -2,8 +2,8 @@
 
 import {
   Scene, Animation, Setting, SegmentInfo,
-} from './scene-manager.ts';
-import { LightDevice, DeviceProvider } from './interfaces.ts';
+} from './scene-manager';
+import { LightDevice, DeviceProvider } from './interfaces';
 
 function log(message : string, ...optionalParams : unknown[]) {
   console.log(message, ...optionalParams);
