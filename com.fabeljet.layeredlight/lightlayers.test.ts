@@ -1,5 +1,5 @@
 import { assert } from 'console';
-import LightLayers, { LightLayersConfig } from './lightlayers.ts';
+import LightLayers, { LightLayersConfig } from './lightlayers';
 import { HomeyAPIV3Local as HomeyAPI } from 'homey-api';
 
 function getUtil() : LightLayers {
