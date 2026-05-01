@@ -1,8 +1,8 @@
 'use strict';
 
 import Homey from 'homey';
-import { SceneManager } from './scene-manager.ts';
-import { LightEngine } from './light-engine.ts';
+import { SceneManager } from './scene-manager';
+import { LightEngine } from './light-engine';
 
 function log(message : string, ...optionalParams : unknown[]) {
   console.log(message, ...optionalParams);

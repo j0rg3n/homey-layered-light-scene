@@ -2,9 +2,9 @@
 
 import Homey from 'homey';
 import { HomeyAPIV3Local as HomeyAPI } from 'homey-api';
-import { LightEngine } from './light-engine.ts';
-import { CardHandler } from './card-handler.ts';
-import { HomeySceneStore, HomeySceneProvider, HomeyDeviceProvider } from './homey-adapter.ts';
+import { LightEngine } from './light-engine';
+import { CardHandler } from './card-handler';
+import { HomeySceneStore, HomeySceneProvider, HomeyDeviceProvider } from './homey-adapter';
 
 class MyApp extends Homey.App {
 

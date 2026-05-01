@@ -1,7 +1,7 @@
 'use strict';
 
-import { LightController } from './light-controller.ts';
-import { LightDevice } from './interfaces.ts';
+import { LightController } from './light-controller';
+import { LightDevice } from './interfaces';
 
 function createMockDevice(name = 'alice', id = 'dev-1'): LightDevice {
   return {

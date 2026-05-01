@@ -2,11 +2,11 @@
 
 import {
   SceneManager, Scene, SceneStringStack, Setting,
-} from './scene-manager.ts';
-import { LightController } from './light-controller.ts';
+} from './scene-manager';
+import { LightController } from './light-controller';
 import {
   SceneStore, SceneProvider, LightEngineDeps, LayerState,
-} from './interfaces.ts';
+} from './interfaces';
 
 function log(message : string, ...optionalParams : unknown[]) {
   console.log(message, ...optionalParams);

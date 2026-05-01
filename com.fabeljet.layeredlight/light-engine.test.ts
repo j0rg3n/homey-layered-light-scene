@@ -1,10 +1,10 @@
 'use strict';
 
-import { LightEngine } from './light-engine.ts';
+import { LightEngine } from './light-engine';
 import {
   SceneStore, SceneProvider, DeviceProvider, LightDevice, LightEngineDeps,
-} from './interfaces.ts';
-import { SceneStringStack } from './scene-manager.ts';
+} from './interfaces';
+import { SceneStringStack } from './scene-manager';
 
 function createMockSceneStore(initialStack: SceneStringStack = {}): SceneStore {
   let stack = { ...initialStack };
