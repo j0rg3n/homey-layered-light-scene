@@ -1,8 +1,14 @@
-import { SceneManager, Scene, SceneStringStack } from './scene-manager';
-import { LightController } from './light-controller';
-import { SceneStore, SceneProvider, LightEngineDeps } from './interfaces';
+'use strict';
 
-function log(message : string, ...optionalParams : any[]) {
+import {
+  SceneManager, Scene, SceneStringStack, Setting,
+} from './scene-manager.ts';
+import { LightController } from './light-controller.ts';
+import {
+  SceneStore, SceneProvider, LightEngineDeps, LayerState,
+} from './interfaces.ts';
+
+function log(message : string, ...optionalParams : unknown[]) {
   console.log(message, ...optionalParams);
 }
 
@@ -12,6 +18,7 @@ export interface LightEngineConfig {
 }
 
 export class LightEngine {
+
   private sceneStore: SceneStore;
   private sceneProvider: SceneProvider;
   private sceneManager: SceneManager;
@@ -20,6 +27,8 @@ export class LightEngine {
   private intervalId: NodeJS.Timeout | null = null;
   private isRunning: boolean = false;
   private lastAppliedScene: Scene = {};
+  private layerStates: Map<string, LayerState> = new Map();
+  private currentLightValues: Map<string, Setting> = new Map();
 
   constructor(config: LightEngineConfig) {
     this.sceneStore = config.deps.sceneStore;
@@ -28,6 +37,17 @@ export class LightEngine {
 
     this.sceneManager = new SceneManager();
     this.lightController = new LightController(config.deps.lightControllerDeps);
+  }
+
+  async setLayer(layerName: string, sceneString: string, timestamp: number) {
+    const scene = this.sceneManager.getSceneFromString(sceneString);
+    this.layerStates.set(layerName, { layerName, scene, setTimestamp: timestamp });
+    log(`Layer set: ${layerName} at ${timestamp}`);
+  }
+
+  async clearLayer(layerName: string, timestamp: number) {
+    this.layerStates.delete(layerName);
+    log(`Layer cleared: ${layerName}`);
   }
 
   async setSceneStack(newStack: SceneStringStack) {
@@ -80,17 +100,30 @@ export class LightEngine {
     }
   }
 
-  async tick() {
+  async tick(timestamp?: number) {
+    const t = timestamp ?? Date.now();
+
     try {
       log('LightEngine tick...');
 
       const priorities = await this.sceneProvider.getScenePriorities();
-      const stack = await this.getSceneStack();
+      const layers: { scene: Scene; setTimestamp: number }[] = [];
 
-      const targetScene = this.sceneManager.flattenStack(stack, priorities);
-      log('Target scene:', targetScene);
+      for (const layerName of priorities) {
+        const layerState = this.layerStates.get(layerName);
+        if (layerState) {
+          layers.push({ scene: layerState.scene, setTimestamp: layerState.setTimestamp });
+        }
+      }
 
-      const changes = this.sceneManager.getChanges(this.lastAppliedScene, targetScene);
+      const infoMap = this.sceneManager.flattenLayersInfo(layers, t);
+
+      const evaluatedScene: Scene = {};
+      for (const [lightName, info] of infoMap) {
+        evaluatedScene[lightName] = info.value;
+      }
+
+      const changes = this.sceneManager.getChanges(this.lastAppliedScene, evaluatedScene);
 
       if (Object.keys(changes).length === 0) {
         log('No changes to apply');
@@ -99,9 +132,14 @@ export class LightEngine {
 
       log('Changes to apply:', changes);
 
-      await this.lightController.applyScene(changes);
+      for (const lightName of Object.keys(changes)) {
+        const setting = changes[lightName] as Setting;
+        this.currentLightValues.set(lightName, setting);
+      }
 
-      this.lastAppliedScene = targetScene;
+      await this.lightController.applySceneInfo(infoMap, changes);
+
+      this.lastAppliedScene = evaluatedScene;
       log('Applied target scene');
     } catch (error) {
       log(`LightEngine tick failed: ${error}`);
@@ -126,6 +164,19 @@ export class LightEngine {
   getLastAppliedScene(): Scene {
     return this.lastAppliedScene;
   }
+
+  getCurrentLightValues(): Map<string, Setting> {
+    return this.currentLightValues;
+  }
+
+  getLayerTimestamps(): Map<string, number> {
+    const timestamps = new Map<string, number>();
+    for (const [name, state] of this.layerStates) {
+      timestamps.set(name, state.setTimestamp);
+    }
+    return timestamps;
+  }
+
 }
 
 export default LightEngine;

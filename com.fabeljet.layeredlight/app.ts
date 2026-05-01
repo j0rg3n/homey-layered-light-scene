@@ -2,11 +2,13 @@
 
 import Homey from 'homey';
 import { HomeyAPIV3Local as HomeyAPI } from 'homey-api';
-import { LightEngine } from './light-engine';
-import { CardHandler } from './card-handler';
-import { HomeySceneStore, HomeySceneProvider, HomeyDeviceProvider } from './homey-adapter';
+import { LightEngine } from './light-engine.ts';
+import { CardHandler } from './card-handler.ts';
+import { HomeySceneStore, HomeySceneProvider, HomeyDeviceProvider } from './homey-adapter.ts';
 
 class MyApp extends Homey.App {
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   homeyApi: any;
   lightEngine: LightEngine | null = null;
   cardHandler: CardHandler | null = null;
@@ -54,6 +56,7 @@ class MyApp extends Homey.App {
       this.log('LightEngine stopped');
     }
   }
+
 }
 
 module.exports = MyApp;

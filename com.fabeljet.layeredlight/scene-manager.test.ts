@@ -1,4 +1,8 @@
-import { SceneManager, Scene, SceneStringStack } from './scene-manager';
+'use strict';
+
+import {
+  SceneManager, Scene, SceneStringStack, Animation, interpolateLinear, SegmentInfo,
+} from './scene-manager.ts';
 
 function getUtil() : SceneManager {
   return new SceneManager();
@@ -315,36 +319,278 @@ describe('SceneManager', () => {
     });
 
     test('hard transition with pipes creates animation', () => {
-      const result = getUtil().parseLightValue('|ff|2|00|2|');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = getUtil().parseLightValue('|ff|2|00|2|') as any;
       expect(result).toHaveProperty('loop', true);
       expect(result).toHaveProperty('keyframes');
+      expect(Array.isArray(result.keyframes)).toBe(true);
+      expect(result.keyframes.length).toBeGreaterThan(0);
+      expect(result.keyframes[0]).toHaveProperty('hard', true);
     });
 
     test('fade transition with slashes creates animation', () => {
-      const result = getUtil().parseLightValue('/ff/500ms/');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = getUtil().parseLightValue('/ff/500ms/') as any;
       expect(result).toHaveProperty('loop', true);
       expect(result).toHaveProperty('keyframes');
+      expect(Array.isArray(result.keyframes)).toBe(true);
+      expect(result.keyframes.length).toBeGreaterThan(0);
     });
 
     test('leading separator with duration creates animation', () => {
-      const result = getUtil().parseLightValue('/500ms/ff');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = getUtil().parseLightValue('/500ms/ff') as any;
       expect(result).toHaveProperty('loop', false);
       expect(result).toHaveProperty('keyframes');
+      expect(Array.isArray(result.keyframes)).toBe(true);
+      expect(result.keyframes.length).toBeGreaterThan(0);
+      expect(result.keyframes[0]).toHaveProperty('transitionMs', 500);
     });
 
     test('trailing separator means loop', () => {
-      const result = getUtil().parseLightValue('/ff/5s/');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = getUtil().parseLightValue('/ff/5s/') as any;
       expect(result).toHaveProperty('loop', true);
     });
 
     test('no trailing separator means no loop', () => {
-      const result = getUtil().parseLightValue('/ff/5s');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = getUtil().parseLightValue('/ff/5s') as any;
+      expect(result).toHaveProperty('loop', false);
+    });
+
+    test('on/off/null become hard transitions', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = getUtil().parseLightValue('/on/5s/off') as any;
+      expect(result).toHaveProperty('loop', false);
+      expect(result.keyframes[0]).toHaveProperty('hard', true);
+      expect(result.keyframes[1]).toHaveProperty('hard', true);
+    });
+
+    test('fade transition with slashes creates animation', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = getUtil().parseLightValue('/ff/500ms/') as any;
+      expect(result).toHaveProperty('loop', true);
+      expect(result).toHaveProperty('keyframes');
+      expect(Array.isArray(result.keyframes)).toBe(true);
+      expect(result.keyframes.length).toBeGreaterThan(0);
+    });
+
+    test('leading separator with duration creates animation', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = getUtil().parseLightValue('/500ms/ff') as any;
+      expect(result).toHaveProperty('loop', false);
+      expect(result).toHaveProperty('keyframes');
+      expect(Array.isArray(result.keyframes)).toBe(true);
+      expect(result.keyframes.length).toBeGreaterThan(0);
+    });
+
+    test('trailing separator means loop', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = getUtil().parseLightValue('/ff/5s/') as any;
+      expect(result).toHaveProperty('loop', true);
+    });
+
+    test('no trailing separator means no loop', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = getUtil().parseLightValue('/ff/5s') as any;
       expect(result).toHaveProperty('loop', false);
     });
 
     test('duration with h creates animation with hour duration', () => {
       const result = getUtil().parseLightValue('/ff/1h/');
       expect(result).toHaveProperty('loop', true);
+    });
+
+    // Issue #1: tokenizer misidentifies hex values like 00 as durations
+    test('hex color 00 between slashes is parsed as brightness zero, not a duration', () => {
+      const result = getUtil().parseLightValue('/00/2s/ff/2s/') as Animation;
+      expect(result).toHaveProperty('keyframes');
+      expect(result.keyframes).toHaveLength(2);
+      expect(result.keyframes[0].value).toEqual([0]);
+      expect(result.keyframes[1].value).toEqual([1]);
+    });
+
+    test('hex color 80 between slashes is parsed as brightness 0.5, not a duration', () => {
+      const result = getUtil().parseLightValue('/80/2s/ff/2s/') as Animation;
+      expect(result.keyframes[0].value).toEqual([0.5019607843137255]);
+    });
+
+    // Issue #2: loop-back transition
+    test('trailing slash-duration stores loopTransitionMs, not on last keyframe transitionMs', () => {
+      const result = getUtil().parseLightValue('ff/2s/00/2s/') as Animation;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((result as any).loopTransitionMs).toBe(2000);
+      // last keyframe transitionMs should still be 2000 (the INTO-00 transition), not overwritten
+      expect(result.keyframes[1].transitionMs).toBe(2000);
+    });
+
+    test('asymmetric loop: ff/3s/00/2s/ keeps separate in/out durations', () => {
+      const result = getUtil().parseLightValue('ff/3s/00/2s/') as Animation;
+      expect(result.keyframes[1].transitionMs).toBe(3000);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((result as any).loopTransitionMs).toBe(2000);
+    });
+  });
+
+  // Issue #2: loop-back transition eval
+  describe('eval loop-back transition', () => {
+    test('looping animation fades back from last to first value', () => {
+      // ff/2s/00/2s/ = period 4s: 0-2s fade ff→00, 2s-4s fade 00→ff
+      const anim = getUtil().parseLightValue('ff/2s/00/2s/') as Animation;
+      const sm = getUtil();
+      // t=3000: 1s into loop-back, halfway through 2s fade from [0] back to [1]
+      const val = sm.eval(anim, 0, 3000) as number[];
+      expect(val[0]).toBeCloseTo(0.5, 1);
+    });
+
+    test('looping animation period includes loop-back duration', () => {
+      // Total period = 4s. At t=4000, wraps to t=0 → ff = [1]
+      const anim = getUtil().parseLightValue('ff/2s/00/2s/') as Animation;
+      const val = getUtil().eval(anim, 0, 4000) as number[];
+      expect(val[0]).toBeCloseTo(1, 1);
+    });
+  });
+
+  // Issue #3: cursor offset in eval
+  describe('eval cursor offset', () => {
+    test('transition after a hold phase interpolates correctly', () => {
+      // kf[0]: hold [0] for 1s, kf[1]: fade to [1] over 2s
+      // At tElapsed=2500: 1.5s into the 2s transition → progress=0.75 → [0.75]
+      const anim: Animation = {
+        keyframes: [
+          { value: [0], holdMs: 1000 },
+          { value: [1], transitionMs: 2000 },
+        ],
+        loop: false,
+      };
+      const val = getUtil().eval(anim, 0, 2500) as number[];
+      expect(val[0]).toBeCloseTo(0.75, 1);
+    });
+
+    test('hold phase before transition returns the hold value, not interpolated', () => {
+      const anim: Animation = {
+        keyframes: [
+          { value: [0], holdMs: 1000 },
+          { value: [1], transitionMs: 2000 },
+        ],
+        loop: false,
+      };
+      // At tElapsed=500: still in hold phase → [0]
+      const val = getUtil().eval(anim, 0, 500) as number[];
+      expect(val[0]).toBeCloseTo(0, 1);
+    });
+  });
+
+  // Issue #6: promoteSetting type promotion
+  describe('interpolateLinear type promotion', () => {
+    test('brightness to HSL: brightness placed at lightness position [2]', () => {
+      // [0.8] → [0, 0, 0.8] when promoting to HSL [h, s, l]
+      // Interpolating halfway between [0.8] and [0, 0, 0.0] should give [0, 0, 0.4]
+      const result = interpolateLinear([0.8], [0, 0, 0.0], 0.5) as number[];
+      expect(result[0]).toBeCloseTo(0, 2); // hue stays neutral
+      expect(result[1]).toBeCloseTo(0, 2); // saturation stays neutral
+      expect(result[2]).toBeCloseTo(0.4, 1); // brightness halved
+    });
+
+    test('brightness to brightness+temp: temperature defaults to neutral (0.5)', () => {
+      // [0.8] → [0.8, 0.5] when promoting to [brightness, temperature]
+      // Halfway between [0.8] and [0.0, 0.5] should give [0.4, 0.5]
+      const result = interpolateLinear([0.8], [0.0, 0.5], 0.5) as number[];
+      expect(result[0]).toBeCloseTo(0.4, 1);
+      expect(result[1]).toBeCloseTo(0.5, 1); // not 0.25 (which old code would give)
+    });
+  });
+
+  // Issue #7 (from review): SegmentInfo / evalSegmentInfo
+  describe('evalSegmentInfo', () => {
+    test('static value returns transition: null', () => {
+      const info = getUtil().evalSegmentInfo([0.5], 0, 1000) as SegmentInfo;
+      expect(info.value).toEqual([0.5]);
+      expect(info.transition).toBeNull();
+    });
+
+    test('animation in hold phase returns transition: null', () => {
+      const anim: Animation = {
+        keyframes: [{ value: [0], holdMs: 2000 }],
+        loop: false,
+      };
+      const info = getUtil().evalSegmentInfo(anim, 0, 500);
+      expect(info.value).toEqual([0]);
+      expect(info.transition).toBeNull();
+    });
+
+    test('animation in linear transition returns segment info', () => {
+      const anim: Animation = {
+        keyframes: [
+          { value: [0] },
+          { value: [1], transitionMs: 2000 },
+        ],
+        loop: false,
+      };
+      // tElapsed=1000: halfway through 2s fade
+      const info = getUtil().evalSegmentInfo(anim, 0, 1000);
+      expect(info.value).toEqual([0.5]);
+      expect(info.transition).not.toBeNull();
+      expect(info.transition!.sFrom).toEqual([0]);
+      expect(info.transition!.sTo).toEqual([1]);
+      expect(info.transition!.totalMs).toBe(2000);
+      expect(info.transition!.elapsedMs).toBe(1000);
+      expect(info.transition!.isStep).toBe(false);
+    });
+
+    test('animation in step transition returns transition: null (no hardware fade needed)', () => {
+      const anim: Animation = {
+        keyframes: [
+          { value: [0] },
+          { value: [1], holdMs: 2000, hard: true },
+        ],
+        loop: false,
+      };
+      const info = getUtil().evalSegmentInfo(anim, 0, 500);
+      expect(info.transition).toBeNull();
+    });
+  });
+
+  describe('flattenLayers', () => {
+    // Construct a 2s looping fade from [0] to [1] directly (bypassing the parser)
+    function makeFade2s(): Animation {
+      return {
+        keyframes: [
+          { value: [0] },
+          { value: [1], transitionMs: 2000 },
+        ],
+        loop: true,
+      };
+    }
+
+    test('animation timing is relative to tAssign, not tNow', () => {
+      // fade [0]→[1] over 2s, assigned at t=1000, evaluated at t=2000
+      // elapsed = 1000ms = halfway through 2s fade → ~[0.5]
+      const scene: Scene = { alice: makeFade2s() };
+      const result = getUtil().flattenLayers([{ scene, setTimestamp: 1000 }], 2000);
+      const val = result['alice'] as number[];
+      expect(Array.isArray(val)).toBe(true);
+      expect(val[0]).toBeCloseTo(0.5, 1);
+    });
+
+    test('two layers with different setTimestamps animate independently', () => {
+      // Same tNow=1000, same 2s fade, but different tAssign:
+      // alice: tAssign=0  → elapsed=1000ms → 50% → [0.5]
+      // bob:   tAssign=500 → elapsed=500ms  → 25% → [0.25]
+      const scene1: Scene = { alice: makeFade2s() };
+      const scene2: Scene = { bob: makeFade2s() };
+      const result = getUtil().flattenLayers(
+        [
+          { scene: scene1, setTimestamp: 0 },
+          { scene: scene2, setTimestamp: 500 },
+        ],
+        1000,
+      );
+      const alice = result['alice'] as number[];
+      const bob = result['bob'] as number[];
+      expect(alice[0]).toBeCloseTo(0.5, 1);
+      expect(bob[0]).toBeCloseTo(0.25, 1);
     });
   });
 });

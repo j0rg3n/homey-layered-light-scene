@@ -1,6 +1,10 @@
-import { LightEngine } from './light-engine';
-import { SceneStore, SceneProvider, DeviceProvider, LightDevice, LightEngineDeps } from './interfaces';
-import { Scene, SceneStringStack } from './scene-manager';
+'use strict';
+
+import { LightEngine } from './light-engine.ts';
+import {
+  SceneStore, SceneProvider, DeviceProvider, LightDevice, LightEngineDeps,
+} from './interfaces.ts';
+import { SceneStringStack } from './scene-manager.ts';
 
 function createMockSceneStore(initialStack: SceneStringStack = {}): SceneStore {
   let stack = { ...initialStack };
@@ -92,8 +96,8 @@ describe('LightEngine', () => {
 
       const engine = createEngine({ sceneStore, sceneProvider, lightControllerDeps: { deviceProvider } });
 
-      await engine.setSceneStack({ layer1: '{"alice": [1]}' });
-      await engine.tick();
+      await engine.setLayer('layer1', 'alice:ff', 1000);
+      await engine.tick(1001);
       jest.runAllTimers();
 
       expect(lights[0].setCapabilityValue).toHaveBeenCalled();
@@ -108,7 +112,7 @@ describe('LightEngine', () => {
 
       const engine = createEngine({ sceneStore, sceneProvider, lightControllerDeps: { deviceProvider } });
 
-      await engine.tick();
+      await engine.tick(1000);
       jest.runAllTimers();
 
       expect(lights[0].setCapabilityValue).not.toHaveBeenCalled();
@@ -126,6 +130,28 @@ describe('LightEngine', () => {
       jest.runAllTimers();
 
       expect(engine.getLastAppliedScene()).toEqual({});
+    });
+  });
+
+  describe('tick with animated layer', () => {
+    test('tick delegates linear transition to hardware via emitInterpolation', async () => {
+      jest.useFakeTimers();
+      const alice = createMockLightDevice('alice');
+      const deviceProvider = createMockDeviceProvider([alice]);
+      const sceneProvider = createMockSceneProvider(['layer1']);
+
+      const engine = createEngine({ sceneProvider, lightControllerDeps: { deviceProvider } });
+
+      // Assign a 4s looping animation to alice at t=0
+      await engine.setLayer('layer1', 'alice:ff/2s/00/2s/', 0);
+      // Tick at t=1000: alice is 1s into ff→00 fade (halfway through 2s)
+      await engine.tick(1000);
+
+      const { calls } = (alice.setCapabilityValue as jest.Mock).mock;
+      // At least one call should carry a duration > 0 (the hardware fade target command)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const callsWithDuration = calls.filter((c: any) => c[0].duration && c[0].duration > 0);
+      expect(callsWithDuration.length).toBeGreaterThan(0);
     });
   });
 

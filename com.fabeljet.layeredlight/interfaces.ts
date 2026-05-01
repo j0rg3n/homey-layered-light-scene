@@ -1,4 +1,14 @@
-import { Scene, SceneStringStack } from './scene-manager';
+'use strict';
+
+import { Scene, SceneStringStack } from './scene-manager.ts';
+
+export type SettingValue = number[] | boolean | null;
+
+export interface LayerState {
+  layerName: string;
+  scene: Scene;
+  setTimestamp: number;
+}
 
 export interface SceneStore {
   getStack(): Promise<SceneStringStack>;
@@ -11,7 +21,7 @@ export interface SceneProvider {
 }
 
 export interface DeviceCapabilities {
-  setCapabilityValue(capabilityId: string, value: any): Promise<void>;
+  setCapabilityValue(capabilityId: string, value: boolean | number | string, duration?: number): Promise<void>;
 }
 
 export interface LightDevice {
@@ -24,7 +34,7 @@ export interface LightDevice {
     max: number;
     units?: string;
   }>;
-  setCapabilityValue(args: { capabilityId: string; value: any }): Promise<void>;
+  setCapabilityValue(args: { capabilityId: string; value: boolean | number | string; duration?: number }): Promise<void>;
 }
 
 export interface DeviceProvider {
@@ -33,6 +43,11 @@ export interface DeviceProvider {
 
 export interface LightControllerDeps {
   deviceProvider: DeviceProvider;
+}
+
+export interface OptimizerState {
+  knownValues: Map<string, SettingValue>;
+  knownTimestamps: Map<string, number>;
 }
 
 export interface LightEngineDeps {
