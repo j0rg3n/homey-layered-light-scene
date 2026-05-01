@@ -41,13 +41,23 @@ export class LightEngine {
 
   async setLayer(layerName: string, sceneString: string, timestamp: number) {
     const scene = this.sceneManager.getSceneFromString(sceneString);
+    this.setLayerScene(layerName, scene, timestamp);
+  }
+
+  setLayerScene(layerName: string, scene: Scene, timestamp: number) {
     this.layerStates.set(layerName, { layerName, scene, setTimestamp: timestamp });
     log(`Layer set: ${layerName} at ${timestamp}`);
+    this.tick(timestamp).catch((err) => log(`LightEngine tick error after setLayer: ${err}`));
+  }
+
+  getLayerScene(layerName: string): Scene | undefined {
+    return this.layerStates.get(layerName)?.scene;
   }
 
   async clearLayer(layerName: string, timestamp: number) {
     this.layerStates.delete(layerName);
     log(`Layer cleared: ${layerName}`);
+    this.tick(timestamp).catch((err) => log(`LightEngine tick error after clearLayer: ${err}`));
   }
 
   async setSceneStack(newStack: SceneStringStack) {
@@ -80,9 +90,23 @@ export class LightEngine {
       });
     }, this.heartbeatIntervalMs);
 
-    this.tick().catch((err) => {
-      log(`LightEngine initial tick error: ${err}`);
+    this.loadPersistedState().then(() => this.tick()).catch((err) => {
+      log(`LightEngine startup error: ${err}`);
     });
+  }
+
+  private async loadPersistedState() {
+    const stack = await this.sceneStore.getStack();
+    const priorities = await this.sceneProvider.getScenePriorities();
+    const t = Date.now();
+    for (const layerName of priorities) {
+      const sceneJson = stack[layerName];
+      if (sceneJson) {
+        const scene = this.sceneManager.getSceneFromJson(sceneJson);
+        this.layerStates.set(layerName, { layerName, scene, setTimestamp: t });
+        log(`Loaded persisted layer: ${layerName}`);
+      }
+    }
   }
 
   stop() {
