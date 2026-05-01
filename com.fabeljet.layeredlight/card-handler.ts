@@ -40,18 +40,21 @@ export class CardHandler {
   }
 
   async handleApplyScene(layerName : string, sceneString : string, clear : boolean) {
+    const t = Date.now();
+    const newScene = this.sceneManager.getSceneFromString(sceneString);
+
+    // Merge into existing layer if not clearing
+    const existing = this.lightEngine.getLayerScene(layerName) ?? {};
+    const mergedScene = clear ? newScene : this.sceneManager.layerScenes(existing, newScene);
+
+    // Update in-memory state immediately — triggers tick
+    this.lightEngine.setLayerScene(layerName, mergedScene, t);
+
+    // Persist for restart recovery
     const stack = await this.lightEngine.getSceneStack();
-    log('Current stack:', stack);
-
-    const newStack = this.sceneManager.updateStack(
-      stack,
-      layerName,
-      sceneString,
-      clear,
-    );
-
+    const newStack = this.sceneManager.updateStack(stack, layerName, sceneString, clear);
     await this.lightEngine.setSceneStack(newStack);
-    log('Stack updated, LightEngine will apply on next tick');
+    log('Stack updated');
   }
 
 }
