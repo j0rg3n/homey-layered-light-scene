@@ -6,6 +6,7 @@
       "ts": "never"
     }],
     "node/no-missing-import": "off",
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "off",
+    "node/no-unsupported-features/es-syntax": "off"
   }
 }

@@ -1,8 +1,10 @@
-import Homey from 'homey';
-import { SceneManager } from './scene-manager';
-import { LightEngine } from './light-engine';
+'use strict';
 
-function log(message : string, ...optionalParams : any[]) {
+import Homey from 'homey';
+import { SceneManager } from './scene-manager.ts';
+import { LightEngine } from './light-engine.ts';
+
+function log(message : string, ...optionalParams : unknown[]) {
   console.log(message, ...optionalParams);
 }
 
@@ -11,6 +13,7 @@ export interface CardHandlerConfig {
 }
 
 export class CardHandler {
+
   private lightEngine: LightEngine;
   private sceneManager: SceneManager;
 
@@ -22,7 +25,8 @@ export class CardHandler {
   registerFlowCards(app : Homey.App) {
     const applyLayeredSceneAction = app.homey.flow.getActionCard('applylayeredscene');
 
-    applyLayeredSceneAction.registerRunListener(async (args: { layer_name: string; scene: string; clear: boolean }, state: any) => {
+    /* eslint-disable-next-line camelcase */
+    applyLayeredSceneAction.registerRunListener(async (args: { layer_name: string; scene: string; clear: boolean }, state: unknown) => {
       log(`Card triggered: ${args.layer_name} = ${args.scene} (clear: ${args.clear})`);
 
       await this.handleApplyScene(
@@ -49,6 +53,7 @@ export class CardHandler {
     await this.lightEngine.setSceneStack(newStack);
     log('Stack updated, LightEngine will apply on next tick');
   }
+
 }
 
 export default CardHandler;
