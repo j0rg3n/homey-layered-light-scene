@@ -293,7 +293,7 @@ export class SceneManager {
 
       // Claim hex color values and keywords BEFORE trying separator patterns,
       // so that decimal-looking hex like "00" or "80" isn't mistaken for a duration.
-      const valueMatch = remaining.match(/^([0-9a-fA-F]{2}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|on|off|null)/);
+      const valueMatch = remaining.match(/^([0-9a-fA-F]{6}|[0-9a-fA-F]{4}|[0-9a-fA-F]{2}|on|off|null)/);
       if (valueMatch) {
         tokens.push(valueMatch[0]);
         i += valueMatch[0].length;
@@ -444,7 +444,7 @@ export class SceneManager {
 
     if (d !== 0) {
       if (max === r) {
-        h = 60 * (((g - b) / d) % 6);
+        h = 60 * (((g - b) / d % 6 + 6) % 6); // +6 before %6 to keep positive in JS
       } else if (max === g) {
         h = 60 * (((b - r) / d) + 2);
       } else if (max === b) {

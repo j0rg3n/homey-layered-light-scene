@@ -29,13 +29,13 @@ homey app install
 
 Trigger the `applylayeredscene` flow card with:
 
-| `layer_name` | `scene`        | `clear` | Expected                    |
-|---|---|---|---|
-| `base`       | `<light>:ff`   | true    | Light goes full brightness  |
-| `base`       | `<light>:80`   | true    | Light goes ~50% brightness  |
-| `base`       | `<light>:off`  | true    | Light turns off             |
+| `layer_name` | `scene`        | `clear` | Expected                                  |
+| ------------ | -------------- | ------- | ----------------------------------------- |
+| `base`       | `<light>:ff`   | true    | Light goes full brightness                |
+| `base`       | `<light>:80`   | true    | Light goes ~50% brightness                |
+| `base`       | `<light>:off`  | true    | Light turns off                           |
 | `overlay`    | `<light>:ff`   | true    | Light goes full brightness (overlay wins) |
-| `overlay`    | `<light>:null` | true    | Light reverts to base layer value |
+| `overlay`    | `<light>:null` | true    | Light reverts to base layer value         |
 
 Replace `<light>` with an actual light name from your setup.
 
@@ -94,6 +94,7 @@ succession — one without a duration (snap to current interpolated position) an
 with a duration (hand off remaining fade to Homey hardware).
 
 Expected log pattern:
+
 ```
 Applying [0.5] to <light>...           ← snap to mid-point
 Applying [0] to <light> over 4500ms... ← hardware takes over remaining fade

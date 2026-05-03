@@ -47,6 +47,24 @@ describe('SceneManager', () => {
     test('blue', () => {
       expect(getUtil().getHueSaturationLightnessFromRgb([0, 0, 1])).toEqual([2.0 / 3, 1, 0.5]);
     });
+
+    test('green', () => {
+      expect(getUtil().getHueSaturationLightnessFromRgb([0, 1, 0])).toEqual([1.0 / 3, 1, 0.5]);
+    });
+
+    // Hues > 300° (R=max, B>G) require positive modulo — JS % returns negative for negative operands
+    test('magenta (ff00ff = hue 300° = 5/6)', () => {
+      const [h, s, l] = getUtil().getHueSaturationLightnessFromRgb([1, 0, 1]);
+      expect(h).toBeCloseTo(5.0 / 6);
+      expect(s).toBeCloseTo(1);
+      expect(l).toBeCloseTo(0.5);
+    });
+
+    test('rose (hue 330° = 11/12)', () => {
+      // R=1, G=0, B=0.5 → hue = 60*((-0.5/1 % 6 + 6) % 6) = 60*5.5 = 330°
+      const [h] = getUtil().getHueSaturationLightnessFromRgb([1, 0, 0.5]);
+      expect(h).toBeCloseTo(11.0 / 12);
+    });
   });
 
   describe('getSceneFromString', () => {
@@ -414,6 +432,15 @@ describe('SceneManager', () => {
     test('hex color 80 between slashes is parsed as brightness 0.5, not a duration', () => {
       const result = getUtil().parseLightValue('/80/2s/ff/2s/') as Animation;
       expect(result.keyframes[0].value).toEqual([0.5019607843137255]);
+    });
+
+    // Regression: 6-char hex in animation (ffffff was tokenized as ff+ff+ff before fix)
+    test('ffffff/4s/000000 parses as two HSL keyframes, not six brightness values', () => {
+      const result = getUtil().parseLightValue('ffffff/4s/000000') as Animation;
+      expect(result.keyframes).toHaveLength(2);
+      expect(result.keyframes[0].value).toEqual([0, 0, 1]);   // white (hue=0, sat=0, L=1)
+      expect(result.keyframes[1].value).toEqual([0, 0, 0]);   // black
+      expect(result.keyframes[1].transitionMs).toBe(4000);
     });
 
     // Issue #2: loop-back transition

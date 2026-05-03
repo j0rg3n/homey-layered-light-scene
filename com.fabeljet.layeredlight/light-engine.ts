@@ -1,7 +1,7 @@
 'use strict';
 
 import {
-  SceneManager, Scene, SceneStringStack, Setting,
+  SceneManager, Scene, SceneStringStack, Setting, SegmentInfo,
 } from './scene-manager';
 import { LightController } from './light-controller';
 import {
@@ -25,6 +25,7 @@ export class LightEngine {
   private lightController: LightController;
   private heartbeatIntervalMs: number;
   private intervalId: NodeJS.Timeout | null = null;
+  private animationTickId: NodeJS.Timeout | null = null;
   private isRunning: boolean = false;
   private lastAppliedScene: Scene = {};
   private layerStates: Map<string, LayerState> = new Map();
@@ -122,6 +123,11 @@ export class LightEngine {
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
+
+    if (this.animationTickId) {
+      clearTimeout(this.animationTickId);
+      this.animationTickId = null;
+    }
   }
 
   async tick(timestamp?: number) {
@@ -149,6 +155,9 @@ export class LightEngine {
 
       const changes = this.sceneManager.getChanges(this.lastAppliedScene, evaluatedScene);
 
+      // Schedule next tick at keyframe boundary before early-return (handles hold segments too)
+      this.scheduleAnimationTick(infoMap);
+
       if (Object.keys(changes).length === 0) {
         log('No changes to apply');
         return;
@@ -167,6 +176,29 @@ export class LightEngine {
       log('Applied target scene');
     } catch (error) {
       log(`LightEngine tick failed: ${error}`);
+    }
+  }
+
+  private scheduleAnimationTick(infoMap: Map<string, SegmentInfo>) {
+    let minRemaining = Infinity;
+    for (const [, info] of infoMap) {
+      if (info.transition !== null) {
+        const remaining = info.transition.totalMs - info.transition.elapsedMs;
+        if (remaining > 0) minRemaining = Math.min(minRemaining, remaining);
+      }
+    }
+
+    if (this.animationTickId) {
+      clearTimeout(this.animationTickId);
+      this.animationTickId = null;
+    }
+
+    if (minRemaining < Infinity && minRemaining < this.heartbeatIntervalMs) {
+      const delay = minRemaining + 50;
+      this.animationTickId = setTimeout(() => {
+        this.animationTickId = null;
+        this.tick().catch((err) => log(`LightEngine animation tick error: ${err}`));
+      }, delay);
     }
   }
 
