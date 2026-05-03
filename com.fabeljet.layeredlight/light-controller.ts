@@ -61,25 +61,46 @@ export class LightController {
       await this.setOnOff(device, setting, duration);
     } else if (setting.length === 3) {
       const [h, s, l] = setting;
-      await Promise.all([
-        this.setOnOff(device, l > 0.01, duration),
-        this.setCapabilityFloat(device, 'dim', l, duration),
-        this.setCapabilityFloat(device, 'light_hue', h, duration),
-        this.setCapabilityFloat(device, 'light_saturation', s, duration),
-      ]);
+      if (duration && l > 0.01) await this.setOnOff(device, true); // must be on before fading to bright
+      if (!duration && l > 0.01) {
+        // Color before brightness: Homey serializes capabilities to the device, so the order
+        // they're sent determines the order they take effect. Setting hue/sat first ensures
+        // the light comes on in the correct color rather than flashing the previous color.
+        await Promise.all([
+          this.setCapabilityFloat(device, 'light_hue', h),
+          this.setCapabilityFloat(device, 'light_saturation', s),
+        ]);
+        await Promise.all([
+          this.setCapabilityFloat(device, 'dim', l),
+          this.setOnOff(device, true),
+        ]);
+      } else {
+        const ops: Promise<void>[] = [
+          this.setCapabilityFloat(device, 'dim', l, duration),
+          this.setCapabilityFloat(device, 'light_hue', h, duration),
+          this.setCapabilityFloat(device, 'light_saturation', s, duration),
+        ];
+        if (!duration) ops.push(this.setOnOff(device, false));
+        await Promise.all(ops);
+      }
+      this.knownValues.set(device.name, setting);
     } else if (setting.length === 2) {
       const [l, t] = setting;
-      await Promise.all([
-        this.setOnOff(device, l > 0.01, duration),
+      if (duration && l > 0.01) await this.setOnOff(device, true);
+      const ops: Promise<void>[] = [
         this.setCapabilityFloat(device, 'dim', l, duration),
         this.setCapabilityFloat(device, 'light_temperature', t, duration),
-      ]);
+      ];
+      if (!duration) ops.push(this.setOnOff(device, l > 0.01));
+      await Promise.all(ops);
+      this.knownValues.set(device.name, setting);
     } else if (setting.length === 1) {
       const [l] = setting;
-      await Promise.all([
-        this.setOnOff(device, l > 0.01, duration),
-        this.setCapabilityFloat(device, 'dim', l, duration),
-      ]);
+      if (duration && l > 0.01) await this.setOnOff(device, true);
+      const ops: Promise<void>[] = [this.setCapabilityFloat(device, 'dim', l, duration)];
+      if (!duration) ops.push(this.setOnOff(device, l > 0.01));
+      await Promise.all(ops);
+      this.knownValues.set(device.name, setting);
     }
   }
 
@@ -209,14 +230,75 @@ export class LightController {
     this.activeAnimations.clear();
   }
 
+  private getLightness(setting: number[]): number {
+    return setting.length === 3 ? setting[2] : setting[0];
+  }
+
   async emitInterpolation(device: LightDevice, currentValue: Setting, targetValue: Setting, durationMs: number) {
+    // If the previous hw fade targeted dim≈0, the device may be at its hardware minimum
+    // brightness (not truly off). Send onoff=false first so we start from a clean off state.
+    const prevKnown = this.knownValues.get(device.name);
+    if (Array.isArray(prevKnown) && this.getLightness(prevKnown) <= 0.01) {
+      await this.setOnOff(device, false);
+    }
     // Snap to current interpolated position immediately (no duration)
     await this.applySimpleSetting(device, currentValue);
-    // Delegate the remaining fade to Homey hardware
+    // Delegate the remaining fade to Homey hardware, prioritizing the dominant dimension
     if (durationMs > 0) {
-      await this.applySimpleSetting(device, targetValue, durationMs);
+      await this.applyPrioritizedFade(device, currentValue, targetValue, durationMs);
     }
-    this.knownValues.set(device.name, targetValue);
+  }
+
+  // Fades only the dominant dimension; snaps the others to avoid multi-axis interpolation
+  // artifacts (e.g. fading through white when transitioning between two saturated colors).
+  // Weights: dim × 3, hue × 1 (max 0.5 for complementary), saturation × 0.5.
+  async applyPrioritizedFade(
+    device: LightDevice,
+    from: Setting,
+    to: Setting,
+    durationMs: number,
+  ) {
+    if (!Array.isArray(from) || !Array.isArray(to) || from.length !== 3 || to.length !== 3) {
+      await this.applySimpleSetting(device, to, durationMs);
+      return;
+    }
+
+    const [fH, fS, fL] = from as number[];
+    const [tH, tS, tL] = to as number[];
+
+    const dimScore = Math.abs(tL - fL) * 3;
+    const hueScore = Math.min(Math.abs(tH - fH), 1 - Math.abs(tH - fH)) * 1;
+    const satScore = Math.abs(tS - fS) * 0.5;
+
+    if (dimScore >= hueScore && dimScore >= satScore) {
+      // Dim dominates — snap color to target first (invisible while dark), then fade brightness
+      if (tL > 0.01) await this.setOnOff(device, true);
+      await Promise.all([
+        this.setCapabilityFloat(device, 'light_hue', tH),
+        this.setCapabilityFloat(device, 'light_saturation', tS),
+      ]);
+      await this.setCapabilityFloat(device, 'dim', tL, durationMs);
+    } else if (hueScore >= satScore) {
+      // Hue dominates — snap dim and saturation, fade hue only
+      if (tL > 0.01) await this.setOnOff(device, true);
+      await Promise.all([
+        this.setCapabilityFloat(device, 'dim', tL),
+        this.setCapabilityFloat(device, 'light_saturation', tS),
+      ]);
+      if (tL <= 0.01) await this.setOnOff(device, false);
+      await this.setCapabilityFloat(device, 'light_hue', tH, durationMs);
+    } else {
+      // Saturation dominates — snap dim and hue, fade saturation only
+      if (tL > 0.01) await this.setOnOff(device, true);
+      await Promise.all([
+        this.setCapabilityFloat(device, 'dim', tL),
+        this.setCapabilityFloat(device, 'light_hue', tH),
+      ]);
+      if (tL <= 0.01) await this.setOnOff(device, false);
+      await this.setCapabilityFloat(device, 'light_saturation', tS, durationMs);
+    }
+
+    this.knownValues.set(device.name, to);
   }
 
   getKnownValues(): Map<string, Setting> {
