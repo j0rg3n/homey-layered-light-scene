@@ -22,6 +22,11 @@ Refactoring helper and scene helper UI updates deferred (those features don't ex
 A settings page (or dedicated flow card) for composing scene strings without hand-editing hex
 values. See SPEC.md for the full feature spec.
 
+Implementation on `feat/scene-builder-module` (PR #1): backend API routes, scene-builder.js
+module, HTML/CSS, and JS controller are all in. Unit tests pass (230). **No E2E test has run
+yet** — requires `homey app run -r` against a live device to verify the API routes, device
+preview, and variable read/write.
+
 ---
 
 ## Refactoring helper
