@@ -51,7 +51,7 @@ function populateDeviceCheckboxes(devices) {
     var dev = devices[i];
 
     var label = document.createElement('label');
-    label.className = 'device-checkbox-label';
+    label.className = 'device-row';
 
     var cb = document.createElement('input');
     cb.type = 'checkbox';
@@ -128,34 +128,43 @@ function buildDeviceCard(dev) {
   card.className = 'device-card';
   card.dataset.deviceId = dev.id;
 
-  var title = document.createElement('h3');
-  title.textContent = dev.name;
-  card.appendChild(title);
+  var header = document.createElement('div');
+  header.className = 'card-header';
+
+  var nameSpan = document.createElement('span');
+  nameSpan.className = 'device-name';
+  nameSpan.textContent = dev.name;
+  header.appendChild(nameSpan);
 
   var onoffLabel = document.createElement('label');
-  onoffLabel.className = 'control-row';
+  onoffLabel.className = 'toggle';
   var onoffInput = document.createElement('input');
   onoffInput.type = 'checkbox';
   onoffInput.className = 'ctrl-onoff';
   onoffInput.checked = true;
   onoffLabel.appendChild(onoffInput);
   onoffLabel.appendChild(document.createTextNode(' On'));
-  card.appendChild(onoffLabel);
+  header.appendChild(onoffLabel);
+  card.appendChild(header);
 
-  card.appendChild(makeSliderRow('ctrl-dim', 'Dim: ', 1));
+  var controls = document.createElement('div');
+  controls.className = 'controls';
+
+  controls.appendChild(makeSliderRow('ctrl-dim', 'Dim: ', 1));
 
   if (dev.caps.hasColor) {
     var swatch = document.createElement('div');
     swatch.className = 'color-swatch';
-    card.appendChild(swatch);
-    card.appendChild(makeSliderRow('ctrl-hue', 'Hue: ', 0));
-    card.appendChild(makeSliderRow('ctrl-sat', 'Saturation: ', 1));
+    controls.appendChild(swatch);
+    controls.appendChild(makeSliderRow('ctrl-hue', 'Hue: ', 0));
+    controls.appendChild(makeSliderRow('ctrl-sat', 'Saturation: ', 1));
   }
 
   if (dev.caps.hasTemp) {
-    card.appendChild(makeSliderRow('ctrl-temp', 'Temp: ', 0.5));
+    controls.appendChild(makeSliderRow('ctrl-temp', 'Temp: ', 0.5));
   }
 
+  card.appendChild(controls);
   return card;
 }
 
@@ -227,6 +236,7 @@ function updateSceneOutput() {
 }
 
 function sendPreview(deviceId) {
+  if (typeof Homey === 'undefined') return;
   if (!deviceStates[deviceId]) return;
 
   var state = deviceStates[deviceId];
@@ -334,7 +344,7 @@ function onWriteVariable() {
 function showStatus(message, isError) {
   var el = document.getElementById('status');
   el.textContent = message;
-  el.className = isError ? 'error' : 'success';
+  el.className = (isError ? 'error' : 'success') + ' visible';
   clearTimeout(statusTimer);
   statusTimer = setTimeout(function () { el.textContent = ''; el.className = ''; }, 3000);
 }
