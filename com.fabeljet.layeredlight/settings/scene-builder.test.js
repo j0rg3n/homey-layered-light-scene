@@ -59,6 +59,15 @@ describe('buildSceneString', () => {
     expect(result).toBe('Kitchen:ff Bedroom:off');
   });
 
+  test('passthrough state produces "null" token', () => {
+    expect(buildSceneString({ Kitchen: { passthrough: true } })).toBe('Kitchen:null');
+  });
+
+  test('passthrough device included, null-state device omitted', () => {
+    const result = buildSceneString({ Kitchen: { passthrough: true }, Bedroom: null });
+    expect(result).toBe('Kitchen:null');
+  });
+
   test('device name with spaces works correctly', () => {
     const result = buildSceneString({ 'Living Room': { on: true, dim: 1.0, temp: 0.0 } });
     expect(result).toBe('Living Room:ff00');

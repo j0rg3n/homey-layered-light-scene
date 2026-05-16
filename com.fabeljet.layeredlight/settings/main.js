@@ -102,6 +102,13 @@ function renderDeviceCards() {
     var card = buildDeviceCard(dev);
     container.appendChild(card);
     attachCardHandlers(card, id, dev);
+    var state = deviceStates[id];
+    if (state && state.passthrough) {
+      card.querySelector('.ctrl-mode').value = 'null';
+      card.querySelector('.controls').style.display = 'none';
+    } else if (state && state.on === false) {
+      card.querySelector('.ctrl-mode').value = 'off';
+    }
     updateColorSwatch(card, id);
   }
 }
@@ -136,15 +143,15 @@ function buildDeviceCard(dev) {
   nameSpan.textContent = dev.name;
   header.appendChild(nameSpan);
 
-  var onoffLabel = document.createElement('label');
-  onoffLabel.className = 'toggle';
-  var onoffInput = document.createElement('input');
-  onoffInput.type = 'checkbox';
-  onoffInput.className = 'ctrl-onoff';
-  onoffInput.checked = true;
-  onoffLabel.appendChild(onoffInput);
-  onoffLabel.appendChild(document.createTextNode(' On'));
-  header.appendChild(onoffLabel);
+  var modeSelect = document.createElement('select');
+  modeSelect.className = 'ctrl-mode';
+  [['on', 'On'], ['off', 'Off'], ['null', 'Pass-through']].forEach(function (pair) {
+    var opt = document.createElement('option');
+    opt.value = pair[0];
+    opt.textContent = pair[1];
+    modeSelect.appendChild(opt);
+  });
+  header.appendChild(modeSelect);
   card.appendChild(header);
 
   var controls = document.createElement('div');
@@ -169,8 +176,27 @@ function buildDeviceCard(dev) {
 }
 
 function attachCardHandlers(card, deviceId, dev) {
-  card.querySelector('.ctrl-onoff').addEventListener('change', function () {
-    onControlChange(deviceId, 'on', this.checked);
+  var controls = card.querySelector('.controls');
+
+  card.querySelector('.ctrl-mode').addEventListener('change', function () {
+    var mode = this.value;
+    if (mode === 'null') {
+      deviceStates[deviceId] = { passthrough: true };
+      controls.style.display = 'none';
+    } else {
+      if (!deviceStates[deviceId] || deviceStates[deviceId].passthrough) {
+        var state = { on: mode === 'on', dim: 1 };
+        if (dev.caps.hasColor) { state.hue = 0; state.sat = 1; }
+        if (dev.caps.hasTemp) { state.temp = 0.5; }
+        deviceStates[deviceId] = state;
+      } else {
+        deviceStates[deviceId].on = (mode === 'on');
+      }
+      controls.style.display = '';
+    }
+    updateSceneOutput();
+    clearTimeout(previewTimers[deviceId]);
+    previewTimers[deviceId] = setTimeout(function () { sendPreview(deviceId); }, 300);
   });
 
   card.querySelector('.ctrl-dim').addEventListener('input', function () {
@@ -237,7 +263,7 @@ function updateSceneOutput() {
 
 function sendPreview(deviceId) {
   if (typeof Homey === 'undefined') return;
-  if (!deviceStates[deviceId]) return;
+  if (!deviceStates[deviceId] || deviceStates[deviceId].passthrough) return;
 
   var state = deviceStates[deviceId];
   var body = { deviceId: deviceId, onoff: state.on };
@@ -285,6 +311,7 @@ function parseSceneStringIntoState(sceneStr) {
 }
 
 function parseToken(token) {
+  if (token === 'null') return { passthrough: true };
   if (token === 'off') return { on: false, dim: 0 };
 
   if (token.charAt(0) === 'h' && token.length === 7) {
