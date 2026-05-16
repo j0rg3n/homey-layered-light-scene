@@ -293,7 +293,7 @@ export class SceneManager {
 
       // Claim hex color values and keywords BEFORE trying separator patterns,
       // so that decimal-looking hex like "00" or "80" isn't mistaken for a duration.
-      const valueMatch = remaining.match(/^([0-9a-fA-F]{6}|[0-9a-fA-F]{4}|[0-9a-fA-F]{2}|on|off|null)/);
+      const valueMatch = remaining.match(/^(h[0-9a-fA-F]{6}|[0-9a-fA-F]{6}|[0-9a-fA-F]{4}|[0-9a-fA-F]{2}|on|off|null)/);
       if (valueMatch) {
         tokens.push(valueMatch[0]);
         i += valueMatch[0].length;
@@ -408,6 +408,12 @@ export class SceneManager {
     } if (valueString === 'off') {
       return false;
     }
+    if (/^h[0-9a-fA-F]{6}$/.test(valueString)) {
+      const h = parseInt(valueString.substring(1, 3), 16) / 255;
+      const s = parseInt(valueString.substring(3, 5), 16) / 255;
+      const v = parseInt(valueString.substring(5, 7), 16) / 255;
+      return [h, s, v];
+    }
     const rgb = this.getRgbVectorFromRgbString(valueString);
     if (rgb.length === 3) {
       return this.getHueSaturationLightnessFromRgb(rgb as [number, number, number]);
@@ -444,7 +450,7 @@ export class SceneManager {
 
     if (d !== 0) {
       if (max === r) {
-        h = 60 * (((g - b) / d % 6 + 6) % 6); // +6 before %6 to keep positive in JS
+        h = 60 * (((((g - b) / d) % 6) + 6) % 6); // +6 before %6 to keep positive in JS
       } else if (max === g) {
         h = 60 * (((b - r) / d) + 2);
       } else if (max === b) {

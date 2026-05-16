@@ -438,8 +438,8 @@ describe('SceneManager', () => {
     test('ffffff/4s/000000 parses as two HSL keyframes, not six brightness values', () => {
       const result = getUtil().parseLightValue('ffffff/4s/000000') as Animation;
       expect(result.keyframes).toHaveLength(2);
-      expect(result.keyframes[0].value).toEqual([0, 0, 1]);   // white (hue=0, sat=0, L=1)
-      expect(result.keyframes[1].value).toEqual([0, 0, 0]);   // black
+      expect(result.keyframes[0].value).toEqual([0, 0, 1]); // white (hue=0, sat=0, L=1)
+      expect(result.keyframes[1].value).toEqual([0, 0, 0]); // black
       expect(result.keyframes[1].transitionMs).toBe(4000);
     });
 
@@ -457,6 +457,78 @@ describe('SceneManager', () => {
       expect(result.keyframes[1].transitionMs).toBe(3000);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((result as any).loopTransitionMs).toBe(2000);
+    });
+
+    // Native HSV h-prefix token tests
+    test('h00ffff parses to [0, 1, 1] (full-brightness red in HSV)', () => {
+      const result = getUtil().parseLightValue('h00ffff') as number[];
+      expect(result[0]).toBeCloseTo(0, 5);
+      expect(result[1]).toBeCloseTo(1, 5);
+      expect(result[2]).toBeCloseTo(1, 5);
+    });
+
+    test('haaffff parses to [0xaa/255, 1, 1] (full-brightness blue in HSV)', () => {
+      const result = getUtil().parseLightValue('haaffff') as number[];
+      expect(result[0]).toBeCloseTo(0xaa / 255, 4);
+      expect(result[1]).toBeCloseTo(1, 5);
+      expect(result[2]).toBeCloseTo(1, 5);
+    });
+
+    test('h000080 parses to [0, 0, ~0.502] (neutral white at half brightness)', () => {
+      const result = getUtil().parseLightValue('h000080') as number[];
+      expect(result[0]).toBeCloseTo(0, 5);
+      expect(result[1]).toBeCloseTo(0, 5);
+      expect(result[2]).toBeCloseTo(0x80 / 255, 4);
+    });
+
+    test('h808080 parses to [~0.502, ~0.502, ~0.502]', () => {
+      const result = getUtil().parseLightValue('h808080') as number[];
+      expect(result[0]).toBeCloseTo(0x80 / 255, 4);
+      expect(result[1]).toBeCloseTo(0x80 / 255, 4);
+      expect(result[2]).toBeCloseTo(0x80 / 255, 4);
+    });
+
+    test('hffffff parses to [1, 1, 1]', () => {
+      const result = getUtil().parseLightValue('hffffff') as number[];
+      expect(result[0]).toBeCloseTo(1, 5);
+      expect(result[1]).toBeCloseTo(1, 5);
+      expect(result[2]).toBeCloseTo(1, 5);
+    });
+
+    test('h000000 parses to [0, 0, 0]', () => {
+      const result = getUtil().parseLightValue('h000000') as number[];
+      expect(result[0]).toBeCloseTo(0, 5);
+      expect(result[1]).toBeCloseTo(0, 5);
+      expect(result[2]).toBeCloseTo(0, 5);
+    });
+
+    test('backward compat: ff0000 still parses to HSL [0, 1, 0.5] (pure red)', () => {
+      const result = getUtil().parseLightValue('ff0000') as number[];
+      expect(result).toEqual([0, 1, 0.5]);
+    });
+
+    test('backward compat: ffffff still parses to HSL [0, 0, 1] (white)', () => {
+      const result = getUtil().parseLightValue('ffffff') as number[];
+      expect(result).toEqual([0, 0, 1]);
+    });
+
+    test('h00ffff/2s/haaffff parses as animation with two HSV keyframes', () => {
+      const result = getUtil().parseLightValue('h00ffff/2s/haaffff') as Animation;
+      expect(result).toHaveProperty('keyframes');
+      expect(result.keyframes).toHaveLength(2);
+      expect(result.keyframes[0].value).toEqual([0, 1, 1]);
+      const kf1 = result.keyframes[1].value as number[];
+      expect(kf1[0]).toBeCloseTo(0xaa / 255, 4);
+      expect(kf1[1]).toBeCloseTo(1, 5);
+      expect(kf1[2]).toBeCloseTo(1, 5);
+    });
+
+    test('h00ffff/2s/80 parses as animation with HSV length-3 and dim length-1', () => {
+      const result = getUtil().parseLightValue('h00ffff/2s/80') as Animation;
+      expect(result).toHaveProperty('keyframes');
+      expect(result.keyframes).toHaveLength(2);
+      expect(result.keyframes[0].value).toEqual([0, 1, 1]);
+      expect(result.keyframes[1].value).toEqual([0x80 / 255]);
     });
   });
 
@@ -526,6 +598,20 @@ describe('SceneManager', () => {
       const result = interpolateLinear([0.8], [0.0, 0.5], 0.5) as number[];
       expect(result[0]).toBeCloseTo(0.4, 1);
       expect(result[1]).toBeCloseTo(0.5, 1); // not 0.25 (which old code would give)
+    });
+  });
+
+  describe('interpolateLinear with HSV values', () => {
+    test('hue interpolates via shortest path from red [0,1,1] to blue [0.6667,1,1] at 50%', () => {
+      // 0xaa/0xff ≈ 0.6667 — "blue" hue in HSV notation used here
+      // Shortest path from hue=0 to hue=0.6667:
+      //   going up: 0.6667 distance
+      //   going down (wrap): 1 - 0.6667 = 0.3333 distance  ← shorter
+      // So lerpHue wraps: midpoint at 0 - 0.3333*0.5 = -0.1667 → 0.8333
+      const result = interpolateLinear([0, 1, 1], [0xaa / 255, 1, 1], 0.5) as number[];
+      expect(result[0]).toBeCloseTo(1 - (1 - 0xaa / 255) / 2, 3); // ≈ 0.8333
+      expect(result[1]).toBeCloseTo(1, 5);
+      expect(result[2]).toBeCloseTo(1, 5);
     });
   });
 
