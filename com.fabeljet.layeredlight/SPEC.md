@@ -188,6 +188,36 @@ and pre-populates the device controls, so the user edits rather than starts from
 - The generated string uses the canonical scene-string format (KEYFRAME_DESIGN.md §1).
 - Animation keyframes are out of scope for v1; the helper targets static single-value scenes.
 
+### Settings Page API
+
+Homey SDK v3 requires routes to be declared in the app manifest (`"api"` block in
+`.homeycompose/app.json`) and implemented in `settings/api.js` (a CommonJS module whose
+exports match the manifest keys). Dynamic `registerApiHandler()` does not exist in SDK v3.
+
+**Manifest declaration** (`.homeycompose/app.json`):
+```json
+"permissions": ["homey:manager:api"],
+"api": {
+  "getDevices":   { "method": "GET",  "path": "/devices"  },
+  "getVariables": { "method": "GET",  "path": "/variables" },
+  "postVariable": { "method": "POST", "path": "/variable"  },
+  "postPreview":  { "method": "POST", "path": "/preview"   }
+}
+```
+
+**Handler module** (`settings/api.js`):
+```javascript
+module.exports = {
+  async getDevices({ homey }) { /* return [{id, name, caps}] */ },
+  async getVariables({ homey }) { /* return [{id, name, value}] for string vars */ },
+  async postVariable({ homey, body }) { /* body: {id, value} */ },
+  async postPreview({ homey, body }) { /* body: {deviceId, dim?, hue?, sat?, temp?, onoff?} */ },
+};
+```
+
+Each handler receives `{ homey, query, params, body }`. Access the app instance via
+`homey.app`. Throw to return an error response; return a value to respond with 200 + JSON.
+
 ---
 
 ## Refactoring Helper
