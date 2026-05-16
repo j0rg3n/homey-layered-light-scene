@@ -40,10 +40,10 @@ Affected files:
 
 See SPEC.md § Settings Page API for the handler signatures.
 
-- [ ] Remove `registerApiHandler` calls from `app.ts`
-- [ ] Declare routes in `.homeycompose/app.json`
-- [ ] Create `settings/api.js` with the 4 exported handlers
-- [ ] Verify `homey app run -r` starts without crash
+- [x] Remove `registerApiHandler` calls from `app.ts`
+- [x] Declare routes in `.homeycompose/app.json`
+- [x] Create `settings/api.js` with the 4 exported handlers
+- [x] Verify `homey app run -r` starts without crash
 
 ---
 
