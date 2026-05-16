@@ -21,7 +21,9 @@ function buildSceneString(deviceStates) {
 
     let token;
 
-    if (state.on === false) {
+    if (state.passthrough) {
+      token = 'null';
+    } else if (state.on === false) {
       token = 'off';
     } else if (state.hue !== undefined && state.sat !== undefined) {
       token = `h${toHex(state.hue)}${toHex(state.sat)}${toHex(state.dim)}`;
