@@ -15,6 +15,15 @@
 6. Run lint (`npm run lint`)
 7. Commit
 
+## Before fixing bugs or adding unplanned features
+
+Update `TODO.md` and `SPEC.md` before writing any code:
+
+- **TODO.md** — add an entry describing what needs to change and which files are affected.
+- **SPEC.md** — if the fix or feature changes observable behaviour or an API surface, add or update the relevant spec section.
+
+Commit the doc updates before or alongside the implementation. Do not implement first and document after.
+
 ## Test Coverage
 - Target coverage: 60-70%
 - Test after implementing each piece of functionality

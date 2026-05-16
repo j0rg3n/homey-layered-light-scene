@@ -22,10 +22,28 @@ Refactoring helper and scene helper UI updates deferred (those features don't ex
 A settings page (or dedicated flow card) for composing scene strings without hand-editing hex
 values. See SPEC.md for the full feature spec.
 
-Implementation on `feat/scene-builder-module` (PR #1): backend API routes, scene-builder.js
-module, HTML/CSS, and JS controller are all in. Unit tests pass (230). **No E2E test has run
-yet** — requires `homey app run -r` against a live device to verify the API routes, device
-preview, and variable read/write.
+Implementation on `feat/scene-builder-module` (PR #1, merged): backend API routes,
+scene-builder.js module, HTML/CSS, and JS controller are all in. Unit tests pass (232).
+**No E2E test has run yet** — blocked by the SDK v3 API registration bug below.
+
+### Fix: SDK v3 settings page API registration (bug — app crashes on startup)
+
+`homey app run -r` crashes: `managerApi.registerApiHandler is not a function`.
+
+Homey SDK v3 does not support dynamic handler registration in `onInit()`. Routes must be
+declared in the manifest and implemented in a standalone module.
+
+Affected files:
+- `app.ts` — remove all `managerApi.registerApiHandler(...)` calls
+- `.homeycompose/app.json` — add `"api"` block declaring the 4 routes; add `"homey:manager:api"` permission
+- `settings/api.js` (new) — export `getDevices`, `getVariables`, `postVariable`, `postPreview` handler functions
+
+See SPEC.md § Settings Page API for the handler signatures.
+
+- [ ] Remove `registerApiHandler` calls from `app.ts`
+- [ ] Declare routes in `.homeycompose/app.json`
+- [ ] Create `settings/api.js` with the 4 exported handlers
+- [ ] Verify `homey app run -r` starts without crash
 
 ---
 
