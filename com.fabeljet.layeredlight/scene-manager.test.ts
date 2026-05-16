@@ -338,7 +338,7 @@ describe('SceneManager', () => {
 
     test('hard transition with pipes creates animation', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = getUtil().parseLightValue('|ff|2|00|2|') as any;
+      const result = getUtil().parseLightValue('ff|2|00|2|') as any;
       expect(result).toHaveProperty('loop', true);
       expect(result).toHaveProperty('keyframes');
       expect(Array.isArray(result.keyframes)).toBe(true);
@@ -348,14 +348,14 @@ describe('SceneManager', () => {
 
     test('fade transition with slashes creates animation', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = getUtil().parseLightValue('/ff/500ms/') as any;
+      const result = getUtil().parseLightValue('ff/500ms/') as any;
       expect(result).toHaveProperty('loop', true);
       expect(result).toHaveProperty('keyframes');
       expect(Array.isArray(result.keyframes)).toBe(true);
       expect(result.keyframes.length).toBeGreaterThan(0);
     });
 
-    test('leading separator with duration creates animation', () => {
+    test('leading duration separator creates animation', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = getUtil().parseLightValue('/500ms/ff') as any;
       expect(result).toHaveProperty('loop', false);
@@ -367,34 +367,34 @@ describe('SceneManager', () => {
 
     test('trailing separator means loop', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = getUtil().parseLightValue('/ff/5s/') as any;
+      const result = getUtil().parseLightValue('ff/5s/') as any;
       expect(result).toHaveProperty('loop', true);
     });
 
     test('no trailing separator means no loop', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = getUtil().parseLightValue('/ff/5s') as any;
+      const result = getUtil().parseLightValue('ff/5s/00') as any;
       expect(result).toHaveProperty('loop', false);
     });
 
     test('on/off/null become hard transitions', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = getUtil().parseLightValue('/on/5s/off') as any;
+      const result = getUtil().parseLightValue('on/5s/off') as any;
       expect(result).toHaveProperty('loop', false);
       expect(result.keyframes[0]).toHaveProperty('hard', true);
       expect(result.keyframes[1]).toHaveProperty('hard', true);
     });
 
-    test('fade transition with slashes creates animation', () => {
+    test('trailing separator means loop (single keyframe)', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = getUtil().parseLightValue('/ff/500ms/') as any;
+      const result = getUtil().parseLightValue('ff/500ms/') as any;
       expect(result).toHaveProperty('loop', true);
       expect(result).toHaveProperty('keyframes');
       expect(Array.isArray(result.keyframes)).toBe(true);
       expect(result.keyframes.length).toBeGreaterThan(0);
     });
 
-    test('leading separator with duration creates animation', () => {
+    test('leading duration separator creates animation (no leading value)', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = getUtil().parseLightValue('/500ms/ff') as any;
       expect(result).toHaveProperty('loop', false);
@@ -403,26 +403,26 @@ describe('SceneManager', () => {
       expect(result.keyframes.length).toBeGreaterThan(0);
     });
 
-    test('trailing separator means loop', () => {
+    test('trailing separator means loop (5s)', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = getUtil().parseLightValue('/ff/5s/') as any;
+      const result = getUtil().parseLightValue('ff/5s/') as any;
       expect(result).toHaveProperty('loop', true);
     });
 
-    test('no trailing separator means no loop', () => {
+    test('two-keyframe animation has no loop', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = getUtil().parseLightValue('/ff/5s') as any;
+      const result = getUtil().parseLightValue('ff/5s/00') as any;
       expect(result).toHaveProperty('loop', false);
     });
 
     test('duration with h creates animation with hour duration', () => {
-      const result = getUtil().parseLightValue('/ff/1h/');
+      const result = getUtil().parseLightValue('ff/1h/');
       expect(result).toHaveProperty('loop', true);
     });
 
     // Issue #1: tokenizer misidentifies hex values like 00 as durations
     test('hex color 00 between slashes is parsed as brightness zero, not a duration', () => {
-      const result = getUtil().parseLightValue('/00/2s/ff/2s/') as Animation;
+      const result = getUtil().parseLightValue('00/2s/ff/2s/') as Animation;
       expect(result).toHaveProperty('keyframes');
       expect(result.keyframes).toHaveLength(2);
       expect(result.keyframes[0].value).toEqual([0]);
@@ -430,7 +430,7 @@ describe('SceneManager', () => {
     });
 
     test('hex color 80 between slashes is parsed as brightness 0.5, not a duration', () => {
-      const result = getUtil().parseLightValue('/80/2s/ff/2s/') as Animation;
+      const result = getUtil().parseLightValue('80/2s/ff/2s/') as Animation;
       expect(result.keyframes[0].value).toEqual([0.5019607843137255]);
     });
 
@@ -548,6 +548,40 @@ describe('SceneManager', () => {
       const anim = getUtil().parseLightValue('ff/2s/00/2s/') as Animation;
       const val = getUtil().eval(anim, 0, 4000) as number[];
       expect(val[0]).toBeCloseTo(1, 1);
+    });
+  });
+
+  describe('parseLightValue bare separator rejection', () => {
+    test('bare / between two values throws', () => {
+      expect(() => getUtil().parseLightValue('ff/00')).toThrow();
+    });
+
+    test('bare | between two values throws', () => {
+      expect(() => getUtil().parseLightValue('ff|00')).toThrow();
+    });
+
+    test('trailing bare / after last value throws', () => {
+      expect(() => getUtil().parseLightValue('ff/2s/00/')).toThrow();
+    });
+
+    test('trailing bare | after last value throws', () => {
+      expect(() => getUtil().parseLightValue('ff/2s/00|')).toThrow();
+    });
+
+    test('ff/2s/ is valid loop animation (no throw)', () => {
+      expect(() => getUtil().parseLightValue('ff/2s/')).not.toThrow();
+    });
+
+    test('ff/2s/00ffff is valid two-keyframe animation (no throw)', () => {
+      expect(() => getUtil().parseLightValue('ff/2s/00ffff')).not.toThrow();
+    });
+
+    test('ff|2s|00ffff is valid step animation (no throw)', () => {
+      expect(() => getUtil().parseLightValue('ff|2s|00ffff')).not.toThrow();
+    });
+
+    test('h00ffff/2s/haaffff is valid HSV animation (no throw)', () => {
+      expect(() => getUtil().parseLightValue('h00ffff/2s/haaffff')).not.toThrow();
     });
   });
 

@@ -318,9 +318,7 @@ export class SceneManager {
       }
 
       if (remaining[0] === '/' || remaining[0] === '|') {
-        tokens.push(remaining[0]);
-        i++;
-        continue;
+        throw new Error(`Invalid bare separator '${remaining[0]}' in scene value: ${valueString}`);
       }
 
       i++;
@@ -342,8 +340,7 @@ export class SceneManager {
         const isSepHard = token.includes('|') || isPipe;
 
         if (isPipe || isSep) {
-          pendingDuration = null;
-          continue;
+          throw new Error(`Unexpected bare separator token '${token}' in scene value: ${valueString}`);
         }
 
         const durationMatch = token.match(/(\d+(?:\.\d+)?)(ms|s|m|h)?/);

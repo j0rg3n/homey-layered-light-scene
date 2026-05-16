@@ -31,22 +31,16 @@ capability set. See SPEC.md for the full feature spec.
 
 ---
 
-## Parser strictness
+## ~~Parser strictness~~ ✓
 
 **Make `parseLightValue` reject bare separators**
 
-The grammar defines only two valid transition forms:
-- `/<duration>/` — linear fade
-- `|<duration>|` — step/hold
+Implemented: tokenizer and token-processing loop in `parseLightValue` now throw on
+bare `/` or `|` (without duration). Valid forms `/<duration>/` and `|<duration>|`
+are unaffected.
 
-The parser currently accepts bare `/` and `|` tokens (without duration) silently,
-treating them as no-ops. These were never intended to be valid. The parser should
-reject them with a parse error instead.
-
-Affected code: `SceneManager.parseLightValue` in `scene-manager.ts`, tokenizer loop
-and token-processing loop. The `sepWithDurMatch` already requires a duration and
-both delimiters; the fallback single-char match (`remaining[0] === '/'`) is what
-allows bare separators through.
+- [x] Tokenizer throws on bare `/` or `|`
+- [x] Token-processing safety guard throws on bare separator tokens
 
 ---
 
