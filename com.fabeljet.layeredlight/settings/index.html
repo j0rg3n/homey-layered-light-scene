@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scene Helper</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Scene Helper</h1>
+      <p class="subtitle">Compose a scene string from live device values</p>
+    </header>
+
+    <section class="var-loader">
+      <label for="var-load-select">Load from variable:</label>
+      <div class="row">
+        <select id="var-load-select">
+          <option value="">— select variable —</option>
+        </select>
+        <button id="var-load-btn">Load</button>
+      </div>
+    </section>
+
+    <section id="device-list">
+      <h2>Devices</h2>
+      <div class="spinner" id="device-spinner" aria-label="Loading devices…"></div>
+      <div id="device-checkboxes"></div>
+    </section>
+
+    <div id="device-cards"></div>
+
+    <section class="scene-output-section">
+      <label for="scene-output">Scene string:</label>
+      <textarea id="scene-output" readonly rows="3" placeholder="Select devices above to build a scene string…"></textarea>
+      <div class="export-row">
+        <button id="copy-btn">Copy to clipboard</button>
+        <span class="separator">or</span>
+        <select id="var-write-select">
+          <option value="">— select variable —</option>
+        </select>
+        <button id="write-btn">Write to variable</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <script src="scene-builder.js"></script>
+  <script src="main.js"></script>
+  <script>
+    if (typeof Homey === 'undefined') {
+      window.__mockDevices = [
+        {id: 'd1', name: 'Kitchen', caps: {hasDim: true, hasColor: true, hasTemp: false}},
+        {id: 'd2', name: 'Bedroom', caps: {hasDim: true, hasColor: false, hasTemp: true}},
+        {id: 'd3', name: 'Hallway', caps: {hasDim: true, hasColor: false, hasTemp: false}},
+      ];
+      window.__mockVariables = [
+        {id: 'v1', name: 'Morning scene', value: 'Kitchen:h00ff80 Bedroom:ff80'},
+        {id: 'v2', name: 'Evening scene', value: 'Kitchen:off'},
+      ];
+      const callInit = () => {
+        if (typeof window.initApp === 'function') window.initApp(__mockDevices, __mockVariables);
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', callInit);
+      } else {
+        callInit();
+      }
+    }
+  </script>
+</body>
+</html>
