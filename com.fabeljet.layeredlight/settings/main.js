@@ -1,12 +1,15 @@
 'use strict';
 
-var deviceStates = {};
+// eslint-disable-next-line no-unused-vars
+var exports; // hoisted before SDK-injected wrapper code runs, preventing ReferenceError
+var sceneStates = {};
 var deviceInfo = {};
 var variablesList = [];
 var previewTimers = {};
 var statusTimer = null;
 
 function initApp(devices, variables) {
+  sceneStates = {};
   deviceInfo = {};
   variablesList = variables || [];
 
@@ -75,9 +78,9 @@ function onDeviceToggle(deviceId, checked, info) {
     var state = { on: true, dim: 1 };
     if (info.caps.hasColor) { state.hue = 0; state.sat = 1; }
     if (info.caps.hasTemp) { state.temp = 0.5; }
-    deviceStates[deviceId] = state;
+    sceneStates[deviceId] = state;
   } else {
-    deviceStates[deviceId] = null;
+    sceneStates[deviceId] = null;
   }
   renderDeviceCards();
   updateSceneOutput();
@@ -89,11 +92,11 @@ function renderDeviceCards() {
   var existingCards = container.querySelectorAll('.device-card');
   for (var i = 0; i < existingCards.length; i++) {
     var cardId = existingCards[i].dataset.deviceId;
-    if (!deviceStates[cardId]) container.removeChild(existingCards[i]);
+    if (!sceneStates[cardId]) container.removeChild(existingCards[i]);
   }
 
-  for (var id in deviceStates) {
-    if (!deviceStates[id]) continue;
+  for (var id in sceneStates) {
+    if (!sceneStates[id]) continue;
     if (container.querySelector('.device-card[data-device-id="' + id + '"]')) continue;
 
     var dev = deviceInfo[id];
@@ -102,7 +105,7 @@ function renderDeviceCards() {
     var card = buildDeviceCard(dev);
     container.appendChild(card);
     attachCardHandlers(card, id, dev);
-    var state = deviceStates[id];
+    var state = sceneStates[id];
     if (state && state.passthrough) {
       card.querySelector('.ctrl-mode').value = 'null';
       card.querySelector('.controls').style.display = 'none';
@@ -181,16 +184,16 @@ function attachCardHandlers(card, deviceId, dev) {
   card.querySelector('.ctrl-mode').addEventListener('change', function () {
     var mode = this.value;
     if (mode === 'null') {
-      deviceStates[deviceId] = { passthrough: true };
+      sceneStates[deviceId] = { passthrough: true };
       controls.style.display = 'none';
     } else {
-      if (!deviceStates[deviceId] || deviceStates[deviceId].passthrough) {
+      if (!sceneStates[deviceId] || sceneStates[deviceId].passthrough) {
         var state = { on: mode === 'on', dim: 1 };
         if (dev.caps.hasColor) { state.hue = 0; state.sat = 1; }
         if (dev.caps.hasTemp) { state.temp = 0.5; }
-        deviceStates[deviceId] = state;
+        sceneStates[deviceId] = state;
       } else {
-        deviceStates[deviceId].on = (mode === 'on');
+        sceneStates[deviceId].on = (mode === 'on');
       }
       controls.style.display = '';
     }
@@ -220,9 +223,9 @@ function attachCardHandlers(card, deviceId, dev) {
 }
 
 function onControlChange(deviceId, field, value) {
-  if (!deviceStates[deviceId]) return;
+  if (!sceneStates || !sceneStates[deviceId]) return;
 
-  deviceStates[deviceId][field] = value;
+  sceneStates[deviceId][field] = value;
 
   var card = document.getElementById('device-cards')
     .querySelector('.device-card[data-device-id="' + deviceId + '"]');
@@ -238,7 +241,7 @@ function updateColorSwatch(card, deviceId) {
   var swatch = card.querySelector('.color-swatch');
   if (!swatch) return;
 
-  var state = deviceStates[deviceId];
+  var state = sceneStates[deviceId];
   if (!state) return;
 
   var hue = state.hue !== undefined ? state.hue : 0;
@@ -254,18 +257,18 @@ function updateColorSwatch(card, deviceId) {
 
 function updateSceneOutput() {
   var byName = {};
-  for (var id in deviceStates) {
+  for (var id in sceneStates) {
     var dev = deviceInfo[id];
-    if (dev) byName[dev.name] = deviceStates[id];
+    if (dev) byName[dev.name] = sceneStates[id];
   }
   document.getElementById('scene-output').value = buildSceneString(byName);
 }
 
 function sendPreview(deviceId) {
   if (typeof Homey === 'undefined') return;
-  if (!deviceStates[deviceId] || deviceStates[deviceId].passthrough) return;
+  if (!sceneStates[deviceId] || sceneStates[deviceId].passthrough) return;
 
-  var state = deviceStates[deviceId];
+  var state = sceneStates[deviceId];
   var body = { deviceId: deviceId, onoff: state.on };
   if (state.dim !== undefined) body.dim = state.dim;
   if (state.hue !== undefined) body.hue = state.hue;
@@ -306,7 +309,7 @@ function parseSceneStringIntoState(sceneStr) {
     var devId = nameToId[name];
     if (!devId) continue;
 
-    deviceStates[devId] = parseToken(token);
+    sceneStates[devId] = parseToken(token);
   }
 }
 
@@ -342,7 +345,7 @@ function syncCheckboxes() {
   var checkboxes = document.querySelectorAll('#device-checkboxes input[type=checkbox]');
   for (var i = 0; i < checkboxes.length; i++) {
     var cb = checkboxes[i];
-    cb.checked = Boolean(deviceStates[cb.dataset.deviceId]);
+    cb.checked = Boolean(sceneStates[cb.dataset.deviceId]);
   }
 }
 
@@ -378,14 +381,21 @@ function showStatus(message, isError) {
 
 window.initApp = initApp;
 
-if (typeof Homey !== 'undefined') {
-  Homey.ready(function () {
-    Homey.api('GET', '/devices', null, function (err, devices) {
-      if (err) { showStatus(err.message, true); return; }
-      Homey.api('GET', '/variables', null, function (err2, variables) {
-        if (err2) { showStatus(err2.message, true); return; }
-        initApp(devices, variables);
-      });
+function dbg(msg) {
+  console.log('[LayeredLight]', msg);
+}
+
+// eslint-disable-next-line no-unused-vars
+function onHomeyReady(Homey) {
+  Homey.ready();
+  dbg('onHomeyReady called');
+  Homey.api('GET', '/devices', null, function (err, devices) {
+    if (err) { dbg('devices error: ' + JSON.stringify(err)); return; }
+    dbg('devices ok: ' + JSON.stringify(devices));
+    Homey.api('GET', '/variables', null, function (err2, variables) {
+      if (err2) { dbg('variables error: ' + JSON.stringify(err2)); return; }
+      dbg('variables ok, calling initApp');
+      initApp(devices, variables);
     });
   });
 }
