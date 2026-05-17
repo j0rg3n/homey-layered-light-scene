@@ -182,6 +182,7 @@ function attachCardHandlers(card, deviceId, dev) {
   var controls = card.querySelector('.controls');
 
   card.querySelector('.ctrl-mode').addEventListener('change', function () {
+    if (!sceneStates) return;
     var mode = this.value;
     if (mode === 'null') {
       sceneStates[deviceId] = { passthrough: true };
