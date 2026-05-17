@@ -28,6 +28,25 @@
     "name": "Jørgen Seland",
     "email": "jorgen@fabeljet.com"
   },
+  "settings": [],
+  "api": {
+    "getDevices": {
+      "method": "GET",
+      "path": "/devices"
+    },
+    "getVariables": {
+      "method": "GET",
+      "path": "/variables"
+    },
+    "postVariable": {
+      "method": "POST",
+      "path": "/variable"
+    },
+    "postPreview": {
+      "method": "POST",
+      "path": "/preview"
+    }
+  },
   "flow": {
     "actions": [
       {
