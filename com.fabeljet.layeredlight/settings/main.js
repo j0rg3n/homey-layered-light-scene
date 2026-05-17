@@ -1,7 +1,7 @@
 'use strict';
 
 // eslint-disable-next-line no-unused-vars
-var exports; // hoisted before SDK-injected wrapper code runs, preventing ReferenceError
+var exports = {}; // SDK injects Object.defineProperty(exports,'__esModule',...) at line 2; needs an object
 var sceneStates = {};
 var deviceInfo = {};
 var variablesList = [];
