@@ -12,6 +12,7 @@ function initApp(devices, variables) {
   sceneStates = {};
   deviceInfo = {};
   variablesList = variables || [];
+  previewTimers = {};
 
   for (var i = 0; i < devices.length; i++) {
     deviceInfo[devices[i].id] = devices[i];
