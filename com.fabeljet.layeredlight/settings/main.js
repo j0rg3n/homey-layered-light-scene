@@ -76,9 +76,10 @@ function populateDeviceCheckboxes(devices) {
 
 function onDeviceToggle(deviceId, checked, info) {
   if (checked) {
-    var state = { on: true, dim: 1 };
+    var state = { on: true };
+    if (info.caps.hasDim)   { state.dim = 1; }
     if (info.caps.hasColor) { state.hue = 0; state.sat = 1; }
-    if (info.caps.hasTemp) { state.temp = 0.5; }
+    if (info.caps.hasTemp)  { state.temp = 0.5; }
     sceneStates[deviceId] = state;
   } else {
     sceneStates[deviceId] = null;
@@ -161,7 +162,9 @@ function buildDeviceCard(dev) {
   var controls = document.createElement('div');
   controls.className = 'controls';
 
-  controls.appendChild(makeSliderRow('ctrl-dim', 'Dim: ', 1));
+  if (dev.caps.hasDim) {
+    controls.appendChild(makeSliderRow('ctrl-dim', 'Dim: ', 1));
+  }
 
   if (dev.caps.hasColor) {
     var swatch = document.createElement('div');
@@ -190,9 +193,10 @@ function attachCardHandlers(card, deviceId, dev) {
       controls.style.display = 'none';
     } else {
       if (!sceneStates[deviceId] || sceneStates[deviceId].passthrough) {
-        var state = { on: mode === 'on', dim: 1 };
+        var state = { on: mode === 'on' };
+        if (dev.caps.hasDim)   { state.dim = 1; }
         if (dev.caps.hasColor) { state.hue = 0; state.sat = 1; }
-        if (dev.caps.hasTemp) { state.temp = 0.5; }
+        if (dev.caps.hasTemp)  { state.temp = 0.5; }
         sceneStates[deviceId] = state;
       } else {
         sceneStates[deviceId].on = (mode === 'on');
@@ -204,9 +208,11 @@ function attachCardHandlers(card, deviceId, dev) {
     previewTimers[deviceId] = setTimeout(function () { sendPreview(deviceId); }, 300);
   });
 
-  card.querySelector('.ctrl-dim').addEventListener('input', function () {
-    onControlChange(deviceId, 'dim', parseFloat(this.value));
-  });
+  if (dev.caps.hasDim) {
+    card.querySelector('.ctrl-dim').addEventListener('input', function () {
+      onControlChange(deviceId, 'dim', parseFloat(this.value));
+    });
+  }
 
   if (dev.caps.hasColor) {
     card.querySelector('.ctrl-hue').addEventListener('input', function () {
@@ -317,7 +323,7 @@ function parseSceneStringIntoState(sceneStr) {
 
 function parseToken(token) {
   if (token === 'null') return { passthrough: true };
-  if (token === 'off') return { on: false, dim: 0 };
+  if (token === 'off') return { on: false };
 
   if (token.charAt(0) === 'h' && token.length === 7) {
     return {
