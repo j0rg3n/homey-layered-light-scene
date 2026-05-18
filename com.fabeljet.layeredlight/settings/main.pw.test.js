@@ -195,6 +195,75 @@ test('load variable: populates checkboxes and scene-output', async ({ page }) =>
   expect(output).toContain('DimTemp:');
 });
 
+// ─── Preview body diagnostic tests ───────────────────────────────────────────
+
+async function previewBodyAfterCheck(page, deviceId) {
+  await page.locator(`#device-checkboxes input[data-device-id="${deviceId}"]`).check();
+  await page.evaluate(() => { window.__previewCalls = []; });
+  // mode-change to 'off' always fires sendPreview regardless of which sliders exist
+  await page.locator(`.device-card[data-device-id="${deviceId}"] .ctrl-mode`).selectOption('off');
+  await page.waitForTimeout(400);
+  const calls = await page.evaluate((id) =>
+    window.__previewCalls.filter((c) => c.deviceId === id), deviceId);
+  return calls[calls.length - 1] ?? null;
+}
+
+test('preview body: dim-only device sends dim, no color/temp', async ({ page }) => {
+  await setupPage(page);
+  const body = await previewBodyAfterCheck(page, 'd-dim');
+  expect(body).not.toBeNull();
+  expect(body.onoff).toBe(false); // mode was set to 'off' to trigger preview
+  expect(typeof body.dim).toBe('number');
+  expect(body.hue).toBeUndefined();
+  expect(body.sat).toBeUndefined();
+  expect(body.temp).toBeUndefined();
+});
+
+test('preview body: dim+temp device sends dim+temp, no color', async ({ page }) => {
+  await setupPage(page);
+  const body = await previewBodyAfterCheck(page, 'd-temp');
+  expect(body).not.toBeNull();
+  expect(body.onoff).toBe(false);
+  expect(typeof body.dim).toBe('number');
+  expect(typeof body.temp).toBe('number');
+  expect(body.hue).toBeUndefined();
+  expect(body.sat).toBeUndefined();
+});
+
+test('preview body: dim+color+temp device sends all fields', async ({ page }) => {
+  await setupPage(page);
+  const body = await previewBodyAfterCheck(page, 'd-color');
+  expect(body).not.toBeNull();
+  expect(body.onoff).toBe(false);
+  expect(typeof body.dim).toBe('number');
+  expect(typeof body.hue).toBe('number');
+  expect(typeof body.sat).toBe('number');
+  expect(typeof body.temp).toBe('number');
+});
+
+test('preview body: no-caps device (hasDim=false) must NOT send dim', async ({ page }) => {
+  await setupPage(page);
+  const body = await previewBodyAfterCheck(page, 'd-nocaps');
+  expect(body).not.toBeNull();
+  expect(body.onoff).toBe(false);
+  expect(body.dim).toBeUndefined();   // ← fails before fix
+  expect(body.hue).toBeUndefined();
+  expect(body.sat).toBeUndefined();
+  expect(body.temp).toBeUndefined();
+});
+
+test('preview body: off-mode sends onoff=false', async ({ page }) => {
+  await setupPage(page);
+  await page.locator('#device-checkboxes input[data-device-id="d-dim"]').check();
+  await page.evaluate(() => { window.__previewCalls = []; });
+  await page.locator('.device-card[data-device-id="d-dim"] .ctrl-mode').selectOption('off');
+  await page.waitForTimeout(400);
+  const calls = await page.evaluate((id) =>
+    window.__previewCalls.filter((c) => c.deviceId === id), 'd-dim');
+  expect(calls.length).toBeGreaterThan(0);
+  expect(calls[calls.length - 1].onoff).toBe(false);
+});
+
 test('write variable: calls POST /variable with id and value', async ({ page }) => {
   await setupPage(page);
 
