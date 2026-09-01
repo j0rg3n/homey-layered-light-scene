@@ -739,5 +739,36 @@ describe('SceneManager', () => {
       expect(alice[0]).toBeCloseTo(0.5, 1);
       expect(bob[0]).toBeCloseTo(0.25, 1);
     });
+
+    // The priority list is ordered bottom-to-top: the last entry is the top of the stack.
+    test('the last layer in the list wins', () => {
+      const base: Scene = { alice: [0.25] };
+      const top: Scene = { alice: [1] };
+
+      const result = getUtil().flattenLayers(
+        [
+          { scene: base, setTimestamp: 0 },
+          { scene: top, setTimestamp: 0 },
+        ],
+        0,
+      );
+
+      expect(result['alice']).toEqual([1]);
+    });
+
+    test('null in the top layer passes through to the layer below', () => {
+      const base: Scene = { alice: [0.25] };
+      const top: Scene = { alice: null };
+
+      const result = getUtil().flattenLayers(
+        [
+          { scene: base, setTimestamp: 0 },
+          { scene: top, setTimestamp: 0 },
+        ],
+        0,
+      );
+
+      expect(result['alice']).toEqual([0.25]);
+    });
   });
 });
