@@ -115,6 +115,141 @@ See KEYFRAME_DESIGN.md Section 7 (Optimizer).
 
 ---
 
+## Responsiveness and Concurrency
+
+**Priority: high.** Perceived latency and recovery from rapid repeated triggering are
+correctness requirements, not optimizations: a scene that applies slowly gets re-triggered,
+and the engine must stay responsive under that load rather than degrade.
+
+### Guarantees
+
+1. **Bounded card latency.** `applylayeredscene` returns as soon as the new layer state is in
+   memory and the resulting commands have been dispatched. Persistence of the scene stack is
+   not on the critical path; it happens after, and a persistence failure is logged without
+   failing the card.
+
+2. **Single-flight tick.** At most one `tick` executes at a time. A tick requested while one
+   is in flight becomes *the* pending tick; a further request replaces the pending one. When
+   the in-flight tick completes, the pending tick (if any) runs once, at the current
+   timestamp. Consequence: N rapid triggers produce at most 2 evaluation passes in flight,
+   not N.
+
+3. **No lost updates.** `lastAppliedScene` and `currentLightValues` are written only by the
+   tick holding the flight. No read-modify-write of engine state spans an `await`. A tick that
+   is superseded must not write engine state at all — a stale write makes `getChanges` return
+   empty and silences the engine until an unrelated change occurs.
+
+4. **Convergence.** After a burst of triggers ends, the lights settle on the state implied by
+   the *last* trigger, regardless of the order in which device commands complete.
+
+5. **Supersession over queueing.** When a newer target arrives for a light, commands for that
+   light that have not yet been sent to Homey are dropped rather than sent. Homey serializes
+   capability calls per device, so queued obsolete commands directly extend the time until the
+   newest target is visible.
+
+### Caching
+
+Per-tick Homey API round-trips are the dominant latency cost and must not scale with trigger
+frequency:
+
+- **Scene priorities** (`getScenePriorities`) are cached in `LightEngine`, invalidated on
+  layer set/clear and refreshed on the heartbeat.
+- **Device list** (`getDevices`) is cached in `LightController`, refreshed on the heartbeat.
+
+Both caches are refreshed on heartbeat rather than expiring by wall-clock age, so a burst of
+triggers performs zero additional API reads.
+
+### Non-goals
+
+Debouncing the card itself (delaying application to batch presses) is explicitly rejected — it
+increases the perceived latency that causes the problem. Coalescing happens at the tick level,
+after the in-memory state is already updated.
+
+---
+
+## Hold and Loop Semantics
+
+A duration separator specifies the time spent **leaving** the keyframe that precedes it:
+
+- `A/d/B` — over `d`, interpolate from `A` to `B`.
+- `A|d|B` — hold `A` for `d`, then snap to `B`.
+
+A trailing separator makes the pattern loop, and specifies the transition from the final
+keyframe back to the first:
+
+- `A/d1/B/d2/` — loops, fading `B` back to `A` over `d2`.
+- `A|d1|B|d2|` — loops, holding `B` for `d2`, then snapping back to `A`.
+
+A trailing separator never overwrites a duration already assigned to the final keyframe; it
+contributes the loop-back segment only.
+
+### Worked example
+
+`h00ffff|5s|h0000ff|5s|ha0ffff|5s|` — period 15 s:
+
+| t (s)  | Value      | Meaning              |
+| ------ | ---------- | -------------------- |
+| 0–5    | `h00ffff`  | red, full brightness |
+| 5–10   | `h0000ff`  | white                |
+| 10–15  | `ha0ffff`  | blue                 |
+| 15     | wraps to `h00ffff` |              |
+
+Every keyframe occupies a non-zero span. A keyframe with a zero-length segment is a parse
+defect, not a valid timeline.
+
+### Scheduling
+
+The engine wakes at every segment boundary, whether or not that segment is a transition. A
+pattern built entirely from step transitions must advance on schedule with the same accuracy
+as one built from linear transitions; it must never depend on the heartbeat to advance.
+
+To support this, `SegmentInfo` reports the time remaining in the current segment even when
+`transition` is `null`, and `scheduleAnimationTick` schedules against that value.
+
+---
+
+## Animation Test Harness
+
+Animations are timeline behaviour. Asserting a single tick's output at a hand-picked timestamp
+does not test a timeline, and both defects recorded in TODO.md survived a passing suite for
+that reason.
+
+### Harness contract
+
+- A **virtual clock** drives both the engine timestamps and the timer scheduling, so a test
+  can run N virtual seconds in negligible real time. Anchor the fake clock at `now: 0` so
+  explicit `tAssign` values and `Date.now()` agree.
+- A **recording fake device** captures every capability call as an ordered
+  `(t, capabilityId, value, duration)` tuple.
+- A test declares a scene string, a run duration, and asserts against the **whole log**.
+
+### Required assertions
+
+Presence alone is insufficient. Every animation test asserts at least one of:
+
+- **Order** — e.g. hue/saturation precede dim/onoff on a snap-to-bright.
+- **Absence** — e.g. no `onoff` command carries a `duration`; no command is emitted for an
+  unchanged light.
+- **Timing** — the value at each virtual timestamp matches the specified timeline, including
+  across at least two full loop periods.
+- **Second-order effects** — a scheduled timer both fires *and* produces the next segment's
+  commands.
+
+### Required coverage
+
+| Case                        | Must verify                                              |
+| --------------------------- | -------------------------------------------------------- |
+| Linear `/d/`                | interpolated value mid-segment; hw fade delegated once    |
+| Step `\|d\|`                | value held for the full span; snap at the boundary        |
+| Trailing separator          | loop-back segment exists; period is the sum of all spans  |
+| Non-looping pattern         | final value held indefinitely; no further commands        |
+| Loop wrap                   | phase correct after ≥ 2 periods                           |
+| Re-assignment mid-loop      | new `tAssign` restarts the timeline from the new value    |
+| Animation over animation    | higher layer wins per light for the whole timeline        |
+| `null` in an animated layer | resolves to the lower layer's *animated* value, per tick  |
+
+---
+
 ## Native HSV Color Format
 
 ### Motivation
@@ -217,6 +352,35 @@ module.exports = {
 
 Each handler receives `{ homey, query, params, body }`. Access the app instance via
 `homey.app`. Throw to return an error response; return a value to respond with 200 + JSON.
+
+The handler file must be named `api.js` and placed at the **app root** (not in `settings/`).
+
+### Settings page HTML bootstrap
+
+The settings page `<head>` **must** include the Homey SDK script with `data-origin="settings"`:
+
+```html
+<script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+```
+
+Without this tag the `Homey` global is never injected, `onHomeyReady` is never called, and
+the page shows an infinite full-screen loading spinner.
+
+### Settings page lifecycle
+
+Homey hides the settings page entirely until the page calls `Homey.ready()` with no
+arguments. The correct entry point is a globally-defined `onHomeyReady` function which
+Homey calls with the Homey instance:
+
+```javascript
+function onHomeyReady(Homey) {
+  // fetch data, populate UI ...
+  Homey.ready(); // reveals the page
+}
+```
+
+Call `Homey.ready()` after the UI is populated. If API calls fail, call `Homey.ready()`
+anyway so the error is visible rather than leaving the user on a blank loading screen.
 
 ---
 
