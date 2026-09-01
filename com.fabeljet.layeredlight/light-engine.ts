@@ -31,6 +31,21 @@ export class LightEngine {
   private layerStates: Map<string, LayerState> = new Map();
   private currentLightValues: Map<string, Setting> = new Map();
 
+  // Scene priorities live in a Homey variable; reading them costs a full getVariables()
+  // round-trip. Cached so a burst of flow-card triggers performs no extra reads.
+  private cachedPriorities: string[] | null = null;
+
+  // Single-flight tick state: at most one tick body executes at a time, and at most one
+  // request is queued behind it. Newer requests replace the queued one rather than stacking.
+  private draining: boolean = false;
+  private pendingRequested: boolean = false;
+  private pendingTimestamp: number | undefined = undefined;
+  private drainWaiters: (() => void)[] = [];
+
+  // Number of evaluation passes actually executed — the observable that says whether
+  // coalescing is working under a burst of triggers.
+  private tickCount: number = 0;
+
   constructor(config: LightEngineConfig) {
     this.sceneStore = config.deps.sceneStore;
     this.sceneProvider = config.deps.sceneProvider;
@@ -42,13 +57,20 @@ export class LightEngine {
 
   async setLayer(layerName: string, sceneString: string, timestamp: number) {
     const scene = this.sceneManager.getSceneFromString(sceneString);
-    this.setLayerScene(layerName, scene, timestamp);
+    await this.setLayerScene(layerName, scene, timestamp);
   }
 
-  setLayerScene(layerName: string, scene: Scene, timestamp: number) {
+  setLayerScene(layerName: string, scene: Scene, timestamp: number): Promise<void> {
     this.layerStates.set(layerName, { layerName, scene, setTimestamp: timestamp });
     log(`Layer set: ${layerName} at ${timestamp}`);
-    this.tick(timestamp).catch((err) => log(`LightEngine tick error after setLayer: ${err}`));
+
+    // A layer the cached priority list has never heard of means the list is stale — refetch
+    // once. Repeat triggers of a known layer stay free.
+    if (this.cachedPriorities !== null && !this.cachedPriorities.includes(layerName)) {
+      this.invalidatePriorities();
+    }
+
+    return this.tick(timestamp);
   }
 
   getLayerScene(layerName: string): Scene | undefined {
@@ -58,7 +80,18 @@ export class LightEngine {
   async clearLayer(layerName: string, timestamp: number) {
     this.layerStates.delete(layerName);
     log(`Layer cleared: ${layerName}`);
-    this.tick(timestamp).catch((err) => log(`LightEngine tick error after clearLayer: ${err}`));
+    await this.tick(timestamp);
+  }
+
+  invalidatePriorities() {
+    this.cachedPriorities = null;
+  }
+
+  private async getPriorities(): Promise<string[]> {
+    if (this.cachedPriorities === null) {
+      this.cachedPriorities = await this.sceneProvider.getScenePriorities();
+    }
+    return this.cachedPriorities;
   }
 
   async setSceneStack(newStack: SceneStringStack) {
@@ -86,6 +119,10 @@ export class LightEngine {
     this.isRunning = true;
 
     this.intervalId = setInterval(() => {
+      // The heartbeat is the only thing that refreshes the cached Homey reads, so bounded
+      // staleness is one heartbeat and a burst of triggers between heartbeats costs nothing.
+      this.invalidatePriorities();
+      this.lightController.invalidateDevices();
       this.tick().catch((err) => {
         log(`LightEngine tick error: ${err}`);
       });
@@ -130,13 +167,53 @@ export class LightEngine {
     }
   }
 
-  async tick(timestamp?: number) {
-    const t = timestamp ?? Date.now();
+  /**
+   * Requests an evaluation pass. At most one tick body runs at a time; a request arriving
+   * while one is in flight replaces any already-queued request rather than stacking behind
+   * it. The returned promise resolves once a pass that includes this request has completed,
+   * so N rapid triggers produce at most 2 evaluation passes and all N callers still see
+   * their scene applied before they resolve.
+   */
+  tick(timestamp?: number): Promise<void> {
+    this.pendingRequested = true;
+    this.pendingTimestamp = timestamp;
+
+    const waited = new Promise<void>((resolve) => {
+      this.drainWaiters.push(resolve);
+    });
+
+    if (!this.draining) {
+      this.draining = true;
+      this.drainTicks().catch((err) => log(`LightEngine drain error: ${err}`));
+    }
+
+    return waited;
+  }
+
+  private async drainTicks() {
+    while (this.pendingRequested) {
+      const timestamp = this.pendingTimestamp;
+      this.pendingRequested = false;
+      this.pendingTimestamp = undefined;
+
+      await this.runTick(timestamp ?? Date.now());
+    }
+
+    // No await between clearing the flag and releasing waiters, so no request can slip in
+    // and be resolved without having run.
+    this.draining = false;
+    const waiters = this.drainWaiters;
+    this.drainWaiters = [];
+    for (const resolve of waiters) resolve();
+  }
+
+  private async runTick(t: number) {
+    this.tickCount++;
 
     try {
       log('LightEngine tick...');
 
-      const priorities = await this.sceneProvider.getScenePriorities();
+      const priorities = await this.getPriorities();
       const layers: { scene: Scene; setTimestamp: number }[] = [];
 
       for (const layerName of priorities) {
@@ -215,6 +292,10 @@ export class LightEngine {
     } catch (error) {
       log(`Apply full scene failed: ${error}`);
     }
+  }
+
+  getTickCount(): number {
+    return this.tickCount;
   }
 
   getLastAppliedScene(): Scene {

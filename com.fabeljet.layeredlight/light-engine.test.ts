@@ -339,4 +339,175 @@ describe('LightEngine', () => {
       expect(engine.getLastAppliedScene()).toEqual({ alice: [1] });
     });
   });
+
+  describe('responsiveness under rapid triggering', () => {
+    // A device whose capability calls block until released, so a tick can be held in flight
+    // while further triggers arrive — the button-mashing scenario.
+    function createGatedLightDevice(name: string) {
+      let release: () => void = () => {};
+      const gate = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+
+      const device = createMockLightDevice(name);
+      device.setCapabilityValue = jest.fn().mockImplementation(async () => {
+        await gate;
+      });
+
+      return { device, release: () => release() };
+    }
+
+    test('a burst of triggers reads priorities and devices once', async () => {
+      const lights = [createMockLightDevice('alice')];
+      const deviceProvider = createMockDeviceProvider(lights);
+      const sceneProvider = createMockSceneProvider(['layer1']);
+      const engine = createEngine({ sceneProvider, lightControllerDeps: { deviceProvider } });
+
+      for (let i = 0; i < 10; i++) {
+        // eslint-disable-next-line no-await-in-loop
+        await engine.setLayer('layer1', `alice:${(i + 1).toString(16).padStart(2, '0')}`, 1000 + i);
+      }
+
+      expect(sceneProvider.getScenePriorities).toHaveBeenCalledTimes(1);
+      expect(deviceProvider.getDevices).toHaveBeenCalledTimes(1);
+    });
+
+    test('triggers arriving during a tick coalesce into a single follow-up pass', async () => {
+      const { device, release } = createGatedLightDevice('alice');
+      const deviceProvider = createMockDeviceProvider([device]);
+      const sceneProvider = createMockSceneProvider(['layer1']);
+      const engine = createEngine({ sceneProvider, lightControllerDeps: { deviceProvider } });
+
+      // Warm the caches with a pass that does not touch the device.
+      await engine.tick(1000);
+      const before = engine.getTickCount();
+
+      // First trigger blocks inside the device call; four more pile up behind it.
+      const inFlight = engine.setLayer('layer1', 'alice:11', 1001);
+      const queued = [
+        engine.setLayer('layer1', 'alice:22', 1002),
+        engine.setLayer('layer1', 'alice:33', 1003),
+        engine.setLayer('layer1', 'alice:44', 1004),
+        engine.setLayer('layer1', 'alice:55', 1005),
+      ];
+
+      release();
+      await Promise.all([inFlight, ...queued]);
+
+      // One in-flight pass plus exactly one coalesced follow-up — not five.
+      expect(engine.getTickCount() - before).toBe(2);
+    });
+
+    test('a burst converges on the last scene — no lost update to lastAppliedScene', async () => {
+      const { device, release } = createGatedLightDevice('alice');
+      const deviceProvider = createMockDeviceProvider([device]);
+      const sceneProvider = createMockSceneProvider(['layer1']);
+      const engine = createEngine({ sceneProvider, lightControllerDeps: { deviceProvider } });
+
+      await engine.tick(1000);
+
+      const triggers = [
+        engine.setLayer('layer1', 'alice:11', 1001),
+        engine.setLayer('layer1', 'alice:22', 1002),
+        engine.setLayer('layer1', 'alice:ff', 1003),
+      ];
+
+      release();
+      await Promise.all(triggers);
+
+      expect(engine.getLastAppliedScene()).toEqual({ alice: [1] });
+    });
+
+    test('every trigger resolves only after a pass covering it has run', async () => {
+      const { device, release } = createGatedLightDevice('alice');
+      const deviceProvider = createMockDeviceProvider([device]);
+      const sceneProvider = createMockSceneProvider(['layer1']);
+      const engine = createEngine({ sceneProvider, lightControllerDeps: { deviceProvider } });
+
+      await engine.tick(1000);
+
+      let lastResolved = false;
+      const inFlight = engine.setLayer('layer1', 'alice:11', 1001);
+      const last = engine.setLayer('layer1', 'alice:ff', 1002).then(() => {
+        lastResolved = true;
+      });
+
+      // Nothing resolves while the device call is blocked.
+      await Promise.resolve();
+      expect(lastResolved).toBe(false);
+
+      release();
+      await Promise.all([inFlight, last]);
+
+      expect(lastResolved).toBe(true);
+      expect(engine.getLastAppliedScene()).toEqual({ alice: [1] });
+    });
+
+    test('a layer missing from the cached priority list forces a refetch', async () => {
+      const lights = [createMockLightDevice('alice')];
+      const deviceProvider = createMockDeviceProvider(lights);
+      const sceneProvider = createMockSceneProvider(['layer1']);
+      (sceneProvider.getScenePriorities as jest.Mock)
+        .mockResolvedValueOnce(['layer1'])
+        .mockResolvedValue(['layer1', 'layer2']);
+
+      const engine = createEngine({ sceneProvider, lightControllerDeps: { deviceProvider } });
+
+      await engine.setLayer('layer1', 'alice:11', 1000);
+      expect(sceneProvider.getScenePriorities).toHaveBeenCalledTimes(1);
+
+      // layer2 is unknown to the cached list — the list must be stale, so refetch.
+      await engine.setLayer('layer2', 'alice:ff', 1001);
+
+      expect(sceneProvider.getScenePriorities).toHaveBeenCalledTimes(2);
+      expect(engine.getLastAppliedScene()).toEqual({ alice: [1] });
+    });
+
+    test('a light missing from the cached device list forces a refetch', async () => {
+      const alice = createMockLightDevice('alice');
+      const bob = createMockLightDevice('bob', 'device-2');
+      const deviceProvider = createMockDeviceProvider([alice]);
+      const sceneProvider = createMockSceneProvider(['layer1']);
+      const engine = createEngine({ sceneProvider, lightControllerDeps: { deviceProvider } });
+
+      await engine.setLayer('layer1', 'alice:11', 1000);
+      expect(deviceProvider.getDevices).toHaveBeenCalledTimes(1);
+
+      (deviceProvider.getDevices as jest.Mock).mockResolvedValue([alice, bob]);
+      await engine.setLayer('layer1', 'bob:ff', 1001);
+
+      expect(deviceProvider.getDevices).toHaveBeenCalledTimes(2);
+      expect(bob.setCapabilityValue).toHaveBeenCalled();
+    });
+
+    test('the heartbeat refreshes the cached priorities and device list', async () => {
+      jest.useFakeTimers({ now: 0 });
+      const lights = [createMockLightDevice('alice')];
+      const deviceProvider = createMockDeviceProvider(lights);
+      const sceneProvider = createMockSceneProvider(['layer1']);
+      const engine = createEngine({ sceneProvider, lightControllerDeps: { deviceProvider } }, 30000);
+
+      await engine.setLayer('layer1', 'alice:ff', 0);
+
+      engine.start();
+      await jest.advanceTimersByTimeAsync(0);
+
+      // Count only what the heartbeat itself costs, after startup has settled.
+      const prioritiesBefore = (sceneProvider.getScenePriorities as jest.Mock).mock.calls.length;
+      const devicesBefore = (deviceProvider.getDevices as jest.Mock).mock.calls.length;
+
+      await jest.advanceTimersByTimeAsync(30001);
+
+      expect((sceneProvider.getScenePriorities as jest.Mock).mock.calls.length)
+        .toBeGreaterThan(prioritiesBefore);
+
+      // The device cache is invalidated by the heartbeat but only refilled when a tick
+      // actually has commands to send, so provoke one.
+      await engine.setLayer('layer1', 'alice:80', 30001);
+      engine.stop();
+
+      expect((deviceProvider.getDevices as jest.Mock).mock.calls.length)
+        .toBeGreaterThan(devicesBefore);
+    });
+  });
 });

@@ -130,9 +130,12 @@ and the engine must stay responsive under that load rather than degrade.
 
 2. **Single-flight tick.** At most one `tick` executes at a time. A tick requested while one
    is in flight becomes *the* pending tick; a further request replaces the pending one. When
-   the in-flight tick completes, the pending tick (if any) runs once, at the current
-   timestamp. Consequence: N rapid triggers produce at most 2 evaluation passes in flight,
-   not N.
+   the in-flight tick completes, the pending tick (if any) runs once, at the newest
+   requested timestamp (or the current time if the request named none). Consequence: N rapid
+   triggers produce at most 2 evaluation passes, not N.
+
+   A request resolves only once a pass that includes it has completed, so a caller awaiting
+   `tick` still knows its own scene has been applied even though its pass was shared.
 
 3. **No lost updates.** `lastAppliedScene` and `currentLightValues` are written only by the
    tick holding the flight. No read-modify-write of engine state spans an `await`. A tick that
@@ -152,12 +155,20 @@ and the engine must stay responsive under that load rather than degrade.
 Per-tick Homey API round-trips are the dominant latency cost and must not scale with trigger
 frequency:
 
-- **Scene priorities** (`getScenePriorities`) are cached in `LightEngine`, invalidated on
-  layer set/clear and refreshed on the heartbeat.
-- **Device list** (`getDevices`) is cached in `LightController`, refreshed on the heartbeat.
+- **Scene priorities** (`getScenePriorities`) are cached in `LightEngine`.
+- **Device list** (`getDevices`) is cached in `LightController`, together with a name index so
+  a tick resolves lights by lookup rather than by scanning every device.
 
-Both caches are refreshed on heartbeat rather than expiring by wall-clock age, so a burst of
-triggers performs zero additional API reads.
+Both caches are invalidated by the heartbeat rather than expiring by wall-clock age, so a
+burst of triggers performs zero additional API reads and worst-case staleness is one
+heartbeat. Invalidation is lazy: a cache is refilled the next time it is actually read, so a
+heartbeat that produces no commands costs no device fetch.
+
+**Miss-driven refresh.** A name the cache has never seen means the cache is stale, not that
+the name is invalid: setting a layer absent from the cached priority list, or a scene naming a
+light absent from the cached device list, forces one refetch. Renaming a device or adding a
+layer therefore takes effect on first use rather than after a heartbeat, while repeat triggers
+of known names stay free.
 
 ### Non-goals
 

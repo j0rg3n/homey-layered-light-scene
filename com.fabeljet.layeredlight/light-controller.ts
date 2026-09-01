@@ -21,8 +21,46 @@ export class LightController {
   private activeAnimations: Map<string, { cancel: () => void }> = new Map();
   private knownValues: Map<string, Setting> = new Map();
 
+  // Listing devices costs a full Homey getDevices() round-trip. Cached, with a name index, so
+  // a burst of ticks does not re-fetch and does not rescan the device list per light.
+  private cachedDevices: LightDevice[] | null = null;
+  private deviceIndex: Map<string, LightDevice> = new Map();
+
   constructor(deps: { deviceProvider: DeviceProvider }) {
     this.deviceProvider = deps.deviceProvider;
+  }
+
+  invalidateDevices() {
+    this.cachedDevices = null;
+    this.deviceIndex.clear();
+  }
+
+  private async getCachedDevices(): Promise<LightDevice[]> {
+    if (this.cachedDevices === null) {
+      this.cachedDevices = await this.deviceProvider.getDevices();
+      this.deviceIndex = new Map(this.cachedDevices.map((device) => [device.name, device]));
+    }
+    return this.cachedDevices;
+  }
+
+  /**
+   * Resolves the devices named by a scene. A name the cache has never seen means the cache is
+   * stale (device added or renamed), so it refetches once; known names stay free.
+   */
+  private async resolveDevices(names: string[]): Promise<LightDevice[]> {
+    await this.getCachedDevices();
+
+    if (names.some((name) => !this.deviceIndex.has(name))) {
+      this.invalidateDevices();
+      await this.getCachedDevices();
+    }
+
+    const resolved: LightDevice[] = [];
+    for (const name of names) {
+      const device = this.deviceIndex.get(name);
+      if (device) resolved.push(device);
+    }
+    return resolved;
   }
 
   async setCapabilityFloat(device: LightDevice, capabilityName: string, value: number, duration?: number) {
@@ -185,7 +223,7 @@ export class LightController {
   }
 
   async applyScene(scene: Scene) {
-    const lights = await this.deviceProvider.getDevices();
+    const lights = await this.resolveDevices(Object.keys(scene));
     const jobs = [];
 
     for (const device of lights) {
@@ -202,12 +240,10 @@ export class LightController {
   }
 
   async applySceneInfo(infoMap: Map<string, SegmentInfo>, changes: Scene) {
-    const lights = await this.deviceProvider.getDevices();
+    const lights = await this.resolveDevices(Object.keys(changes));
     const jobs: Promise<void>[] = [];
 
     for (const device of lights) {
-      if (!(device.name in changes)) continue;
-
       const info = infoMap.get(device.name);
       if (!info) continue;
 
@@ -310,7 +346,7 @@ export class LightController {
   }
 
   async getLights(): Promise<LightDevice[]> {
-    return this.deviceProvider.getDevices();
+    return this.getCachedDevices();
   }
 
 }

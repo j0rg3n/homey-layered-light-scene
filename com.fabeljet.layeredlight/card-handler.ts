@@ -16,6 +16,7 @@ export class CardHandler {
 
   private lightEngine: LightEngine;
   private sceneManager: SceneManager;
+  private persistQueue: Promise<void> = Promise.resolve();
 
   constructor(config: CardHandlerConfig) {
     this.lightEngine = config.lightEngine;
@@ -47,14 +48,32 @@ export class CardHandler {
     const existing = this.lightEngine.getLayerScene(layerName) ?? {};
     const mergedScene = clear ? newScene : this.sceneManager.layerScenes(existing, newScene);
 
-    // Update in-memory state immediately — triggers tick
-    this.lightEngine.setLayerScene(layerName, mergedScene, t);
+    // Persistence is queued, not awaited: it is only needed for restart recovery, and the
+    // Homey token write must never sit between a button press and the light responding.
+    this.queuePersist(layerName, sceneString, clear);
 
-    // Persist for restart recovery
-    const stack = await this.lightEngine.getSceneStack();
-    const newStack = this.sceneManager.updateStack(stack, layerName, sceneString, clear);
-    await this.lightEngine.setSceneStack(newStack);
-    log('Stack updated');
+    // Update in-memory state and apply — this is the whole critical path.
+    await this.lightEngine.setLayerScene(layerName, mergedScene, t);
+  }
+
+  /**
+   * Serializes stack writes. Read-modify-write of the stack must not interleave, or a burst
+   * of triggers can persist a stack that never existed.
+   */
+  private queuePersist(layerName : string, sceneString : string, clear : boolean) {
+    this.persistQueue = this.persistQueue
+      .then(async () => {
+        const stack = await this.lightEngine.getSceneStack();
+        const newStack = this.sceneManager.updateStack(stack, layerName, sceneString, clear);
+        await this.lightEngine.setSceneStack(newStack);
+        log('Stack updated');
+      })
+      .catch((err) => log(`Failed persisting stack for layer ${layerName}: ${err}`));
+  }
+
+  /** Test hook: resolves once every queued stack write has settled. */
+  async flushPersist() {
+    await this.persistQueue;
   }
 
 }
