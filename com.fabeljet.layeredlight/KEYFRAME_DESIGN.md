@@ -319,13 +319,15 @@ def evaluate_layer(layer, t_now):
 
 ### Flattening the Layer Stack
 
-Layers are ordered by priority (high to low). Flattening resolves `null` values:
+Layers are listed bottom-to-top: the first entry is the base of the stack and the last
+entry has the highest priority. Flattening walks the list backwards and resolves `null`
+values:
 
 ```python
 def flatten(layers, t_now):
     """
     Flatten layer stack into final light values.
-    layers: list of layers, ordered highest priority first.
+    layers: list of layers, ordered bottom-to-top (last = highest priority).
     """
     scenes = [evaluate_layer(layer, t_now) for layer in layers]
 
@@ -336,7 +338,7 @@ def flatten(layers, t_now):
 
     result = {}
     for light in all_lights:
-        for scene in scenes:
+        for scene in reversed(scenes):
             val = scene.get(light)
             if val is not None:  # null means "pass through"
                 result[light] = val
@@ -352,12 +354,12 @@ def flatten(layers, t_now):
 ```
 Time t
 ┌─────────────────────────────────────┐
-│  Layer 0 (highest priority)         │
+│  Layer 1 — last listed, top of stack│
 │  kitchen: eval(pattern, t) → 0xA0   │  ← non-null, wins
 │  bedroom: eval(pattern, t) → null   │  ← null, pass through
 ├─────────────────────────────────────┤
-│  Layer 1                            │
-│  kitchen: eval(pattern, t) → 0xFF   │  ← shadowed by Layer 0
+│  Layer 0 — first listed, base       │
+│  kitchen: eval(pattern, t) → 0xFF   │  ← shadowed by Layer 1
 │  bedroom: eval(pattern, t) → 0x80   │  ← first non-null, wins
 │  hallway: eval(pattern, t) → 0x40   │  ← only layer, wins
 ├───��─��───────────────────────────────┤

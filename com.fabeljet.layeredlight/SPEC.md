@@ -69,10 +69,16 @@ Key function: `eval(pattern, t_assign, t_now)` → setting value
 
 See KEYFRAME_DESIGN.md Section 5 (Layer Flattening).
 
-Process layers in priority order (highest first):
+The priority list (Homey variable `Grenser: Sceneprioritet`) is ordered **bottom-to-top**:
+it lists the scene stack from the base upwards, so the **last** entry is the top of the stack
+and has the **highest** priority.
+
+Layers are therefore resolved from the end of the list backwards:
+
 1. Evaluate each layer at timestamp to get scene
-2. For each light, find first non-null value (null passes through)
-3. If all layers null, default to off
+2. For each light, walk the list from the last entry backwards and take the first non-null
+   value (null passes through to the layer below)
+3. If every layer is null, default to off
 
 ## Interpolation
 
