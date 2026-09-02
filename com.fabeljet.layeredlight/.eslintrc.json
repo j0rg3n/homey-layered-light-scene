@@ -1,5 +1,8 @@
 {
   "extends": "athom/homey-app",
+  "parserOptions": {
+    "project": "./tsconfig.eslint.json"
+  },
   "rules": {
     "import/extensions": "off",
     "node/no-missing-import": "off",
