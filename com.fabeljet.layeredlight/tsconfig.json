@@ -3,5 +3,15 @@
   "compilerOptions": {
     "allowJs": true,
     "outDir": ".homeybuild/"
-  }
+  },
+  "exclude": [
+    "node_modules",
+    ".homeybuild",
+    "test-results",
+    "coverage",
+    "jest.config.js",
+    "playwright.config.js",
+    "**/*.test.ts",
+    "**/*.test.js"
+  ]
 }
