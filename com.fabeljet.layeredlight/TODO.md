@@ -32,18 +32,56 @@ Affected files: `light-engine.ts`, `card-handler.ts`, `light-controller.ts`, `in
 
 See SPEC.md § Responsiveness and Concurrency for the normative guarantees.
 
-- [ ] Single-flight tick in `LightEngine`: at most one tick executing, at most one pending;
+- [x] Single-flight tick in `LightEngine`: at most one tick executing, at most one pending;
       a new request while one is pending replaces the pending one rather than queueing
-- [ ] Make `lastAppliedScene` / `currentLightValues` updates safe under the single-flight
+- [x] Make `lastAppliedScene` / `currentLightValues` updates safe under the single-flight
       model (write only from the tick that owns the flight; no read-modify-write across await)
-- [ ] Cache scene priorities in `LightEngine`, invalidated on layer set/clear and on heartbeat
-- [ ] Cache the device list in `LightController`, invalidated on heartbeat (not per tick)
-- [ ] `CardHandler.handleApplyScene`: apply in-memory + return; persist without awaiting,
+- [x] Cache scene priorities in `LightEngine`, refreshed on heartbeat, with a miss-driven
+      refetch when a layer name is absent from the cached list
+- [x] Cache the device list in `LightController` (plus a name index), refreshed on heartbeat
+- [x] `CardHandler.handleApplyScene`: apply in-memory + return; persist without awaiting,
       with failures logged rather than surfaced to the card
-- [ ] Per-device supersession in `LightController`: a newer target for a light drops any
-      not-yet-sent commands for that light instead of queueing behind them
-- [ ] Tests: N rapid `handleApplyScene` calls converge on the last scene; concurrent ticks
+- [x] Tests: N rapid `handleApplyScene` calls converge on the last scene; concurrent ticks
       never leave `lastAppliedScene` stale; priorities/devices fetched once per burst
+- [ ] Per-device supersession in `LightController`: a newer target for a light drops any
+      not-yet-sent commands for that light instead of queueing behind them — deferred until
+      device testing shows whether the above is already enough
+- [ ] **Verify on device**: rapid repeated triggering, a layer newly added to
+      `Grenser: Sceneprioritet`, and a renamed light
+
+---
+
+## Clean up the lint baseline (**SECOND PRIORITY** — after the current functionality pass)
+
+`npm run lint` cannot be used as a pass/fail gate today: it reports ~379 problems, so a real
+regression is invisible in the noise. CLAUDE.md therefore states the weaker gate — *no new
+problems in the files you touched* — which depends on whoever is working remembering to scope
+the command by hand.
+
+Distribution of the problems:
+
+| File | Count | Nature |
+| ---- | ----- | ------ |
+| `settings/main.js` | ~287 | Browser JS predating the Homey eslint config: `no-var`, `vars-on-top`, `no-undef`, `brace-style` |
+| `settings/main.pw.test.js` | ~53 | Playwright spec: implicit `any`, `window` property access |
+| `settings/scene-builder.test.js` | ~39 | Same class as above |
+| `light-engine.test.ts` | ~15 | `any` casts in the existing animation tests, one unused variable |
+| TypeScript sources | 7 | Warnings only — `no-console`, `homey-app/global-timers` |
+
+About 185 are auto-fixable. Do this **after** the animation and responsiveness work lands, not
+before: `--fix` across `settings/main.js` touches the whole settings page, and reviewing that
+diff on top of in-flight functionality changes is how real bugs get waved through.
+
+- [ ] `npm run lint -- --fix`, then review the diff file by file (not as one blob)
+- [ ] Hand-fix the remainder in `settings/main.js` — `no-undef` there usually means a genuinely
+      missing `/* global */` declaration or a real typo, so read each one
+- [ ] Type the Playwright and settings test files enough to satisfy the config, or scope an
+      eslint override to them with a comment saying why
+- [ ] Replace the `any` casts in `light-engine.test.ts` with typed mock helpers
+- [ ] Decide on the two TypeScript warning classes: silence `no-console` app-wide via a logger,
+      or accept them as warnings forever and say so in CLAUDE.md
+- [ ] Once clean: promote `npm run lint` to a hard gate in CLAUDE.md § Before every deployment
+      and delete the "lint baseline" section
 
 ---
 
