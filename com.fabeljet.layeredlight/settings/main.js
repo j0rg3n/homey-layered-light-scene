@@ -74,46 +74,13 @@ function populateDeviceCheckboxes(devices) {
   }
 }
 
-// A light with both colour and white is in exactly one mode at a time — Homey's light_mode
-// capability decides which axis it actually applies. Seeding both hue/sat and temp made the
-// temperature slider a no-op, so the state carries a mode and only that mode's values.
-function defaultState(info, on) {
-  var state = { on: on };
-  if (info.caps.hasDim) { state.dim = 1; }
-
-  if (info.caps.hasColor) {
-    state.colorMode = 'color';
-    state.hue = 0;
-    state.sat = 1;
-  } else if (info.caps.hasTemp) {
-    state.colorMode = 'temperature';
-    state.temp = 0.5;
-  }
-
-  return state;
-}
-
-// Switching mode drops the other axis, so the scene string and the preview cannot disagree
-// about which one the user meant.
-function setColorMode(deviceId, mode) {
-  var state = sceneStates[deviceId];
-  if (!state) return;
-
-  state.colorMode = mode;
-  if (mode === 'temperature') {
-    delete state.hue;
-    delete state.sat;
-    if (state.temp === undefined) state.temp = 0.5;
-  } else {
-    delete state.temp;
-    if (state.hue === undefined) state.hue = 0;
-    if (state.sat === undefined) state.sat = 1;
-  }
-}
-
 function onDeviceToggle(deviceId, checked, info) {
   if (checked) {
-    sceneStates[deviceId] = defaultState(info, true);
+    var state = { on: true };
+    if (info.caps.hasDim)   { state.dim = 1; }
+    if (info.caps.hasColor) { state.hue = 0; state.sat = 1; }
+    if (info.caps.hasTemp)  { state.temp = 0.5; }
+    sceneStates[deviceId] = state;
   } else {
     sceneStates[deviceId] = null;
   }
@@ -141,7 +108,6 @@ function renderDeviceCards() {
     container.appendChild(card);
     attachCardHandlers(card, id, dev);
     var state = sceneStates[id];
-    applyColorModeToCard(card, state);
     if (state && state.passthrough) {
       card.querySelector('.ctrl-mode').value = 'null';
       card.querySelector('.controls').style.display = 'none';
@@ -200,40 +166,16 @@ function buildDeviceCard(dev) {
     controls.appendChild(makeSliderRow('ctrl-dim', 'Dim: ', 1));
   }
 
-  if (dev.caps.hasColor && dev.caps.hasTemp) {
-    var modeRow = document.createElement('div');
-    modeRow.className = 'control-row';
-    var modeLabel = document.createElement('label');
-    modeLabel.textContent = 'Mode: ';
-    var colorModeSelect = document.createElement('select');
-    colorModeSelect.className = 'ctrl-colormode';
-    [['color', 'Colour'], ['temperature', 'White']].forEach(function (pair) {
-      var opt = document.createElement('option');
-      opt.value = pair[0];
-      opt.textContent = pair[1];
-      colorModeSelect.appendChild(opt);
-    });
-    modeLabel.appendChild(colorModeSelect);
-    modeRow.appendChild(modeLabel);
-    controls.appendChild(modeRow);
-  }
-
   if (dev.caps.hasColor) {
-    var colorGroup = document.createElement('div');
-    colorGroup.className = 'color-group';
     var swatch = document.createElement('div');
     swatch.className = 'color-swatch';
-    colorGroup.appendChild(swatch);
-    colorGroup.appendChild(makeSliderRow('ctrl-hue', 'Hue: ', 0));
-    colorGroup.appendChild(makeSliderRow('ctrl-sat', 'Saturation: ', 1));
-    controls.appendChild(colorGroup);
+    controls.appendChild(swatch);
+    controls.appendChild(makeSliderRow('ctrl-hue', 'Hue: ', 0));
+    controls.appendChild(makeSliderRow('ctrl-sat', 'Saturation: ', 1));
   }
 
   if (dev.caps.hasTemp) {
-    var tempGroup = document.createElement('div');
-    tempGroup.className = 'temp-group';
-    tempGroup.appendChild(makeSliderRow('ctrl-temp', 'Temp: ', 0.5));
-    controls.appendChild(tempGroup);
+    controls.appendChild(makeSliderRow('ctrl-temp', 'Temp: ', 0.5));
   }
 
   card.appendChild(controls);
@@ -251,14 +193,19 @@ function attachCardHandlers(card, deviceId, dev) {
       controls.style.display = 'none';
     } else {
       if (!sceneStates[deviceId] || sceneStates[deviceId].passthrough) {
-        sceneStates[deviceId] = defaultState(dev, mode === 'on');
+        var state = { on: mode === 'on' };
+        if (dev.caps.hasDim)   { state.dim = 1; }
+        if (dev.caps.hasColor) { state.hue = 0; state.sat = 1; }
+        if (dev.caps.hasTemp)  { state.temp = 0.5; }
+        sceneStates[deviceId] = state;
       } else {
         sceneStates[deviceId].on = (mode === 'on');
       }
       controls.style.display = '';
     }
     updateSceneOutput();
-    schedulePreview(deviceId);
+    clearTimeout(previewTimers[deviceId]);
+    previewTimers[deviceId] = setTimeout(function () { sendPreview(deviceId); }, 300);
   });
 
   if (dev.caps.hasDim) {
@@ -281,37 +228,6 @@ function attachCardHandlers(card, deviceId, dev) {
       onControlChange(deviceId, 'temp', parseFloat(this.value));
     });
   }
-
-  var colorModeSelect = card.querySelector('.ctrl-colormode');
-  if (colorModeSelect) {
-    colorModeSelect.addEventListener('change', function () {
-      setColorMode(deviceId, this.value);
-      applyColorModeToCard(card, sceneStates[deviceId]);
-      updateColorSwatch(card, deviceId);
-      updateSceneOutput();
-      schedulePreview(deviceId);
-    });
-  }
-}
-
-// Only the active mode's controls are shown: a visible temperature slider on a lamp in colour
-// mode is a control that provably does nothing.
-function applyColorModeToCard(card, state) {
-  var colorGroup = card.querySelector('.color-group');
-  var tempGroup = card.querySelector('.temp-group');
-  if (!colorGroup || !tempGroup) return;
-
-  var mode = (state && state.colorMode) || 'color';
-  var select = card.querySelector('.ctrl-colormode');
-  if (select) select.value = mode;
-
-  colorGroup.style.display = mode === 'temperature' ? 'none' : '';
-  tempGroup.style.display = mode === 'temperature' ? '' : 'none';
-}
-
-function schedulePreview(deviceId) {
-  clearTimeout(previewTimers[deviceId]);
-  previewTimers[deviceId] = setTimeout(function () { sendPreview(deviceId); }, 300);
 }
 
 function onControlChange(deviceId, field, value) {
@@ -325,7 +241,8 @@ function onControlChange(deviceId, field, value) {
 
   updateSceneOutput();
 
-  schedulePreview(deviceId);
+  clearTimeout(previewTimers[deviceId]);
+  previewTimers[deviceId] = setTimeout(function () { sendPreview(deviceId); }, 300);
 }
 
 function updateColorSwatch(card, deviceId) {
@@ -360,28 +277,13 @@ function sendPreview(deviceId) {
   if (!sceneStates[deviceId] || sceneStates[deviceId].passthrough) return;
 
   var state = sceneStates[deviceId];
-  var mode = state.colorMode || (state.temp !== undefined ? 'temperature' : 'color');
-
-  var body = { deviceId: deviceId, mode: mode, onoff: state.on };
+  var body = { deviceId: deviceId, onoff: state.on };
   if (state.dim !== undefined) body.dim = state.dim;
+  if (state.hue !== undefined) body.hue = state.hue;
+  if (state.sat !== undefined) body.sat = state.sat;
+  if (state.temp !== undefined) body.temp = state.temp;
 
-  // Send only the axis the mode governs — the other one is not just redundant, it overrides.
-  if (mode === 'temperature') {
-    if (state.temp !== undefined) body.temp = state.temp;
-  } else {
-    if (state.hue !== undefined) body.hue = state.hue;
-    if (state.sat !== undefined) body.sat = state.sat;
-  }
-
-  var name = deviceInfo[deviceId] ? deviceInfo[deviceId].name : deviceId;
-  Homey.api('POST', '/preview', body, function (err) {
-    // An empty callback here is what made the original bug invisible: a rejected preview and
-    // an unresponsive lamp looked identical.
-    if (err) {
-      dbg('preview error for ' + name + ': ' + JSON.stringify(err));
-      showStatus('Preview failed for ' + name + ': ' + (err.message || err), true);
-    }
-  });
+  Homey.api('POST', '/preview', body, function () {});
 }
 
 function onLoadVariable() {
@@ -426,7 +328,6 @@ function parseToken(token) {
   if (token.charAt(0) === 'h' && token.length === 7) {
     return {
       on: true,
-      colorMode: 'color',
       hue: parseInt(token.substring(1, 3), 16) / 255,
       sat: parseInt(token.substring(3, 5), 16) / 255,
       dim: parseInt(token.substring(5, 7), 16) / 255
@@ -436,7 +337,6 @@ function parseToken(token) {
   if (token.length === 4) {
     return {
       on: true,
-      colorMode: 'temperature',
       dim: parseInt(token.substring(0, 2), 16) / 255,
       temp: parseInt(token.substring(2, 4), 16) / 255
     };
