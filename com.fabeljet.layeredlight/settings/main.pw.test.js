@@ -156,10 +156,13 @@ test('preview body: color device sends hue, sat, dim', async ({ page }) => {
   const calls = await page.evaluate(() => window.__previewCalls);
   const last = calls[calls.length - 1];
   expect(last.deviceId).toBe('d-color');
+  expect(last.mode).toBe('color');
   expect(typeof last.hue).toBe('number');
   expect(typeof last.sat).toBe('number');
   expect(typeof last.dim).toBe('number');
-  expect(typeof last.temp).toBe('number'); // d-color also hasTemp
+  // d-color also hasTemp, but a lamp in colour mode ignores light_temperature — sending it
+  // alongside hue/sat is what made the temperature slider a no-op.
+  expect(last.temp).toBeUndefined();
 });
 
 test('pass-through mode: hides controls and does not fire preview', async ({ page }) => {
@@ -230,15 +233,71 @@ test('preview body: dim+temp device sends dim+temp, no color', async ({ page }) 
   expect(body.sat).toBeUndefined();
 });
 
-test('preview body: dim+color+temp device sends all fields', async ({ page }) => {
+test('preview body: dim+color+temp device defaults to colour mode only', async ({ page }) => {
   await setupPage(page);
   const body = await previewBodyAfterCheck(page, 'd-color');
   expect(body).not.toBeNull();
   expect(body.onoff).toBe(false);
+  expect(body.mode).toBe('color');
   expect(typeof body.dim).toBe('number');
   expect(typeof body.hue).toBe('number');
   expect(typeof body.sat).toBe('number');
-  expect(typeof body.temp).toBe('number');
+  expect(body.temp).toBeUndefined();
+});
+
+test('colour/white selector: switching to White sends temp and drops hue/sat', async ({ page }) => {
+  await setupPage(page);
+
+  await page.locator('#device-checkboxes input[data-device-id="d-color"]').check();
+
+  const card = page.locator('.device-card[data-device-id="d-color"]');
+  await expect(card.locator('.color-group')).toBeVisible();
+  await expect(card.locator('.temp-group')).toBeHidden();
+
+  await card.locator('.ctrl-colormode').selectOption('temperature');
+  await page.waitForTimeout(400);
+
+  // The controls follow the mode: a visible slider that cannot affect the lamp is a lie.
+  await expect(card.locator('.temp-group')).toBeVisible();
+  await expect(card.locator('.color-group')).toBeHidden();
+
+  const calls = await page.evaluate(() => window.__previewCalls);
+  const last = calls[calls.length - 1];
+  expect(last.deviceId).toBe('d-color');
+  expect(last.mode).toBe('temperature');
+  expect(typeof last.temp).toBe('number');
+  expect(last.hue).toBeUndefined();
+  expect(last.sat).toBeUndefined();
+
+  // ...and the exported scene string is the dim+temperature token, not an h-token.
+  const output = await page.locator('#scene-output').inputValue();
+  expect(output).toMatch(/^DimColor:[0-9a-f]{4}$/);
+});
+
+test('colour/white selector: absent on a device with only one axis', async ({ page }) => {
+  await setupPage(page);
+
+  await page.locator('#device-checkboxes input[data-device-id="d-temp"]').check();
+  const card = page.locator('.device-card[data-device-id="d-temp"]');
+
+  await expect(card.locator('.ctrl-colormode')).toHaveCount(0);
+  await expect(card.locator('.temp-group')).toBeVisible();
+});
+
+test('temperature slider on a white-mode device reaches the preview', async ({ page }) => {
+  await setupPage(page);
+
+  await page.locator('#device-checkboxes input[data-device-id="d-temp"]').check();
+  const slider = page.locator('.device-card[data-device-id="d-temp"] .ctrl-temp');
+  await slider.fill('0.8');
+  await slider.dispatchEvent('input');
+  await page.waitForTimeout(400);
+
+  const calls = await page.evaluate(() => window.__previewCalls);
+  const last = calls[calls.length - 1];
+  expect(last.deviceId).toBe('d-temp');
+  expect(last.mode).toBe('temperature');
+  expect(last.temp).toBeCloseTo(0.8, 2);
 });
 
 test('preview body: no-caps device (hasDim=false) must NOT send dim', async ({ page }) => {
