@@ -399,36 +399,6 @@ function onHomeyReady(Homey) {
 Call `Homey.ready()` after the UI is populated. If API calls fail, call `Homey.ready()`
 anyway so the error is visible rather than leaving the user on a blank loading screen.
 
-### Preview
-
-Adjusting a control previews it on the real device immediately (debounced 300 ms per device).
-
-**Colour and white are exclusive modes.** A light with both `light_hue` and
-`light_temperature` is in exactly one mode at a time, and Homey selects it with the
-`light_mode` capability (`'color'` | `'temperature'`). A device sitting in colour mode ignores
-`light_temperature`, and one in temperature mode ignores `light_hue`/`light_saturation`.
-
-Therefore:
-
-- A device state carries `colorMode`: `'color'` or `'temperature'`. It never carries hue/sat
-  *and* temp as live values — the mode decides which axis is meaningful.
-- A device with both capabilities gets a colour/white selector on its card. A device with only
-  one of them has no selector and no choice to make.
-- `postPreview` sends `light_mode` **before** the colour or temperature values, and only when
-  the device actually has that capability. `light_mode` never carries a duration.
-- Command order per device is `light_mode` → (`light_hue`, `light_saturation`) or
-  `light_temperature` → `dim` → `onoff`. Homey serializes capability calls per device, so this
-  order is what stops the light flashing its previous colour before the new one arrives.
-
-The exported scene string follows the same mode: `colorMode: 'color'` emits the 6-digit
-`h`-token, `'temperature'` emits the 4-digit dim+temperature token. A state with no colour and
-no temperature emits the 2-digit dim token.
-
-**Failures must be visible.** A preview call that fails surfaces in the page's status line and
-is logged by the API handler with the device name and the capability that failed. A silently
-swallowed preview error is indistinguishable from a light that does not respond, which is the
-one thing the preview exists to tell the user.
-
 ---
 
 ## Refactoring Helper
