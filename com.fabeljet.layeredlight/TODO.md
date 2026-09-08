@@ -70,12 +70,12 @@ through `deviceProvider.getDevices()`, a different operation that does exist.
 
 See SPEC.md § Scene Helper UI → Preview.
 
-- [ ] `api.js`: `getDeviceById` → `getDevice({ id })`
-- [ ] `api.js`: log the request, the resolved device, each capability set, and any failure;
+- [x] `api.js`: `getDeviceById` → `getDevice({ id })`
+- [x] `api.js`: log the request, the resolved device, each capability set, and any failure;
       throw on failure so the caller sees it
-- [ ] `settings/main.js`: surface preview errors via `showStatus` instead of swallowing them
-- [ ] Verify on device with `homey app run -r`: the log must show the preview and the lamp must
-      follow the slider
+- [x] `settings/main.js`: surface preview errors via `showStatus` instead of swallowing them
+- [x] Verify on device: temperature adjustment and variable loading both confirmed working
+      (2026-09-08)
 
 ### Fix: loading a variable drops every device whose name contains a space
 
@@ -91,11 +91,11 @@ Writing is unaffected: `buildSceneString` emits `Name:token` joined by single sp
 engine parses correctly. Only the settings page's own reader is wrong, so a scene written by
 the page cannot be loaded back into it.
 
-- [ ] Move the parse into `settings/scene-builder.js` as `parseSceneString`, ported from
+- [x] Move the parse into `settings/scene-builder.js` as `parseSceneString`, ported from
       `SceneManager.getSceneFromString` so the page and the engine cannot disagree
-- [ ] `parseSceneStringIntoState` uses it
-- [ ] Unit tests: names with spaces, several entries, `off` / `null` tokens, trailing spaces
-- [ ] E2E: a fixture device whose name contains a space round-trips through load
+- [x] `parseSceneStringIntoState` uses it
+- [x] Unit tests: names with spaces, several entries, `off` / `null` tokens, trailing spaces
+- [x] E2E: a fixture device whose name contains a space round-trips through load
 
 ### Deferred: does `light_mode` matter?
 
@@ -109,6 +109,35 @@ temperature slider moves a lamp that is currently in colour mode.
 - [ ] Determine on device whether temperature is applied without `light_mode` being set
 - [ ] If it is not: set `light_mode` before the colour/temperature values in both `api.js` and
       `LightController` (`applySimpleSetting`, `applyPrioritizedFade`), never with a duration
+
+---
+
+## Fix: "Copy to clipboard" reports "Copy failed" (bug)
+
+`onCopy` in `settings/main.js` calls `navigator.clipboard.writeText`, whose promise rejects and
+lands in a `.catch` that discards the error and shows the bare string `Copy failed`.
+
+Most likely cause: the settings page runs inside Homey's iframe, and the async Clipboard API is
+gated by the `clipboard-write` Permissions Policy — which the embedding iframe has to grant
+via `allow="clipboard-write"`. A page that cannot control its own embedding cannot rely on it,
+and the rejection is a `NotAllowedError` rather than anything the page did wrong. (A
+non-secure context would do the same, but Homey serves the settings page over https.)
+
+Confirm before fixing: the `.catch` throws away the only evidence, so log the rejection first
+(`dbg(String(err))` plus `err.name`) and read it off the device — the same
+swallowed-error pattern that hid the preview defect.
+
+Then fix by not depending on the async API alone:
+
+- [ ] Log the rejection name and message before deciding anything
+- [ ] Fall back to a hidden `<textarea>` + `document.execCommand('copy')` when
+      `writeText` rejects — deprecated, but it is synchronous, needs no Permissions Policy and
+      works inside an iframe
+- [ ] If both fail, select the text in `#scene-output` and tell the user to press Ctrl+C,
+      rather than reporting a dead end
+- [ ] Report the actual reason in the status line instead of a bare "Copy failed"
+- [ ] E2E: assert the fallback path runs when `navigator.clipboard.writeText` is stubbed to
+      reject (the Playwright harness can stub it directly)
 
 ---
 
