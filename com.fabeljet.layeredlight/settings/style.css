@@ -271,6 +271,15 @@ button:active {
   height: 4px;
 }
 
+/* Colour and white are exclusive modes; only one group is visible at a time, and each keeps
+   the same row rhythm as .controls so switching mode does not shift the layout. */
+.color-group,
+.temp-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 /* ─── Color swatch ──────────────────────────────────────────────────────────── */
 .color-swatch {
   width: 32px;

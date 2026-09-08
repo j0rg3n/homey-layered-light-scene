@@ -51,6 +51,58 @@ See SPEC.md § Responsiveness and Concurrency for the normative guarantees.
 
 ---
 
+## Fix: settings-page preview ignores temperature (bug)
+
+Selecting a light in the scene helper and moving the **Temp** slider did nothing on the device.
+Three separate defects, any one of which is enough to produce that:
+
+1. **`light_mode` is never sent.** Homey lights with both colour and white use the `light_mode`
+   capability (`'color'` | `'temperature'`) to choose which axis is live. `postPreview` in
+   `api.js` sends `light_temperature` without ever setting `light_mode`, so a lamp sitting in
+   colour mode discards the temperature command.
+
+2. **Colour and temperature are sent together.** `onDeviceToggle` in `settings/main.js` seeds
+   `hue`, `sat` *and* `temp` for a device that has both capabilities, and `postPreview` then
+   sends all of them in one batch. Even with the mode set, the colour values fight the
+   temperature value.
+
+3. **`buildSceneString` silently prefers colour.** In `settings/scene-builder.js` the
+   `hue !== undefined && sat !== undefined` branch precedes the `temp` branch, so for a
+   colour-capable device the exported string is always an `h`-token and the temperature the
+   user set never reaches the scene string either.
+
+The failure was invisible as well as ineffective: `sendPreview` calls
+`Homey.api('POST', '/preview', body, function () {})` with an empty callback, and `postPreview`
+logs nothing, so neither the page nor the app log showed anything at all.
+
+See SPEC.md § Scene Helper UI → Preview for the intended behaviour.
+
+- [ ] `api.js`: report `hasMode` from `getDevices`; in `postPreview` send `light_mode` first
+      (only when the device has it), then colour or temperature, then dim, then onoff
+- [ ] `api.js`: log the preview request and any capability failure; throw so the page sees it
+- [ ] `settings/main.js`: colour/white selector on cards for devices with both capabilities;
+      state carries `colorMode` and only that mode's values
+- [ ] `settings/main.js`: surface preview errors via `showStatus`
+- [ ] `settings/scene-builder.js`: honour `colorMode` instead of preferring colour by accident
+- [ ] `parseToken`: set `colorMode` from the token shape when loading an existing variable
+- [ ] Tests for `buildSceneString` with `colorMode`, both modes and single-capability devices
+
+### Same root cause in the engine (not yet fixed)
+
+`LightController.applySimpleSetting` has the identical `light_mode` gap: the `[l, t]` branch
+sets `dim` + `light_temperature` and the `[h, s, l]` branch sets hue/saturation, neither ever
+setting `light_mode`. On a colour+white lamp, a scene's 4-digit dim+temperature token is
+therefore ignored whenever the lamp happens to be in colour mode — and `applyPrioritizedFade`
+has the same hole. Kept separate from the preview fix because it changes device behaviour for
+every scene and can only be verified on the device.
+
+- [ ] `LightController`: set `light_mode` before the colour/temperature values in
+      `applySimpleSetting` and `applyPrioritizedFade`, guarded on the capability existing
+- [ ] Never send `light_mode` with a duration (it is an enum, like `onoff`)
+- [ ] Tests asserting `light_mode` precedes hue/sat and temperature, and carries no duration
+
+---
+
 ## Clean up the lint baseline (**SECOND PRIORITY** — after the current functionality pass)
 
 `npm run lint` cannot be used as a pass/fail gate today: it reports ~379 problems, so a real
