@@ -1,5 +1,7 @@
 'use strict';
 
+/* global window */ // dual-target module: required by Jest, loaded as a script by the page
+
 /**
  * Convert a map of device states to a canonical LayeredLight scene string.
  *
@@ -39,8 +41,38 @@ function buildSceneString(deviceStates) {
   return parts.join(' ');
 }
 
+/**
+ * Parse a scene string into a map of device name -> value token.
+ *
+ * Ported from SceneManager.getSceneFromString so the settings page and the engine agree on
+ * the grammar. Device names may contain spaces, so the string cannot be split on whitespace:
+ * split on ':', the value is the first non-space run after the colon, and the remainder up to
+ * the next colon is the next device's name.
+ *
+ * @param {string} sceneString - e.g. "Kjøkkenbenk Ytre:ff80 Taklys:ff"
+ * @returns {Object} device name -> token, e.g. { 'Kjøkkenbenk Ytre': 'ff80', Taklys: 'ff' }
+ */
+function parseSceneString(sceneString) {
+  const tokens = {};
+  if (!sceneString) return tokens;
+
+  const groups = String(sceneString).split(':');
+  let name = groups[0].trim();
+
+  for (let i = 1; i < groups.length; i++) {
+    const match = groups[i].match(/\s*(\S+)(?:\s+([\s\S]+))?/);
+    if (!match) break;
+
+    if (name) tokens[name] = match[1];
+    name = match[2] === undefined ? '' : match[2].trim();
+  }
+
+  return tokens;
+}
+
 if (typeof module !== 'undefined') {
-  module.exports = { buildSceneString };
+  module.exports = { buildSceneString, parseSceneString };
 } else {
   window.buildSceneString = buildSceneString;
+  window.parseSceneString = parseSceneString;
 }

@@ -10,11 +10,15 @@ const FIXTURE_DEVICES = [
   { id: 'd-temp',     name: 'DimTemp',   caps: { hasDim: true,  hasColor: false, hasTemp: true  } },
   { id: 'd-color',    name: 'DimColor',  caps: { hasDim: true,  hasColor: true,  hasTemp: true  } },
   { id: 'd-nocaps',   name: 'NoCaps',    caps: { hasDim: false, hasColor: false, hasTemp: false } },
+  // Real device names contain spaces ("Kjøkkenbenk Ytre") — the grammar allows them and the
+  // page used to drop every such device when loading a variable.
+  { id: 'd-spaced',   name: 'Kjokkenbenk Ytre', caps: { hasDim: true, hasColor: false, hasTemp: true } },
 ];
 
 const FIXTURE_VARIABLES = [
   { id: 'v1', name: 'Morning', value: 'DimOnly:ff DimTemp:ff80' },
   { id: 'v2', name: 'Evening', value: 'DimColor:off' },
+  { id: 'v3', name: 'Spaced', value: 'Kjokkenbenk Ytre:ff80 DimOnly:ff' },
 ];
 
 // SDK preamble exactly as injected by the Homey build pipeline
@@ -207,6 +211,35 @@ async function previewBodyAfterCheck(page, deviceId) {
     window.__previewCalls.filter((c) => c.deviceId === id), deviceId);
   return calls[calls.length - 1] ?? null;
 }
+
+test('load variable: a device name with spaces is not split into fragments', async ({ page }) => {
+  await setupPage(page);
+
+  await page.locator('#var-load-select').selectOption('v3');
+  await page.locator('#var-load-btn').click();
+
+  // v3 = 'Kjokkenbenk Ytre:ff80 DimOnly:ff' — both devices, not four name fragments.
+  await expect(page.locator('#device-checkboxes input[data-device-id="d-spaced"]')).toBeChecked();
+  await expect(page.locator('#device-checkboxes input[data-device-id="d-dim"]')).toBeChecked();
+
+  const cards = page.locator('#device-cards .device-card');
+  await expect(cards).toHaveCount(2);
+
+  const output = await page.locator('#scene-output').inputValue();
+  expect(output).toContain('Kjokkenbenk Ytre:ff80');
+  expect(output).toContain('DimOnly:ff');
+});
+
+test('load variable: the loaded values survive the round-trip', async ({ page }) => {
+  await setupPage(page);
+
+  await page.locator('#var-load-select').selectOption('v3');
+  await page.locator('#var-load-btn').click();
+
+  // ff80 is dim=1.0, temp=0.5 — the temperature must come back, not be dropped.
+  const tempSlider = page.locator('.device-card[data-device-id="d-spaced"] .ctrl-temp');
+  await expect(tempSlider).toHaveValue(/0\.5/);
+});
 
 test('preview body: dim-only device sends dim, no color/temp', async ({ page }) => {
   await setupPage(page);

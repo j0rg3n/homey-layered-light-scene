@@ -51,6 +51,67 @@ See SPEC.md § Responsiveness and Concurrency for the normative guarantees.
 
 ---
 
+## Fix: settings-page preview never reached the device (bug)
+
+Moving any slider in the scene helper did nothing. `postPreview` in `api.js` calls
+`homey.app.homeyApi.devices.getDeviceById({ id: deviceId })`, and **there is no such method**:
+the HomeyAPIV3Local specification
+(`node_modules/homey-api/assets/specifications/HomeyAPIV3Local.json`) gives `ManagerDevices`
+exactly one `getOne` operation, `getDevice -> get /device/:id`. So preview has been broken for
+every axis since the settings page was written (`b6e2d7e`), not just for temperature.
+
+It went unnoticed because the failure was silent at both ends: `sendPreview` passes an empty
+callback to `Homey.api`, and `postPreview` logs nothing, so a rejected call looked exactly like
+an unresponsive lamp. Confirmed by running `homey app run -r` while adjusting a slider — the
+app log recorded nothing at all.
+
+Do not conflate this with the flow-card path, which works: `LightController` resolves devices
+through `deviceProvider.getDevices()`, a different operation that does exist.
+
+See SPEC.md § Scene Helper UI → Preview.
+
+- [ ] `api.js`: `getDeviceById` → `getDevice({ id })`
+- [ ] `api.js`: log the request, the resolved device, each capability set, and any failure;
+      throw on failure so the caller sees it
+- [ ] `settings/main.js`: surface preview errors via `showStatus` instead of swallowing them
+- [ ] Verify on device with `homey app run -r`: the log must show the preview and the lamp must
+      follow the slider
+
+### Fix: loading a variable drops every device whose name contains a space
+
+Loading `Scene: Kj Arbeid` restored 2 of 5 lights. `parseSceneStringIntoState` in
+`settings/main.js` splits the scene string on whitespace (`sceneStr.trim().split(/\s+/)`),
+but the canonical grammar allows spaces in device names: `SceneManager.getSceneFromString`
+splits on `:`, takes the first non-space run as the value, and treats **the rest of the run
+up to the next colon as the next light's name**. So `Kjøkkenbenk Ytre:ff80` becomes
+`Kjøkkenbenk` (no colon — skipped) and `Ytre:ff80` (unknown device — skipped), and only
+single-word device names survive.
+
+Writing is unaffected: `buildSceneString` emits `Name:token` joined by single spaces, which the
+engine parses correctly. Only the settings page's own reader is wrong, so a scene written by
+the page cannot be loaded back into it.
+
+- [ ] Move the parse into `settings/scene-builder.js` as `parseSceneString`, ported from
+      `SceneManager.getSceneFromString` so the page and the engine cannot disagree
+- [ ] `parseSceneStringIntoState` uses it
+- [ ] Unit tests: names with spaces, several entries, `off` / `null` tokens, trailing spaces
+- [ ] E2E: a fixture device whose name contains a space round-trips through load
+
+### Deferred: does `light_mode` matter?
+
+A colour+white lamp uses Homey's `light_mode` capability (`'color'` | `'temperature'`) to pick
+which axis it applies, and neither `postPreview` nor `LightController` ever sets it. A first
+attempt at fixing preview assumed this was the cause and was reverted (842a717 / a7d8271): it
+was built on the untested assumption that the call reached the device at all, which it did not.
+Re-open only with device evidence — get preview working first, then check whether the
+temperature slider moves a lamp that is currently in colour mode.
+
+- [ ] Determine on device whether temperature is applied without `light_mode` being set
+- [ ] If it is not: set `light_mode` before the colour/temperature values in both `api.js` and
+      `LightController` (`applySimpleSetting`, `applyPrioritizedFade`), never with a duration
+
+---
+
 ## Clean up the lint baseline (**SECOND PRIORITY** — after the current functionality pass)
 
 `npm run lint` cannot be used as a pass/fail gate today: it reports ~379 problems, so a real

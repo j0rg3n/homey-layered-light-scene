@@ -399,6 +399,32 @@ function onHomeyReady(Homey) {
 Call `Homey.ready()` after the UI is populated. If API calls fail, call `Homey.ready()`
 anyway so the error is visible rather than leaving the user on a blank loading screen.
 
+### Preview
+
+Adjusting a control previews it on the real device immediately (debounced 300 ms per device).
+
+**The device is fetched with `getDevice({ id })`.** That is the only `getOne` operation
+`ManagerDevices` exposes in the HomeyAPIV3Local specification; `getDeviceById` does not exist
+and throws `no such function`.
+
+**Device names may contain spaces.** The scene string is parsed the way the engine parses it
+(`SceneManager.getSceneFromString`): split on `:`, the value is the first non-space run after
+the colon, and everything from the following whitespace up to the next colon is the next
+light's name. `Kjøkkenbenk Ytre:ff80 Taklys:ff` is two lights, not four tokens. The settings
+page shares one implementation with the engine's grammar so a scene it writes can always be
+read back.
+
+**Failures must be visible.** A preview is the one feature whose whole purpose is to tell the
+user what the device does, so a failure that looks like silence is worse than useless:
+
+- `postPreview` logs the request body, the device it resolved, and every capability it sets.
+- A capability that fails is logged with the device name, the capability id and the value, and
+  the handler throws so the caller sees it.
+- `sendPreview` shows the error in the page's status line. An empty
+  `Homey.api(..., function () {})` callback is not acceptable here — it makes a rejected call
+  and an unresponsive lamp indistinguishable, which is exactly how the `getDeviceById` defect
+  survived from the first version of the settings page.
+
 ---
 
 ## Refactoring Helper
