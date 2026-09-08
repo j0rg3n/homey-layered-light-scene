@@ -283,7 +283,15 @@ function sendPreview(deviceId) {
   if (state.sat !== undefined) body.sat = state.sat;
   if (state.temp !== undefined) body.temp = state.temp;
 
-  Homey.api('POST', '/preview', body, function () {});
+  var name = deviceInfo[deviceId] ? deviceInfo[deviceId].name : deviceId;
+  Homey.api('POST', '/preview', body, function (err) {
+    // Never swallow this: a rejected preview and an unresponsive lamp look identical, which
+    // is how the getDeviceById defect survived from the first version of this page.
+    if (err) {
+      dbg('preview error for ' + name + ': ' + JSON.stringify(err));
+      showStatus('Preview failed for ' + name + ': ' + (err.message || err), true);
+    }
+  });
 }
 
 function onLoadVariable() {
@@ -303,21 +311,27 @@ function onLoadVariable() {
 }
 
 function parseSceneStringIntoState(sceneStr) {
-  var parts = sceneStr.trim().split(/\s+/);
+  // Device names may contain spaces, so this must not split on whitespace — parseSceneString
+  // is the engine's grammar, shared so the page can always read back what it wrote.
+  var tokens = parseSceneString(sceneStr);
 
   var nameToId = {};
   for (var id in deviceInfo) nameToId[deviceInfo[id].name] = id;
 
-  for (var i = 0; i < parts.length; i++) {
-    var colonIdx = parts[i].indexOf(':');
-    if (colonIdx < 0) continue;
-
-    var name = parts[i].substring(0, colonIdx);
-    var token = parts[i].substring(colonIdx + 1);
+  var unknown = [];
+  for (var name in tokens) {
     var devId = nameToId[name];
-    if (!devId) continue;
+    if (!devId) {
+      unknown.push(name);
+      continue;
+    }
 
-    sceneStates[devId] = parseToken(token);
+    sceneStates[devId] = parseToken(tokens[name]);
+  }
+
+  if (unknown.length > 0) {
+    dbg('scene names not matching any device: ' + unknown.join(', '));
+    showStatus('Not in device list: ' + unknown.join(', '), true);
   }
 }
 
