@@ -40,6 +40,8 @@ git diff
 - Check the change against `SPEC.md` and the relevant GitHub issue. If behaviour changed and
   the spec did not, update the spec first (see AGENTS.md § Before fixing bugs).
 - Confirm new behaviour has tests that would fail without the change.
+- Confirm no real people, places, or household data crept in: run the check under CLAUDE.md
+  § Synthetic data only and read the diff for real-looking names. Fix before deploying.
 - Note anything that can only be verified on the device; you'll re-run that part of
   `TEST_PLAN.md` after deploying.
 

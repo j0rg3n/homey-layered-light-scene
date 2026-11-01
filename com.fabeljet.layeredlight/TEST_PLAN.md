@@ -4,7 +4,7 @@
 
 ```bash
 # Deploy new version
-cd com.fabeljet.layeredlight
+cd com.fabeljet.layeredlight   # from the repo root
 homey app install
 
 # Rollback command (keep this handy)

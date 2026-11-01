@@ -21,6 +21,34 @@ items as a historical record; new work items go to GitHub.
   `SPEC.md` if observable behaviour changes.
 - The issue body is the authoritative description of root cause, affected files, and checklist.
 
+## Synthetic data only
+
+**No real people, places, events, or household data in anything committed** — tests, fixtures,
+docs, comments, examples, issues, PRs, commit messages. This repo's author has a real Homey,
+and device lists, zone/room names, variable names, UUIDs, and dumps from it are exactly what
+leaks.
+
+- Use invented, generic names: `Kitchen Counter`, `Ceiling Light`, `Living Room`, `Alice`.
+  Never a real family member's name or initials, a real room layout, or a real device list.
+- Never commit Homey dumps (flow card exports, device/zone/variable listings) or their IDs.
+  Hand-write minimal fixtures instead.
+- No absolute home paths (`/home/<user>/`, `C:\Users\<user>\`), personal emails, IPs, or
+  coordinates. Use relative paths and placeholders. The `author` in `app.json` is the one
+  deliberate exception.
+- Exception: a name the code must match at runtime (e.g. a Homey variable the app reads) is
+  functional, not an example. Keep it, but make it configurable or flag it in the issue
+  rather than copying it into docs and tests.
+
+Check added lines before committing or opening a PR (heuristic: it catches identifiers, not
+names, so also read the diff for real-looking names):
+
+```bash
+git diff -U0 origin/master | grep -E '^\+' | grep -nE \
+  '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,}|/home/[a-z]|C:\\Users|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|\b([0-9]{1,3}\.){3}[0-9]{1,3}\b'
+```
+
+Any hit needs a reason or a fix. `/deploy` and `/feature-work` both run this check.
+
 ## Lint baseline
 
 `npm run lint` currently reports pre-existing errors, almost all in `settings/main.js` (browser

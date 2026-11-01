@@ -1,2 +1,5 @@
 .claude/worktrees/
 .claude/settings.local.json
+
+# Pre-app prototype scripts; contain real household device and scene data
+lightlayersscript/
