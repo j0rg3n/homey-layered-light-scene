@@ -31,7 +31,7 @@ publication); anything beyond that is a real problem.
 Then **review the diff** before pushing to the device:
 
 - Read `git diff` in full — not just the files you remember touching.
-- Check the change against `SPEC.md` and the relevant `TODO.md` entry. If behaviour changed
+- Check the change against `SPEC.md` and the relevant GitHub issue. If behaviour changed
   and the spec did not, fix that first (see AGENTS.md § Before fixing bugs).
 - Confirm new behaviour has tests that would fail without the change.
 - Note anything that can only be verified on the device, and re-run the relevant part of
@@ -39,6 +39,15 @@ Then **review the diff** before pushing to the device:
 
 Deploy with `homey app run -r` (deploys **and** streams logs). Plain `homey app run` does not
 deploy to the device. Rollback: `cd stable/com.fabeljet.layeredlight && homey app install`.
+
+## Work tracking
+
+Open work items are tracked as **GitHub Issues** on this repository. `TODO.md` retains completed
+items as a historical record; new work items go to GitHub.
+
+- Before writing code for a bug or feature: create or update the relevant issue, and update
+  `SPEC.md` if observable behaviour changes.
+- The issue body is the authoritative description of root cause, affected files, and checklist.
 
 ## Lint baseline
 
