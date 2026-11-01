@@ -9,36 +9,8 @@ See `AGENTS.md` for the development process (docs-before-code, test coverage tar
 
 **Never deploy without a green build and a review.** `homey app run -r` and `homey app install`
 push to the physical Homey, where a broken build costs a rollback and a house full of wrong
-lights. Run all of this first, from `com.fabeljet.layeredlight/`:
-
-```bash
-npm run build     # tsc — must exit 0
-npm test          # jest — all suites must pass
-npm run lint      # see the note on the lint baseline below
-homey app build   # what the CLI actually runs on deploy: compile + validate
-homey app validate --level publish   # the only check that verifies manifest file references
-```
-
-`homey app build` is not optional: it runs the manifest pre-processing and validation that
-plain `tsc` does not, so it catches app.json and flow-card problems that the other three miss.
-
-Neither is `validate --level publish`. `build` and `install` validate at level `debug`, which
-does **not** check that files named in `app.json` actually exist — a missing image passes every
-local step and then fails on the device with a bare `✖ Missing File` after the upload. Publish
-level catches it. Expect one standing complaint there (`brandColor` is required only for store
-publication); anything beyond that is a real problem.
-
-Then **review the diff** before pushing to the device:
-
-- Read `git diff` in full — not just the files you remember touching.
-- Check the change against `SPEC.md` and the relevant GitHub issue. If behaviour changed
-  and the spec did not, fix that first (see AGENTS.md § Before fixing bugs).
-- Confirm new behaviour has tests that would fail without the change.
-- Note anything that can only be verified on the device, and re-run the relevant part of
-  `TEST_PLAN.md` after deploying.
-
-Deploy with `homey app run -r` (deploys **and** streams logs). Plain `homey app run` does not
-deploy to the device. Rollback: `cd stable/com.fabeljet.layeredlight && homey app install`.
+lights. Run the `/deploy` skill first: it covers build verification, diff review, the deploy
+command, and rollback.
 
 ## Work tracking
 
